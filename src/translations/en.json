@@ -1,0 +1,10 @@
+{
+"greeting":"Hello, {name}",
+"webAuthor":"{name}",
+"Homepage.title":"Homepage",
+"Homepage.description":"React ssr template",
+"About.title":"Aboutpage",
+"ProductsPage.title":"Productspage",
+"ProductPage.title":"Productpage"
+
+}
