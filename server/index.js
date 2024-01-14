@@ -1,4 +1,5 @@
 require("dotenv").config();
+require("isomorphic-fetch");
 const express = require("express");
 const enforceSsl = require("express-enforces-ssl");
 const fs = require("fs");
@@ -6,6 +7,7 @@ const path = require("path");
 const csp = require("./csp");
 const { getExtractor, render, dataLoader } = require("./ssrUtills");
 const { default: helmet } = require("helmet");
+const cors = require("cors");
 const CSP = process.env.REACT_APP_CSP;
 const PORT = parseInt(process.env.REACT_APP_API_SERVER_PORT || "3500");
 const USING_SSL = process.env.REACT_APP_USING_SSL === "true";
@@ -20,6 +22,10 @@ const isCspEnabled = CSP === "block" || CSP === "report";
 const errorPage = fs.readFileSync(path.join(buildPath, "500.html"), "utf8");
 
 const app = express();
+
+app.use(
+  cors({ origin: process.env.REACT_APP_CANONICAL_ROOT_URL, credentials: true })
+);
 
 // The helmet middleware sets various HTTP headers to improve security.
 // See: https://www.npmjs.com/package/helmet
@@ -136,8 +142,8 @@ app.get("*", async (req, res) => {
       createStore,
       matchPathName,
     } = nodeEntrypoint;
-    const data = await dataLoader(req.url, routes, matchPathName, createStore);
-    const html = render(req, context, renderApp, webExtractor, data);
+    const data = await dataLoader(req, routes, matchPathName, createStore);
+    const html = await render(req, context, renderApp, webExtractor, data);
 
     if (context.url) {
       return res.redirect(context.url);
@@ -149,7 +155,7 @@ app.get("*", async (req, res) => {
       return res.send(html);
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).send(errorPage);
   }
 });

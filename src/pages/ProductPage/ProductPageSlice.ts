@@ -32,6 +32,7 @@ export const fetchProduct = customCreateAsyncThunk<
     const resp = await axios.get(
       `https://fakestoreapi.com/products/${productId}`
     );
+
     return resp.data;
   },
   {
@@ -43,7 +44,6 @@ export const fetchProduct = customCreateAsyncThunk<
       const shouldFetchProduct =
         !product ||
         (product && !!productId && product.id.toString() !== productId);
-
       return shouldFetchProduct;
     },
   }
@@ -89,6 +89,5 @@ export const loadData = (
   search?: string
 ) => {
   const { id } = params;
-
   return dispatch(fetchProduct(id));
 };

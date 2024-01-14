@@ -7,7 +7,8 @@ const url = require("node:url");
 
 const buildPath = path.join(__dirname, "..", "build");
 
-const redirectCode = [301, 302, 303, 307, 308];
+const redirectCode = new Set([301, 302, 303, 307, 308]);
+const notFoundCode = new Set([404]);
 
 // The HTML build file is generated from the `public/index.html` file
 // and used as a template for server side rendering. The application
@@ -80,66 +81,73 @@ const template = (templateData) => {
   );
 };
 
-// function redirectCallback(context, res) {
-//   res.redirect(context.status, context.headers.get("Location"));
-// }
+function createFetchRequestForServer(req) {
+  const origin = `${req.protocol}://${req.get("host")}`;
+  const url = new URL(req.originalUrl || req.url, origin);
 
-// function createFetchRequestForServer(req) {
-//   const origin = `${req.protocol}://${req.get("host")}`;
-//   const url = new URL(req.originalUrl || req.url, origin);
+  const abortController = new AbortController();
 
-//   const abortController = new AbortController();
+  req.on("close", () => abortController.abort());
 
-//   req.on("close", () => abortController.abort());
+  const requestObject = {
+    method: req.method,
+    signal: abortController.signal,
+    headers: req.headers,
+  };
 
-//   const requestObject = {
-//     method: req.method,
-//     signal: abortController.signal,
-//     headers: req.headers,
-//   };
+  if (req.method !== "GET" && req.method !== "HEAD" && req.body) {
+    requestObject.body = req.body;
+  }
 
-//   if (req.method !== "GET" && req.method !== "HEAD" && req.body) {
-//     requestObject.body = req.body;
-//   }
+  return new fetch.Request(url.href, requestObject);
+}
 
-//   return new fetch.Request(url.href, requestObject);
-// }
+function checkAndReturnRouterContext(serverContext = {}) {
+  return function (context) {
+    if (context instanceof Response || !context.matches) {
+      if (redirectCode.has(context.status)) {
+        serverContext.url = context.headers.get("Location");
+      } else if (notFoundCode.has(context.status)) {
+        serverContext.nofound = true;
+        return context;
+      } else {
+        throw new Error(`Server response ${context.status} is not a redirect.`);
+      }
+      return null;
+    }
+    if (
+      context &&
+      Array.isArray(context.matches) &&
+      context.matches.length > 0
+    ) {
+      const [firstMatch] = context.matches;
+      if (firstMatch && firstMatch.route && firstMatch.route.notFound) {
+        serverContext.nofound = true;
+      }
+    }
+    return context;
+  };
+}
 
-// function checkAndReturnRouterContext(resp) {
-//   return function (context) {
-//     if (context instanceof fetch.Response || !context.matches) {
-//       if (redirectCode.includes(context.status)) {
-//         redirectCallback(context, resp);
-//       } else {
-//         throw new Error(`Server response ${context.status} is not a redirect.`);
-//       }
-//       return null;
-//     }
-//     return context;
-//   };
-// }
-
-module.exports.render = (
+module.exports.render = async (
   req,
   context,
   renderApp,
   webExtractor,
   preloadedState = {}
 ) => {
-  // const fetchRequest = createFetchRequestForServer(req);
+  const fetchRequest = createFetchRequestForServer(req);
   //This is important as we don't want to set refernce for collectchunk to anything other than webExtractor.
   const collectWebChunk = webExtractor.collectChunks.bind(webExtractor);
-  // const data = await renderApp(
-  //   fetchRequest,
-  //   collectWebChunk,
-  //   checkAndReturnRouterContext(res)
-  // );
-
-  const data = renderApp(req.url, context, collectWebChunk, preloadedState);
-
-  // if (!data) {
-  //   return null;
-  // }
+  const data = await renderApp(
+    fetchRequest,
+    collectWebChunk,
+    checkAndReturnRouterContext(context),
+    preloadedState
+  );
+  if (!data) {
+    return null;
+  }
   // Preloaded state needs to be passed for client side too.
   // For security reasons we ensure that preloaded state is considered as a string
   // by replacing '<' character with its unicode equivalent.
@@ -184,13 +192,13 @@ module.exports.getExtractor = () => {
 };
 
 module.exports.dataLoader = async (
-  requestUrl,
+  request,
   routes,
   matchPathName,
   createStore
 ) => {
-  const { query, pathname } = url.parse(requestUrl);
-  const queryMaybe = !!query && typeof query === "string" ? `?${query}` : "";
+  const { pathname } = url.parse(request.url);
+  const completeUrl = `${request.protocol}://${request.hostname}${request.url}`;
   const store = createStore();
   try {
     const matchedRoutes = matchPathName(pathname, routes);
@@ -198,18 +206,22 @@ module.exports.dataLoader = async (
       if (
         matchedRoute &&
         matchedRoute.route &&
-        typeof matchedRoute.route.loadData === "function"
+        matchedRoute.route.element !== null &&
+        typeof matchedRoute.route.loader === "function"
       ) {
         const { params } = matchedRoute;
-        acc.push(
-          matchedRoute.route.loadData(store.dispatch, params, queryMaybe)
+        const loaderWithDispatch = matchedRoute.route.loader(
+          store.dispatch,
+          true
         );
+        acc.push(loaderWithDispatch({ params, request: { url: completeUrl } }));
       }
       return acc;
     }, []);
 
     await Promise.all(promiseCalls);
-    return store.getState();
+    const state = store.getState();
+    return state;
   } catch (err) {
     console.error(err, "server side data loading failed");
     store.getState();

@@ -1,6 +1,15 @@
 import { find } from "lodash";
 import { compile } from "path-to-regexp";
-import { Location, PathMatch, matchPath } from "react-router-dom";
+import {
+  ActionFunction,
+  LazyRouteFunction,
+  Location,
+  PathMatch,
+  RouteObject,
+  ShouldRevalidateFunction,
+  matchPath,
+  redirect,
+} from "react-router-dom";
 import { routes } from "./routes";
 
 export const routesName = {
@@ -25,10 +34,24 @@ export type RoutesType = typeof routes;
 
 export type RouteType = {
   path: string;
-  element: JSX.Element;
+  element: JSX.Element | null;
   name: RoutesNameType;
   loadData?: Function;
   exact: boolean;
+  index?: boolean;
+  children?: React.ReactNode;
+  caseSensitive?: boolean;
+  id?: string;
+  loader?: Function;
+  action?: ActionFunction;
+  hydrateFallbackElement?: React.ReactNode | null;
+  errorElement?: React.ReactNode | null;
+  Component?: React.ComponentType | null;
+  HydrateFallback?: React.ComponentType | null;
+  ErrorBoundary?: React.ComponentType | null;
+  handle?: RouteObject["handle"];
+  shouldRevalidate?: ShouldRevalidateFunction;
+  lazy?: LazyRouteFunction<RouteObject>;
 };
 
 const findRouteByName = (nameToFind: string, routes: RoutesType) =>
@@ -83,4 +106,38 @@ export const canonicalRoutePath = (location: Location, pathOnly = false) => {
   const { pathname, search, hash } = location;
   const cleanedPath = pathname.replace(/\/$/, "") || "/";
   return pathOnly ? cleanedPath : `${cleanedPath}${search}${hash}`;
+};
+
+export const namedRedirect = (
+  name: RoutesNameType,
+  routes: RoutesType,
+  params: Record<string, unknown> = {},
+  search?: string,
+  hash?: string
+) => {
+  const pathname = pathByRouteName(name, routes, params);
+  const searchParams =
+    search && typeof search === "string"
+      ? search.startsWith("?")
+        ? search
+        : `?${search}`
+      : "";
+
+  const hashParams =
+    hash && typeof hash === "string"
+      ? hash.startsWith("#")
+        ? hash
+        : `#${hash}`
+      : "";
+  const redirectUrl = `${pathname}${searchParams}${hashParams}`;
+  return redirect(redirectUrl);
+};
+
+export const redirectLoader = (
+  name: RoutesNameType,
+  params: Record<string, unknown> = {},
+  search?: string,
+  hash?: string
+) => {
+  return async () => namedRedirect(name, routes, params, search, hash);
 };

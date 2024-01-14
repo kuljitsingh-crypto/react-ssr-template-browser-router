@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Navigate, RelativeRoutingType } from "react-router-dom";
 import {
   RoutesNameType,
@@ -7,10 +7,6 @@ import {
 import { routes } from "../../utill/routes";
 import { bool, object, oneOf, string } from "prop-types";
 import { isBrowser } from "../../utill/browserHelperFunction";
-import {
-  addDataToHttpStaticContextInServer,
-  httpContext,
-} from "../../context/HttpContext";
 
 type NamedRedirectProps = {
   replace?: boolean;
@@ -23,7 +19,6 @@ type NamedRedirectProps = {
 };
 
 function NamedRedirect(props: NamedRedirectProps) {
-  const context = useContext(httpContext);
   const { replace, state, relative, search, hash, name, params } = props;
   const pathname = pathByRouteName(name, routes, params);
   const searchParams =
@@ -41,13 +36,8 @@ function NamedRedirect(props: NamedRedirectProps) {
       : "";
 
   // we are using this because Navigate doesn't support by react router v6 for SSR.
-  // so  we tell server to redirect to that location instead.
   if (!isBrowser()) {
-    const redirectUrl = `${pathname}${searchParams}${hashParams}`;
-    const isDataAdded = addDataToHttpStaticContextInServer(context, {
-      redirectUrl,
-    });
-    if (isDataAdded) return null;
+    return null;
   }
 
   return (
