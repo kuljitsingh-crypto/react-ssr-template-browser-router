@@ -1,6 +1,8 @@
 # React SSR Template 
 This project is built after ejecting the default  react app (generated using Create-React-App) and modifying the necessary part to create ssr functionality. Loadable components package is utilized to efficiently split and manage components, especially those designated for server-side rendering. 
 
+In this template, I leverage React-Router's new CreateBrowserRouter to establish routes, providing the flexibility to tap into new data APIs if required.
+
 ## Enviroment Value
 Enviroment value used in,
 
