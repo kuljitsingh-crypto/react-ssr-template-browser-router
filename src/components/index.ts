@@ -1,2 +1,2 @@
 export { default as NamedLink } from "./NamedLink/NamedLink";
-export { default as RouteProvider } from "./RouteProvider/RouteProvider";
+export { default as NamedRedirect } from "./NamedRedirect/NamedRedirect";
