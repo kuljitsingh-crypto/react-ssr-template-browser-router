@@ -76,7 +76,17 @@ const applyNodeConfigurations = (
     // Set build output specifically for node
     newConfig.output.libraryTarget = "commonjs2";
     newConfig.output.filename = "[name].[contenthash:8].js";
-    newConfig.output.chunkFilename = "[name].[contenthash:8].chunk.js";
+    newConfig.output.chunkFilename = function (pathData, assetInfo) {
+      if (pathData.chunk.name === "main" || !pathData.chunk.name) {
+        return "[name].[contenthash:8].chunk.js";
+      }
+      let namesArr = pathData.chunk.name.replace("pages-", "").split("-");
+      if (namesArr.length < 1) {
+        return "[name].[contenthash:8].chunk.js";
+      }
+      pathData.chunk.name = namesArr[0];
+      return "[name].[contenthash:8].chunk.js";
+    };
 
     // Disable runtimeChunk as it seems to break the server build
     // Runtime chunk is necessary logic for managing module loading, dependency resolution, and other runtime-related tasks.

@@ -2,8 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { FETCH_STATUS, FetchStatusVal } from "@src/custom-config";
 import { RootStateType } from "@src/store";
 import { customCreateAsyncThunk } from "@src/storeHelperFunction";
-import { Params } from "react-router-dom";
-import { UseDispatchType, UseGetStateType } from "@src/hooks";
+import { DataLoaderFunction } from "@src/hooks";
 import { ProductErrorType, ProductType } from "../pageGlobalType";
 
 type ProductStateType = {
@@ -72,11 +71,11 @@ export const selectProductsError = (state: RootStateType) =>
 
 export default productsPageSlice.reducer;
 
-export const loadData = (
-  getState: UseGetStateType,
-  dispatch: UseDispatchType,
-  params: Params,
-  search?: string
+export const loadData: DataLoaderFunction = (
+  getState,
+  dispatch,
+  params,
+  search
 ) => {
   return dispatch(fetchProducts());
 };

@@ -26,7 +26,7 @@ function ProductPage(props: ProductPagePropsType) {
   const { status, product, error, intl } = props;
   const description = intl.formatMessage({ id: "Homepage.description" });
   const title = intl.formatMessage({ id: "ProductPage.title" });
-  console.log(props);
+
   return (
     <Page
       description={description}

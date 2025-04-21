@@ -22,7 +22,6 @@ export type ConfigurationType = {
     postalCode: string;
     streetAddress: string;
   };
-  rootPath?: string;
   apiRootPath?: string;
   seo: {
     siteFacebookPage: string;
@@ -100,8 +99,7 @@ export const defaultConfig: ConfigurationType = {
     favicon,
   },
   branding: { icon: brandIcon },
-  rootPath: "",
-  apiRootPath: "/admin",
+  apiRootPath: "/",
   theme: { name: "light", color: "#fff" },
 };
 
@@ -110,17 +108,14 @@ export const rippleAnimationDuration = 500; // 500ms
 const mergeConfigImages = ({
   oldImages,
   newImages,
-  rootPath,
 }: {
   oldImages?: ConfigurationType["images"];
   newImages?: Partial<ConfigurationType["images"]>;
-  rootPath?: string;
 }) => {
   const finalImages = {} as ConfigurationType["images"];
-  rootPath = rootPath || "";
   Object.entries(oldImages || {}).forEach((image) => {
     const [key, value] = image as [keyof ConfigurationType["images"], string];
-    finalImages[key] = `${rootPath}${newImages?.[key] || value}`;
+    finalImages[key] = `${newImages?.[key] || value}`;
   });
   Object.assign(finalImages, newImages || {});
   return finalImages;
@@ -134,7 +129,6 @@ export const mergeConfig = (
   newConfig.images = mergeConfigImages({
     oldImages: oldConfig.images,
     newImages: newConfig.images,
-    rootPath: newConfig.rootPath,
   });
   newConfig.seo = Object.assign({}, oldConfig.seo, newConfig.seo || {});
   if (newConfig.canonicalRootUrl) {
@@ -144,9 +138,7 @@ export const mergeConfig = (
     newConfig.branding = {} as any;
   }
   if (!newConfig.branding?.icon) {
-    (newConfig.branding as Record<string, any>).icon = `${
-      newConfig.rootPath || ""
-    }${brandIcon}`;
+    (newConfig.branding as Record<string, any>).icon = `${brandIcon}`;
   }
   Object.assign(finalConfig, newConfig);
   return finalConfig as ConfigurationType;

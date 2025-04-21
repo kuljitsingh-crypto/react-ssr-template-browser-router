@@ -11,10 +11,10 @@ import { FETCH_STATUS, FetchStatusVal } from "@src/custom-config";
 import css from "./ProductsPage.module.css";
 import { ProductErrorType, ProductType } from "../pageGlobalType";
 import { NamedLink } from "@src/components";
-import { routesName } from "@src/util/routesHelperFunction";
 import { IntlShape } from "react-intl";
 import Page from "@src/components/Page/Page";
 import RightChild from "@src/components/RIghtChild/RightChild";
+import { routesName } from "@src/routeNames";
 
 type ProductsPagePropsType = {
   status: FetchStatusVal;

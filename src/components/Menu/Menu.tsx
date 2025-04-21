@@ -125,9 +125,7 @@ function MenuComp(props: MenuProps) {
     if (typeof isPropOpen === "boolean") {
       setIsOpen(!!isPropOpen);
     }
-    console.log("rendering menu");
   }, [isPropOpen]);
-
   const menuClasses = classNames(css.menu, className);
   return (
     <div

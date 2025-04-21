@@ -43,7 +43,6 @@ type FacebookMetaTagDetails = {
   published?: string;
   updated?: string;
   tags?: string[];
-  rootPath: string;
 };
 
 type TwitterMetaTagDetails = {
@@ -54,7 +53,6 @@ type TwitterMetaTagDetails = {
   url: string;
   twitterHandle?: string;
   customTwitterImage?: { url: string };
-  rootPath: string;
 };
 
 const createMetaTagForFaceBook = (metaDetails: FacebookMetaTagDetails) => {
@@ -71,7 +69,6 @@ const createMetaTagForFaceBook = (metaDetails: FacebookMetaTagDetails) => {
     published,
     updated,
     tags,
-    rootPath,
   } = metaDetails;
 
   if (
@@ -103,7 +100,7 @@ const createMetaTagForFaceBook = (metaDetails: FacebookMetaTagDetails) => {
   } else {
     const facebookImageUrl = `${ensureRootUrl(
       canonicalRootUrl
-    )}${rootPath}${facebookImage}`;
+    )}${facebookImage}`;
     openGraphMeta["og:image"] = facebookImageUrl;
     openGraphMeta["og:image:width"] = FACEBOOK_IMAGE_WIDTH;
     openGraphMeta["og:image:height"] = FACEBOOK_IMAGE_HEIGHT;
@@ -139,7 +136,6 @@ const createMetaTagForTwitter = (metaDetails: TwitterMetaTagDetails) => {
     customTwitterImage,
     canonicalRootUrl,
     twitterHandle,
-    rootPath,
   } = metaDetails;
   if (!siteTwitterHandle || !url || !title || !description || !canonicalRootUrl)
     return {};
@@ -153,9 +149,7 @@ const createMetaTagForTwitter = (metaDetails: TwitterMetaTagDetails) => {
   if (customTwitterImage && customTwitterImage.url) {
     twitterMeta["twitter:image"] = customTwitterImage.url;
   } else {
-    const twitterImageUrl = `${ensureRootUrl(
-      canonicalRootUrl
-    )}${rootPath}${twitterImage}`;
+    const twitterImageUrl = `${ensureRootUrl(canonicalRootUrl)}${twitterImage}`;
     twitterMeta["twitter:image"] = twitterImageUrl;
   }
   if (twitterHandle) {
@@ -165,7 +159,7 @@ const createMetaTagForTwitter = (metaDetails: TwitterMetaTagDetails) => {
   }
 
   if (canonicalRootUrl) {
-    twitterMeta["twitter:domain"] = `${canonicalRootUrl}${rootPath}`;
+    twitterMeta["twitter:domain"] = `${canonicalRootUrl}`;
   }
   return twitterMeta;
 };
@@ -200,7 +194,6 @@ function ReactHelmet(props: ReactHelmetPropsTypes) {
   const intl = useIntl();
   const locale = intl?.locale;
   const canonicalRootUrl = config.canonicalRootUrl;
-  const rootPath = config.rootPath || "";
   const siteTwitterHandle = config.seo.siteTwitterHandle;
   const images = config.images;
   const theme = config.theme;
@@ -217,7 +210,6 @@ function ReactHelmet(props: ReactHelmetPropsTypes) {
     tags: keywords,
     published,
     updated,
-    rootPath,
   });
   const twitterMetaTags = createMetaTagForTwitter({
     title,
@@ -227,7 +219,6 @@ function ReactHelmet(props: ReactHelmetPropsTypes) {
     siteTwitterHandle,
     customTwitterImage,
     url,
-    rootPath,
   });
 
   const keywordsMaybe =
@@ -265,7 +256,7 @@ function ReactHelmet(props: ReactHelmetPropsTypes) {
   const sameOrganizationAs = [facebookPage, twitterPage, instagramPage].filter(
     (v) => v != null
   );
-  const schemaImage = `${canonicalRootUrl}${rootPath}${facebookImage}`;
+  const schemaImage = `${canonicalRootUrl}${facebookImage}`;
 
   const schemaFromProps = schema
     ? Array.isArray(schema)

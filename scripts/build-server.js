@@ -14,6 +14,7 @@ process.on("unhandledRejection", (err) => {
 // Ensure environment variables are read.
 require("../config/env");
 
+const fs = require("fs-extra");
 const chalk = require("react-dev-utils/chalk");
 const bfj = require("bfj");
 const webpack = require("webpack");
@@ -22,6 +23,7 @@ const paths = require("../config/paths");
 const checkRequiredFiles = require("react-dev-utils/checkRequiredFiles");
 const formatWebpackMessages = require("react-dev-utils/formatWebpackMessages");
 const printBuildError = require("react-dev-utils/printBuildError");
+const path = require("path");
 
 // Warn and crash if required files are missing
 if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
@@ -53,6 +55,13 @@ build(config)
       } else {
         console.log(chalk.green("Compiled successfully.\n"));
       }
+      const buildFolder = path.relative(process.cwd(), paths.appBuild);
+      const loadableStatsJson = path.join(
+        buildFolder,
+        "node",
+        "loadable-stats.json"
+      );
+      return Promise.all([fs.readJson(loadableStatsJson), loadableStatsJson]);
     },
     (err) => {
       const tscCompileOnError = process.env.TSC_COMPILE_ON_ERROR === "true";
@@ -70,6 +79,35 @@ build(config)
       }
     }
   )
+  .then(([data, fileName]) => {
+    Object.keys(data.namedChunkGroups).reduce((acc, key) => {
+      const keyWithoutPrefix = key.replace("pages-", "");
+      const namesArr = keyWithoutPrefix.split("-");
+      if (keyWithoutPrefix === key) {
+        return acc;
+      }
+      if (namesArr.length < 2) {
+        acc[keyWithoutPrefix] = acc[key];
+        acc[keyWithoutPrefix].name = keyWithoutPrefix;
+        delete acc[key];
+        return acc;
+      }
+      if (namesArr.length > 2) {
+        delete acc[key];
+        return acc;
+      }
+      const isCorrectName = namesArr[0] === namesArr[1];
+      if (!isCorrectName) {
+        delete acc[key];
+        return acc;
+      }
+      acc[namesArr[0]] = acc[key];
+      acc[namesArr[0]].name = namesArr[0];
+      delete acc[key];
+      return acc;
+    }, data.namedChunkGroups);
+    return fs.writeJson(fileName, data);
+  })
   .catch((err) => {
     if (err && err.message) {
       console.log(err.message);

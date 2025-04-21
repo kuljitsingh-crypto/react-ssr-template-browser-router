@@ -210,11 +210,34 @@ module.exports = function (webpackEnv, target = "web") {
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
       filename: isEnvProduction
-        ? "static/js/[name].[contenthash:8].js"
+        ? function (pathData, assetInfo) {
+            if (pathData.chunk.name === "main" || !pathData.chunk.name) {
+              return "static/js/[name].[contenthash:8].js";
+            }
+            let namesArr = pathData.chunk.name.split("-");
+            if (namesArr.length < 2) {
+              return "static/js/[name].[contenthash:8].js";
+            }
+            // const nameWithoutPages = pathData.chunk.name.replace("pages-", "");
+            pathData.chunk.name = namesArr[0];
+
+            return "static/js/[name].[contenthash:8].js";
+          }
         : isEnvDevelopment && "static/js/bundle.js",
       // There are also additional JS chunk files if you use code splitting.
       chunkFilename: isEnvProduction
-        ? "static/js/[name].[contenthash:8].chunk.js"
+        ? function (pathData, assetInfo) {
+            if (pathData.chunk.name === "main" || !pathData.chunk.name) {
+              return "static/js/[name].[contenthash:8].chunk.js";
+            }
+            let namesArr = pathData.chunk.name.split("-");
+            if (namesArr.length < 2) {
+              return "static/js/[name].[contenthash:8].chunk.js";
+            }
+            // const nameWithoutPages = pathData.chunk.name.replace("pages-", "");
+            pathData.chunk.name = namesArr[0];
+            return "static/js/[name].[contenthash:8].chunk.js";
+          }
         : isEnvDevelopment && "static/js/[name].chunk.js",
       assetModuleFilename: "static/media/[name].[hash][ext]",
       // webpack uses `publicPath` to determine where the app is being served from.

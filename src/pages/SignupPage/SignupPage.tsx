@@ -17,7 +17,7 @@ import {
 } from "@src/globalReducers/auth.slice";
 import { customConnect } from "@src/components/helperComponents/customConnect";
 import { FETCH_STATUS, FetchStatusVal } from "@src/custom-config";
-import css from "./LoginPage.module.css";
+import css from "./SignupPage.module.css";
 import { GeneralError } from "@src/util/APITypes";
 import { FormattedMsg, NamedRedirect } from "@src/components";
 import RightChild from "@src/components/RIghtChild/RightChild";
@@ -34,17 +34,17 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
     dispatch(userLogin({ email, password })),
 });
 
-type LoginPageProps = {
+type SignupPageProps = {
   loginStatus: FetchStatusVal;
   loginError: GeneralError | null;
   isAuthenticated: boolean;
 } & ReturnType<typeof mapDispatchToProps>;
 
-function LoginPage(props: LoginPageProps) {
+function SignupPage(props: SignupPageProps) {
   const { loginError, loginStatus, isAuthenticated, onUserLogin } = props;
   const intl = useIntl();
   const config = useConfiguration();
-  const title = intl.formatMessage({ id: "LoginPage.title" });
+  const title = intl.formatMessage({ id: "SignupPage.title" });
   const desc =
     config.seo.description || intl.formatMessage({ id: "general.description" });
   const navigate = useNamedRedirect();
@@ -76,7 +76,7 @@ function LoginPage(props: LoginPageProps) {
             <p className={css.helperTextDiv}>
               <span className={css.divider} />
               <FormattedMsg
-                id='LoginPage.helpText'
+                id='SignupPage.helpText'
                 className={css.helperText}
               />
             </p>
@@ -86,10 +86,6 @@ function LoginPage(props: LoginPageProps) {
               loginInProgress={loginStatus === FETCH_STATUS.loading}
               loginError={loginError}
             />
-            <p>
-              <FormattedMsg id='LoginPage.noAccount' />
-              {/* <NamedRedirect name=""></NamedRedirect> */}
-            </p>
           </div>
         </div>
       </RightChild>
@@ -97,4 +93,4 @@ function LoginPage(props: LoginPageProps) {
   );
 }
 
-export default customConnect(mapStateToProps, mapDispatchToProps)(LoginPage);
+export default customConnect(mapStateToProps, mapDispatchToProps)(SignupPage);

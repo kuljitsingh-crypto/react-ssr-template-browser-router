@@ -11,28 +11,16 @@ import {
   redirect,
 } from "react-router-dom";
 import { routes } from "./routes";
-
-export const routesName = {
-  Root: "Root",
-  Homepage: "Homepage",
-  ProductsPage: "ProductsPage",
-  ProductPage: "ProductPage",
-  NotFoundPage: "NotFoundPage",
-  LoginPage: "LoginPage",
-} as const;
+import { RoutesNameType } from "@src/routeNames";
 
 type PathParamsType = {
   slug?: string;
   id?: string;
 };
 
-type routesKey = keyof typeof routesName;
-
-export type RoutesNameType = (typeof routesName)[routesKey];
-
 export type RoutesType = typeof routes;
 
-export type RouteType = {
+type RouteType = {
   path: string;
   element: JSX.Element | null;
   name: RoutesNameType;

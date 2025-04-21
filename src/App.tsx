@@ -81,8 +81,8 @@ const ClientApp = (props: ClientAppPropsType) => {
     store.getState,
     routes
   );
-  const rootpath = config.rootPath || "";
-  const router = createBrowserRouter(modifiedRoutes, { basename: rootpath });
+
+  const router = createBrowserRouter(modifiedRoutes);
 
   useEffect(() => {
     store.dispatch(changeTheme(config.theme.name));
@@ -149,20 +149,19 @@ type GetRouterContextType = (
 // If you want to use new data api then use it. make sure to change ssrUtills.js as well.
 const renderApp = async (
   fetchRequest: Request,
-  extractor: any,
-  ChunkExtractorManager: React.ElementType,
+  collectWebChunk: any,
   getRouterContext: GetRouterContextType,
   preloadedStore: Record<string, unknown>,
-  config: ConfigurationType,
-  baseName?: string
+  config: ConfigurationType
 ) => {
   const helmetContext: { helmet?: HelmetServerState } = {};
+
   const handler = createStaticHandler(
-    createRoutesForBrowserAndStaticRouter(undefined, undefined, routes, true),
-    { basename: baseName }
+    createRoutesForBrowserAndStaticRouter(undefined, undefined, routes, true)
   );
-  const finalConfig = mergeConfig(defaultConfig, config);
+  const finalConfig = mergeConfig(defaultConfig, config || {});
   const context = await handler.query(fetchRequest);
+
   const routerContext = getRouterContext(context);
   if (!routerContext) return;
   const store = createStore(preloadedStore, finalConfig);
@@ -170,22 +169,17 @@ const renderApp = async (
 
   // When rendering the app on server, we wrap the app with webExtractor.collectChunks
   // This is needed to figure out correct chunks/scripts to be included to server-rendered page.
-  // https://loadable-components.com/docs/server-side-rendering/#3-setup-chunkextractor-server-side
-  const withChunks = (
-    <ChunkExtractorManager extractor={extractor}>
-      <ServerApp
-        routes={handler.dataRoutes}
-        helmetContext={helmetContext}
-        context={routerContext}
-        isHydrated={isHydrated}
-        store={store}
-        config={finalConfig}
-      />
-    </ChunkExtractorManager>
+  const withChunks = collectWebChunk(
+    <ServerApp
+      routes={handler.dataRoutes}
+      helmetContext={helmetContext}
+      context={routerContext}
+      isHydrated={isHydrated}
+      store={store}
+      config={finalConfig}
+    />
   );
-
   const html = ReactDOMServer.renderToString(withChunks);
-
   const { helmet: head } = helmetContext;
   return { head, body: html };
 };

@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { reducers } from "./reducers";
-import axios from "axios";
-import axiosWithCredentials from "axios";
+import axiosInstance from "axios";
 import { defaultConfig } from "./custom-config";
 
+const axios = axiosInstance.create();
+const axiosWithCredentials = axiosInstance.create();
 axiosWithCredentials.defaults.withCredentials = true;
 export const createStore = (preloadedState = {}, config = defaultConfig) =>
   configureStore({

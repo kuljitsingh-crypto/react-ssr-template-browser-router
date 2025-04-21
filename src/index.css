@@ -42,6 +42,7 @@
   --pixel32: 32px;
   --pixel64: 64px;
   --pixel96: 96px;
+  --pixelNeg16: -16px;
 
   /* ================ Font ================ */
   --fontSize24: 24px;

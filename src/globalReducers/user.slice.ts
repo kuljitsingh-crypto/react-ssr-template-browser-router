@@ -21,7 +21,10 @@ const initialState: InitialState = {
 
 export const fetchCurrentUser = customCreateAsyncThunk<CurrentUser, void>(
   CURRENT_USER_FETCH_NAME,
-  async (_, { extra: { axios, config }, dispatch, getState }) => {
+  async (
+    _,
+    { extra: { axiosWithCredentials, config }, dispatch, getState }
+  ) => {
     // your Custom login logic
     const resp = await waitFor(2000);
     const isAlreadyAuthenticated = getState().auth.isAuthenticated;

@@ -30,7 +30,7 @@ const LOGOUT = "app/auth-slice/userLogout";
 
 export const userLogin = customCreateAsyncThunk<string, UserLoginParams>(
   LOGIN,
-  async (params, { extra: { axios, config }, dispatch }) => {
+  async (params, { extra: { config, axiosWithCredentials }, dispatch }) => {
     // const { email, password } = params;
     // your Custom login logic
     const resp = await waitFor(2000);
@@ -41,9 +41,9 @@ export const userLogin = customCreateAsyncThunk<string, UserLoginParams>(
 
 export const userLogout = customCreateAsyncThunk<string, void>(
   LOGOUT,
-  async (_, { extra: { axios, config }, dispatch }) => {
+  async (_, { extra: { config, axiosWithCredentials }, dispatch }) => {
     // const url = `${getApiBaseUrl(config)}/logout`;
-    // const resp = await axios.post(url, {});
+    // const resp = await axiosWithCredentials.post(url, {});
     // your Custom login logic
     const resp = await waitFor(2000);
     dispatch(setCurrentUser(null));

@@ -3,7 +3,6 @@ import { selectIsAuthenticated } from "@src/globalReducers/auth.slice";
 import { selectCurrentUser } from "@src/globalReducers/user.slice";
 import { UseDispatchType, UseSelectorType } from "@src/hooks";
 import { customConnect } from "../helperComponents/customConnect";
-import { IntlShape } from "react-intl";
 import classNames from "classnames";
 import { RiMenu2Fill } from "react-icons/ri";
 import css from "./Topbar.module.css";

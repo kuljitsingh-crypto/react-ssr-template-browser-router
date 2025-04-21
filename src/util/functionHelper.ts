@@ -35,3 +35,43 @@ export const waitFor = (waitTime = 1000): Promise<{ data: "success" }> => {
     setTimeout(() => resolve({ data: "success" }), waitTime);
   });
 };
+
+const parseQueryValue = (value: string) => {
+  if (value === undefined) return null;
+  value = decodeURIComponent(value);
+  try {
+    return JSON.parse(value);
+  } catch (err) {
+    return value;
+  }
+};
+
+export function parseQueryString(queryString: string) {
+  const queries = (queryString || "").replace("?", "").split("&");
+  const paramObject = queries.reduce((acc, str) => {
+    const [key, value] = str.split("=");
+    if (key) {
+      acc[key] = parseQueryValue(value);
+    }
+    return acc;
+  }, {} as Record<string, string>);
+
+  return paramObject;
+}
+
+export const createQueryString = (queryParams?: Record<string, any>) => {
+  let queryStr = Object.entries(queryParams || {}).reduce(
+    (acc, [key, value]) => {
+      if (acc) {
+        acc += "&";
+      }
+      acc += `${key}=${encodeURIComponent(value)}`;
+      return acc;
+    },
+    ""
+  );
+  if (queryStr) {
+    queryStr = `?${queryStr}`;
+  }
+  return queryStr;
+};

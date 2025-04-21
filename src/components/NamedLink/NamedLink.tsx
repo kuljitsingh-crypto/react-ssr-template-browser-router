@@ -1,14 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { routes } from "@src/util/routes";
-import {
-  RoutesNameType,
-  pathByRouteName,
-} from "@src/util/routesHelperFunction";
+import { pathByRouteName } from "@src/util/routesHelperFunction";
 import { array, bool, func, object, shape, string } from "prop-types";
 import { RouterTypes, withRouter } from "../helperComponents/withRouter";
 import classNames from "classnames";
 import css from "./NamedLink.module.css";
+import { RoutesNameType } from "@src/routeNames";
 
 const defaultProps = {
   to: {},
@@ -24,7 +22,7 @@ export type NamedLinkPropsTypes = {
   routeParams?: object;
   to?: { search: string; hash: string };
   state?: any;
-  reaplace?: boolean;
+  replace?: boolean;
   className?: string;
   activeClassName?: string;
   children: React.ReactNode;

@@ -6,6 +6,17 @@ const lodash = require("lodash");
 const url = require("node:url");
 const { isCurrentUserAuthenticated } = require("./helperFunctions");
 
+class CustomChunkExtractor extends ChunkExtractor {
+  addChunk(chunk) {
+    chunk = chunk.replace("pages-", "");
+    const chunkArr = chunk.split("-");
+    if (chunkArr.length >= 2) {
+      chunk = chunkArr[0];
+    }
+    super.addChunk(chunk);
+  }
+}
+
 const buildPath = path.join(__dirname, "..", "build");
 
 const redirectCode = new Set([301, 302, 303, 307, 308]);
@@ -135,16 +146,20 @@ module.exports.render = async (
   context,
   renderApp,
   webExtractor,
-  preloadedState = {}
+  preloadedState = {},
+  config = {}
 ) => {
   const fetchRequest = createFetchRequestForServer(req);
   //This is important as we don't want to set refernce for collectchunk to anything other than webExtractor.
   const collectWebChunk = webExtractor.collectChunks.bind(webExtractor);
   const data = await renderApp(
     fetchRequest,
+    // webExtractor,
+    // ChunkExtractorManager,
     collectWebChunk,
     checkAndReturnRouterContext(context),
-    preloadedState
+    preloadedState,
+    config
   );
   if (!data) {
     return null;
@@ -164,6 +179,9 @@ module.exports.render = async (
         serializeData
       )};</script>
   `;
+  console.log(webExtractor.getLinkTags());
+
+  console.log(webExtractor.stats, "server");
 
   const { body, head } = data;
 
@@ -186,8 +204,8 @@ module.exports.getExtractor = () => {
   const nodeStatsFile = path.resolve(buildPath, "node", "loadable-stats.json");
   const webStatsFile = path.resolve(buildPath, "loadable-stats.json");
 
-  const nodeExtractor = new ChunkExtractor({ statsFile: nodeStatsFile });
-  const webExtractor = new ChunkExtractor({ statsFile: webStatsFile });
+  const nodeExtractor = new CustomChunkExtractor({ statsFile: nodeStatsFile });
+  const webExtractor = new CustomChunkExtractor({ statsFile: webStatsFile });
 
   return { nodeExtractor, webExtractor };
 };

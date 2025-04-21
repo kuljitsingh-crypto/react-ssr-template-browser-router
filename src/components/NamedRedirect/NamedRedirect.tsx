@@ -1,12 +1,10 @@
 import React from "react";
 import { Navigate, RelativeRoutingType } from "react-router-dom";
-import {
-  RoutesNameType,
-  pathByRouteName,
-} from "@src/util/routesHelperFunction";
+import { pathByRouteName } from "@src/util/routesHelperFunction";
 import { routes } from "@src/util/routes";
 import { bool, object, oneOf, string } from "prop-types";
 import { isBrowser } from "@src/util/browserHelperFunction";
+import { RoutesNameType } from "@src/routeNames";
 
 type NamedRedirectProps = {
   replace?: boolean;

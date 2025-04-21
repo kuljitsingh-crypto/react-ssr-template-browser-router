@@ -1,28 +1,40 @@
 import React from "react";
 import loadable from "@loadable/component";
-import { redirectLoader, routesName } from "./routesHelperFunction";
+import { redirectLoader } from "./routesHelperFunction";
 import { getPageDataLoadingAPI } from "@src/pages/pageDataLoadingAPI";
 import AuthenticatedPage from "@src/components/helperComponents/AuthenticatedPage";
+import { parseQueryString } from "./functionHelper";
+import { routesName, routeDetails } from "@src/routeNames";
 
-const HomePage = loadable(() =>
-  import(/*webpackChunkName:"HomePage"*/ "../pages/Homepage/Homepage")
-);
+const loadableComponent = routeDetails.reduce((acc, details) => {
+  const name = details.name;
+  acc[name] = loadable(() =>
+    import(/*webpackChunkName: "[request]" */ `../pages/${name}/${name}`)
+  );
+  return acc;
+}, {});
 
-const ProductsPage = loadable(() =>
-  import(
-    /*webpackChunkName:"ProductsPage"*/ "../pages/ProductsPage/ProductsPage"
-  )
-);
-const ProductPage = loadable(() =>
-  import(/*webpackChunkName:"ProductPage"*/ "../pages/ProductPage/ProductPage")
-);
+// const HomePage = loadable(() =>
+//   import(/*webpackChunkName:"HomePage"*/ "../pages/Homepage/Homepage")
+// );
 
-const LoginPage = loadable(() =>
-  import(/*webpackChunkName:"LoginPage"*/ "../pages/LoginPage/LoginPage")
-);
-const NoFoundPage = loadable(() =>
-  import(/*webpackChunkName:"NoFoundPage"*/ "../pages/NoFoundPage/NoFoundPage")
-);
+// const ProductsPage = loadable(() =>
+//   import(
+//     /*webpackChunkName:"ProductsPage"*/ "../pages/ProductsPage/ProductsPage"
+//   )
+// );
+// const ProductPage = loadable(() =>
+//   import(/*webpackChunkName:"ProductPage"*/ "../pages/ProductPage/ProductPage")
+// );
+
+// const LoginPage = loadable(() =>
+//   import(/*webpackChunkName:"LoginPage"*/ "../pages/LoginPage/LoginPage")
+// );
+// const NoFoundPage = loadable(() =>
+//   import(
+//     /*webpackChunkName:"NotFoundPage"*/ "../pages/NotFoundPage/NotFoundPage"
+//   )
+// );
 
 const pageDataLoadingAPI = getPageDataLoadingAPI();
 
@@ -54,15 +66,16 @@ const dataLoaderWrapper =
       (!isAuthCheckReq || isAuthenticated);
 
     if (shouldLoadData) {
+      const searchObject = parseQueryString(search);
       // Add checker to your loader function (created using Redux Slice), so that it doesn't call loader again
       // when the data is already loaded from SSR.
       // Until you figure out way to remove this, Please add your checker.
       // Else again it call loader.
       // Check ProductsPageSlice.ts or ProductPageSlice.ts for more information.
       if (shouldWaitToResolve) {
-        await loader(getState, dispatch, params, search);
+        await loader(getState, dispatch, params, searchObject);
       } else {
-        loader(getState, dispatch, params, search);
+        loader(getState, dispatch, params, searchObject);
       }
     }
     return null;
@@ -73,51 +86,69 @@ Object.keys(pageDataLoadingAPI).reduce((acc, key) => {
   return acc;
 }, pageDataLoadingAPI);
 
-export const routes = [
-  {
-    path: "/",
-    element: <HomePage />,
-    name: routesName.Homepage,
+export const routes = routeDetails.map((details) => {
+  const Component = loadableComponent[details.name];
+  const extraData = {};
+  if (details.isAuth) {
+    extraData.isAuth = details.isAuth;
+  } else if (details.notFound) {
+    extraData.notFound = details.notFound;
+  }
+  return {
+    path: details.path,
+    element: <Component />,
+    name: details.name,
     exact: true,
-    isAuth: true,
-  },
-  {
-    path: "/products",
-    element: <ProductsPage />,
-    name: routesName.ProductsPage,
-    exact: true,
-    isAuth: true,
-  },
-  {
-    path: "/products/:id",
-    element: <ProductPage />,
-    name: routesName.ProductPage,
-    exact: true,
-    isAuth: true,
-  },
-  {
-    path: "/login",
-    element: <LoginPage />,
-    name: routesName.LoginPage,
-    exact: true,
-  },
-  // If you want to redirect to some other during routes initialization. Use redirectLoader,like below, instead of NamedRedirectComponent.
-  {
-    path: "/home",
-    loader: redirectLoader(routesName.Homepage),
-    element: null,
-    name: routesName.Homepage,
-    exact: true,
-  },
-  // Added notFound Key to tell server during SSR to send 404 status code.
-  {
-    path: "*",
-    element: <NoFoundPage />,
-    name: routesName.NotFoundPage,
-    notFound: true,
-    exact: true,
-  },
-];
+    ...extraData,
+  };
+});
+
+// export const routes = [
+//   {
+//     path: "/",
+//     element: <HomePage />,
+//     name: routesName.Homepage,
+//     exact: true,
+//     isAuth: true,
+//   },
+//   {
+//     path: "/products",
+//     element: <ProductsPage />,
+//     name: routesName.ProductsPage,
+//     exact: true,
+//     isAuth: true,
+//   },
+//   {
+//     path: "/products/:id",
+//     element: <ProductPage />,
+//     name: routesName.ProductPage,
+//     exact: true,
+//     isAuth: true,
+//   },
+//   {
+//     path: "/login",
+//     element: <LoginPage />,
+//     name: routesName.LoginPage,
+//     exact: true,
+//   },
+//   // If you want to redirect to some other during routes initialization. Use redirectLoader,like below, instead of NamedRedirectComponent.
+//   {
+//     path: "/home",
+//     loader: redirectLoader(routesName.Homepage),
+//     element: null,
+//     name: routesName.Homepage,
+//     exact: true,
+//   },
+//   // Added notFound Key to tell server during SSR to send 404 status code.
+//   {
+//     path: "*",
+//     element: <NoFoundPage />,
+//     name: routesName.NotFoundPage,
+//     notFound: true,
+//     exact: true,
+//   },
+// ];
+// console.log(routes);
 
 /**
  * @param {UseDispatchType|undefined} dispatch
