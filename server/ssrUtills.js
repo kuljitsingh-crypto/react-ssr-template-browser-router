@@ -4,6 +4,7 @@ const fetch = require("node-fetch");
 const fs = require("fs");
 const lodash = require("lodash");
 const url = require("node:url");
+const { isCurrentUserAuthenticated } = require("./helperFunctions");
 
 const buildPath = path.join(__dirname, "..", "build");
 
@@ -195,11 +196,17 @@ module.exports.dataLoader = async (
   request,
   routes,
   matchPathName,
-  createStore
+  createStore,
+  currentUser,
+  setCurrentUser,
+  setAuthenticationState
 ) => {
   const { pathname } = url.parse(request.url);
   const completeUrl = `${request.protocol}://${request.hostname}${request.url}`;
   const store = createStore();
+  const isAuthenticated = isCurrentUserAuthenticated(currentUser);
+  store.dispatch(setCurrentUser(currentUser));
+  store.dispatch(setAuthenticationState(isAuthenticated));
   try {
     const matchedRoutes = matchPathName(pathname, routes);
     const promiseCalls = matchedRoutes.reduce((acc, matchedRoute) => {

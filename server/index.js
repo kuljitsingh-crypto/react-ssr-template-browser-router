@@ -8,8 +8,9 @@ const csp = require("./csp");
 const { getExtractor, render, dataLoader } = require("./ssrUtills");
 const { default: helmet } = require("helmet");
 const cors = require("cors");
+const { validateAndGetCurrentUserInfo } = require("./helperFunctions");
 const CSP = process.env.REACT_APP_CSP;
-const PORT = parseInt(process.env.PORT, 10);
+const PORT = parseInt(process.env.PORT || "3500", 10);
 const USING_SSL = process.env.REACT_APP_USING_SSL === "true";
 const TRUST_PROXY = process.env.SERVER_TRUST_PROXY || null;
 
@@ -136,13 +137,24 @@ app.get("*", async (req, res) => {
 
     // Server-side entrypoint provides us the functions for server-side data loading and rendering
     const nodeEntrypoint = nodeExtractor.requireEntrypoint();
+    const currentUser = validateAndGetCurrentUserInfo(req);
     const {
       default: renderApp,
       routes,
       createStore,
       matchPathName,
+      setCurrentUser,
+      setAuthenticationState,
     } = nodeEntrypoint;
-    const data = await dataLoader(req, routes, matchPathName, createStore);
+    const data = await dataLoader(
+      req,
+      routes,
+      matchPathName,
+      createStore,
+      currentUser,
+      setCurrentUser,
+      setAuthenticationState
+    );
     const html = await render(req, context, renderApp, webExtractor, data);
 
     if (context.url) {

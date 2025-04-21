@@ -1,14 +1,13 @@
 import React from "react";
 import loadable from "@loadable/component";
 import { redirectLoader, routesName } from "./routesHelperFunction";
-import { getPageDataLoadingAPI } from "../pages/pageDataLoadingAPI";
+import { getPageDataLoadingAPI } from "@src/pages/pageDataLoadingAPI";
+import AuthenticatedPage from "@src/components/helperComponents/AuthenticatedPage";
 
 const HomePage = loadable(() =>
   import(/*webpackChunkName:"HomePage"*/ "../pages/Homepage/Homepage")
 );
-const AboutPage = loadable(() =>
-  import(/*webpackChunkName:"AboutPage"*/ "../pages/About/About")
-);
+
 const ProductsPage = loadable(() =>
   import(
     /*webpackChunkName:"ProductsPage"*/ "../pages/ProductsPage/ProductsPage"
@@ -16,6 +15,10 @@ const ProductsPage = loadable(() =>
 );
 const ProductPage = loadable(() =>
   import(/*webpackChunkName:"ProductPage"*/ "../pages/ProductPage/ProductPage")
+);
+
+const LoginPage = loadable(() =>
+  import(/*webpackChunkName:"LoginPage"*/ "../pages/LoginPage/LoginPage")
 );
 const NoFoundPage = loadable(() =>
   import(/*webpackChunkName:"NoFoundPage"*/ "../pages/NoFoundPage/NoFoundPage")
@@ -25,7 +28,13 @@ const pageDataLoadingAPI = getPageDataLoadingAPI();
 
 const dataLoaderWrapper =
   (loader) =>
-  (dispatch, shouldWaitToResolve = false) =>
+  (
+    getState,
+    dispatch,
+    routeName,
+    isAuthCheckReq,
+    shouldWaitToResolve = false
+  ) =>
   async (arg) => {
     const { params, request } = arg;
     let search = "";
@@ -33,31 +42,36 @@ const dataLoaderWrapper =
       const url = new URL(request.url);
       search = url.search;
     }
+    const {
+      auth: { isAuthenticated },
+    } = getState();
 
-    if (
+    const shouldLoadData =
       loader &&
       typeof loader === "function" &&
-      typeof dispatch === "function"
-    ) {
+      typeof dispatch === "function" &&
+      typeof getState === "function" &&
+      (!isAuthCheckReq || isAuthenticated);
+
+    if (shouldLoadData) {
       // Add checker to your loader function (created using Redux Slice), so that it doesn't call loader again
       // when the data is already loaded from SSR.
       // Until you figure out way to remove this, Please add your checker.
       // Else again it call loader.
       // Check ProductsPageSlice.ts or ProductPageSlice.ts for more information.
       if (shouldWaitToResolve) {
-        await loader(dispatch, params, search);
+        await loader(getState, dispatch, params, search);
       } else {
-        loader(dispatch, params, search);
+        loader(getState, dispatch, params, search);
       }
     }
     return null;
   };
 
-const tempDataLoadingApi = {};
-for (const key in pageDataLoadingAPI) {
-  tempDataLoadingApi[key] = dataLoaderWrapper(pageDataLoadingAPI[key]);
-}
-Object.assign(pageDataLoadingAPI, tempDataLoadingApi);
+Object.keys(pageDataLoadingAPI).reduce((acc, key) => {
+  pageDataLoadingAPI[key] = dataLoaderWrapper(pageDataLoadingAPI[key]);
+  return acc;
+}, pageDataLoadingAPI);
 
 export const routes = [
   {
@@ -65,26 +79,27 @@ export const routes = [
     element: <HomePage />,
     name: routesName.Homepage,
     exact: true,
-  },
-  {
-    path: "/about",
-    element: <AboutPage />,
-    name: routesName.Aboutpage,
-    exact: true,
+    isAuth: true,
   },
   {
     path: "/products",
     element: <ProductsPage />,
     name: routesName.ProductsPage,
     exact: true,
-    loader: pageDataLoadingAPI.ProductsPage,
+    isAuth: true,
   },
   {
     path: "/products/:id",
     element: <ProductPage />,
     name: routesName.ProductPage,
     exact: true,
-    loader: pageDataLoadingAPI.ProductPage,
+    isAuth: true,
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+    name: routesName.LoginPage,
+    exact: true,
   },
   // If you want to redirect to some other during routes initialization. Use redirectLoader,like below, instead of NamedRedirectComponent.
   {
@@ -111,25 +126,46 @@ export const routes = [
  * */
 export const createRoutesForBrowserAndStaticRouter = (
   dispatch,
+  getState,
   routes,
   shouldWaitToResolve = false
 ) => {
-  const modifedRoutes = routes.map((route) => {
-    if (
-      route &&
-      route.loader &&
-      typeof route.loader === "function" &&
-      route.element !== null
-    ) {
-      return {
-        ...route,
-        loader:
-          typeof dispatch === "function"
-            ? route.loader(dispatch, shouldWaitToResolve)
-            : undefined,
-      };
+  const modified = routes.map((route) => {
+    const { isAuth, ...restRoute } = route;
+    if (isAuth) {
+      restRoute.element = React.createElement(AuthenticatedPage, {
+        children: restRoute.element,
+        name: restRoute.name,
+      });
+    } else if (restRoute.element !== null) {
+      restRoute.element = React.cloneElement(restRoute.element, {
+        name: restRoute.name,
+      });
     }
-    return { ...route };
+    if (restRoute.element === null) {
+      return { ...restRoute, key: restRoute.name };
+    }
+    const loader = pageDataLoadingAPI[restRoute.name] || restRoute.loader;
+    const loaderMaybe =
+      loader && typeof loader === "function"
+        ? {
+            loader:
+              typeof dispatch === "function"
+                ? loader(
+                    getState,
+                    dispatch,
+                    restRoute.name,
+                    isAuth,
+                    shouldWaitToResolve
+                  )
+                : undefined,
+          }
+        : {};
+    return {
+      ...restRoute,
+      ...loaderMaybe,
+      key: restRoute.name,
+    };
   });
-  return modifedRoutes;
+  return modified;
 };

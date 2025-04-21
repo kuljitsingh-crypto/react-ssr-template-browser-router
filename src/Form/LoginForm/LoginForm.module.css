@@ -1,0 +1,18 @@
+.formRoot {
+  padding: var(--pixel16);
+  padding-top: var(--pixel0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: var(--pixel32);
+}
+.submitBtn {
+  width: 100%;
+}
+.input {
+  padding-top: var(--pixel8);
+}
+.actionBtnDiv {
+  margin-top: var(--pixel32);
+  width: 100%;
+}

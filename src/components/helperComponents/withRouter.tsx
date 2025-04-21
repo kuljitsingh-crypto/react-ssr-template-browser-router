@@ -5,8 +5,8 @@ import {
   Params,
   PathMatch,
 } from "react-router-dom";
-import { routes } from "../../utill/routes";
-import { useCustomRouterDetails } from "../../hooks";
+import { routes } from "@src/util/routes";
+import { useCustomRouter } from "@src/hooks";
 
 export type RouterTypes = {
   matches: PathMatch[];
@@ -24,7 +24,7 @@ export function withRouter<T extends WithRouterProps = WithRouterProps>(
   const displayName =
     WrappedComponent.displayName || WrappedComponent.name || "Component";
   const WithRouterProps = (props: Omit<T, keyof WithRouterProps>) => {
-    const router = useCustomRouterDetails(routes);
+    const router = useCustomRouter(routes);
 
     return <WrappedComponent {...(props as T)} router={router} />;
   };

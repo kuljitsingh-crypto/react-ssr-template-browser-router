@@ -1,14 +1,17 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { reducers } from "./reducers";
 import axios from "axios";
+import axiosWithCredentials from "axios";
+import { defaultConfig } from "./custom-config";
 
-export const createStore = (preloadedState = {}) =>
+axiosWithCredentials.defaults.withCredentials = true;
+export const createStore = (preloadedState = {}, config = defaultConfig) =>
   configureStore({
     reducer: reducers,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         thunk: {
-          extraArgument: axios,
+          extraArgument: { axios, config, axiosWithCredentials },
         },
         serializableCheck: false,
       }),

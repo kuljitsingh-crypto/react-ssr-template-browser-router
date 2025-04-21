@@ -15,10 +15,10 @@ import { routes } from "./routes";
 export const routesName = {
   Root: "Root",
   Homepage: "Homepage",
-  Aboutpage: "Aboutpage",
   ProductsPage: "ProductsPage",
   ProductPage: "ProductPage",
   NotFoundPage: "NotFoundPage",
+  LoginPage: "LoginPage",
 } as const;
 
 type PathParamsType = {
@@ -52,6 +52,7 @@ export type RouteType = {
   handle?: RouteObject["handle"];
   shouldRevalidate?: ShouldRevalidateFunction;
   lazy?: LazyRouteFunction<RouteObject>;
+  isAuth?: boolean;
 };
 
 const findRouteByName = (nameToFind: string, routes: RoutesType) =>

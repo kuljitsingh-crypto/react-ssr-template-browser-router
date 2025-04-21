@@ -1,20 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { FETCH_STATUS } from "../../custom-config";
-import { RootStateType } from "../../store";
-import { customCreateAsyncThunk } from "../../storeHelperFunction";
+import { FETCH_STATUS, FetchStatusVal } from "@src/custom-config";
+import { RootStateType } from "@src/store";
+import { customCreateAsyncThunk } from "@src/storeHelperFunction";
 import { Params } from "react-router-dom";
-import { UseDispatchType } from "../../hooks";
+import { UseDispatchType, UseGetStateType } from "@src/hooks";
 import { ProductErrorType, ProductType } from "../pageGlobalType";
 
 type ProductStateType = {
-  status: (typeof FETCH_STATUS)[keyof typeof FETCH_STATUS];
+  status: FetchStatusVal;
   products: ProductType[];
   error?: ProductErrorType | null;
 };
 
 const PRODUCTS_FETCH_NAME = "products/fetchproducts";
 
-const initalState: ProductStateType = {
+const initialState: ProductStateType = {
   status: FETCH_STATUS.idle,
   products: [],
   error: undefined,
@@ -22,7 +22,7 @@ const initalState: ProductStateType = {
 
 export const fetchProducts = customCreateAsyncThunk<ProductType[]>(
   PRODUCTS_FETCH_NAME,
-  async (_, { extra: axios }) => {
+  async (_, { extra: { axios } }) => {
     const resp = await axios.get("https://fakestoreapi.com/products");
     return resp.data;
   },
@@ -39,7 +39,7 @@ export const fetchProducts = customCreateAsyncThunk<ProductType[]>(
 
 export const productsPageSlice = createSlice({
   name: "products",
-  initialState: initalState,
+  initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -73,6 +73,7 @@ export const selectProductsError = (state: RootStateType) =>
 export default productsPageSlice.reducer;
 
 export const loadData = (
+  getState: UseGetStateType,
   dispatch: UseDispatchType,
   params: Params,
   search?: string

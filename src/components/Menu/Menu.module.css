@@ -1,0 +1,55 @@
+.menuLabelBtn {
+  height: 100%;
+  width: 100%;
+  border: 0;
+  cursor: pointer;
+  background-color: transparent;
+  outline: unset;
+  color: var(--themeTextColor);
+
+  &:hover {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+.btnClicked {
+  &:focus {
+    outline: none;
+  }
+}
+.menuContentUl {
+  list-style: none;
+  margin: var(--pixel0);
+  padding-left: var(--pixel0);
+  padding: var(--pixel16);
+  min-width: 144px;
+  /* width: */
+}
+
+.menuContent {
+  position: absolute;
+  background-color: var(--themeBgColor);
+  color: var(--themeTextColor);
+  pointer-events: none;
+  transform: translateY(-15px);
+  transition: transform 250ms ease-in-out;
+  visibility: hidden;
+  border-radius: var(--borderRadius8);
+  box-shadow: var(--boxShadowPopupLight);
+}
+.menuContent * {
+  pointer-events: none !important;
+}
+.menuContentOpen {
+  visibility: visible;
+  transform: translateY(2px);
+  pointer-events: unset;
+}
+.menuContentOpen * {
+  pointer-events: unset !important;
+}
+
+.menu {
+  position: relative;
+}

@@ -1,7 +1,7 @@
 import React from "react";
-import facebookImage from "../../assets/facebook.png";
-import twitterImage from "../../assets/twitter.png";
-import { config } from "../../custom-config";
+import facebookImage from "@src/assets/facebook.png";
+import twitterImage from "@src/assets/twitter.png";
+import { ConfigurationType } from "@src/custom-config";
 import { useIntl } from "react-intl";
 import { Helmet } from "react-helmet-async";
 
@@ -11,7 +11,7 @@ const FACEBOOK_IMAGE_HEIGHT = 630;
 // const TWITTER_IMAGE_HEIGHT = 314;
 const TWITTER_CARD_CONTENT = "summary_large_image";
 
-const ensureRoolUrl = (url: string) => url.replace(/\/$/, "");
+const ensureRootUrl = (url: string) => url.replace(/\/$/, "");
 
 export type ReactHelmetPropsTypes = {
   keywords?: string[];
@@ -19,7 +19,7 @@ export type ReactHelmetPropsTypes = {
   contentType?: string;
   author: string;
   customFacebookImage?: { url: string; width: number; height: number };
-  customTwitterImage?: { url: string; width: number; height: number };
+  customTwitterImage?: { url: string };
   url: string;
   metaTitle: string;
   siteTitle?: string;
@@ -28,6 +28,7 @@ export type ReactHelmetPropsTypes = {
   twitterHandle: string;
   referrer?: string;
   schema?: Record<string, unknown> | Record<string, unknown>[];
+  config: ConfigurationType;
 };
 type FacebookMetaTagDetails = {
   description: string;
@@ -42,6 +43,7 @@ type FacebookMetaTagDetails = {
   published?: string;
   updated?: string;
   tags?: string[];
+  rootPath: string;
 };
 
 type TwitterMetaTagDetails = {
@@ -51,7 +53,8 @@ type TwitterMetaTagDetails = {
   canonicalRootUrl: string;
   url: string;
   twitterHandle?: string;
-  customTwitterImage?: { url: string; width: number; height: number };
+  customTwitterImage?: { url: string };
+  rootPath: string;
 };
 
 const createMetaTagForFaceBook = (metaDetails: FacebookMetaTagDetails) => {
@@ -68,6 +71,7 @@ const createMetaTagForFaceBook = (metaDetails: FacebookMetaTagDetails) => {
     published,
     updated,
     tags,
+    rootPath,
   } = metaDetails;
 
   if (
@@ -97,9 +101,9 @@ const createMetaTagForFaceBook = (metaDetails: FacebookMetaTagDetails) => {
     openGraphMeta["og:image:width"] = customFacebookImage.width;
     openGraphMeta["og:image:height"] = customFacebookImage.height;
   } else {
-    const facebookImageUrl = `${ensureRoolUrl(
+    const facebookImageUrl = `${ensureRootUrl(
       canonicalRootUrl
-    )}${facebookImage}`;
+    )}${rootPath}${facebookImage}`;
     openGraphMeta["og:image"] = facebookImageUrl;
     openGraphMeta["og:image:width"] = FACEBOOK_IMAGE_WIDTH;
     openGraphMeta["og:image:height"] = FACEBOOK_IMAGE_HEIGHT;
@@ -135,6 +139,7 @@ const createMetaTagForTwitter = (metaDetails: TwitterMetaTagDetails) => {
     customTwitterImage,
     canonicalRootUrl,
     twitterHandle,
+    rootPath,
   } = metaDetails;
   if (!siteTwitterHandle || !url || !title || !description || !canonicalRootUrl)
     return {};
@@ -145,15 +150,12 @@ const createMetaTagForTwitter = (metaDetails: TwitterMetaTagDetails) => {
     "twitter:title": title,
     "twitter:description": description,
   };
-  if (
-    customTwitterImage &&
-    customTwitterImage.url &&
-    customTwitterImage.width &&
-    customTwitterImage.height
-  ) {
+  if (customTwitterImage && customTwitterImage.url) {
     twitterMeta["twitter:image"] = customTwitterImage.url;
   } else {
-    const twitterImageUrl = `${ensureRoolUrl(canonicalRootUrl)}${twitterImage}`;
+    const twitterImageUrl = `${ensureRootUrl(
+      canonicalRootUrl
+    )}${rootPath}${twitterImage}`;
     twitterMeta["twitter:image"] = twitterImageUrl;
   }
   if (twitterHandle) {
@@ -163,7 +165,7 @@ const createMetaTagForTwitter = (metaDetails: TwitterMetaTagDetails) => {
   }
 
   if (canonicalRootUrl) {
-    twitterMeta["twitter:domain"] = canonicalRootUrl;
+    twitterMeta["twitter:domain"] = `${canonicalRootUrl}${rootPath}`;
   }
   return twitterMeta;
 };
@@ -193,12 +195,16 @@ function ReactHelmet(props: ReactHelmetPropsTypes) {
     twitterHandle,
     referrer,
     schema,
+    config,
   } = props;
   const intl = useIntl();
   const locale = intl?.locale;
   const canonicalRootUrl = config.canonicalRootUrl;
-  const siteTwitterHandle = config.siteTwitterHandle;
-  const contentType = typeOfContent || config.contentType;
+  const rootPath = config.rootPath || "";
+  const siteTwitterHandle = config.seo.siteTwitterHandle;
+  const images = config.images;
+  const theme = config.theme;
+  const contentType = typeOfContent || config.seo.contentType;
   const facebookMetaTags = createMetaTagForFaceBook({
     title,
     description,
@@ -211,6 +217,7 @@ function ReactHelmet(props: ReactHelmetPropsTypes) {
     tags: keywords,
     published,
     updated,
+    rootPath,
   });
   const twitterMetaTags = createMetaTagForTwitter({
     title,
@@ -220,6 +227,7 @@ function ReactHelmet(props: ReactHelmetPropsTypes) {
     siteTwitterHandle,
     customTwitterImage,
     url,
+    rootPath,
   });
 
   const keywordsMaybe =
@@ -251,13 +259,13 @@ function ReactHelmet(props: ReactHelmetPropsTypes) {
   // Schema attribute can be either single schema object or an array of objects
   // This makes it possible to include several different items from the same page.
   // E.g. Product, Place, Video const schemaFromProps = Array.isArray(schema) ? schema : [schema];
-  const facebookPage = config.siteFacebookPage;
-  const twitterPage = twitterPageURL(config.siteTwitterHandle);
-  const instagramPage = config.siteInstagramPage;
+  const facebookPage = config.seo.siteFacebookPage;
+  const twitterPage = twitterPageURL(config.seo.siteTwitterHandle);
+  const instagramPage = config.seo.siteInstagramPage;
   const sameOrganizationAs = [facebookPage, twitterPage, instagramPage].filter(
     (v) => v != null
   );
-  const schemaImage = `${canonicalRootUrl}${facebookImage}`;
+  const schemaImage = `${canonicalRootUrl}${rootPath}${facebookImage}`;
 
   const schemaFromProps = schema
     ? Array.isArray(schema)
@@ -281,7 +289,7 @@ function ReactHelmet(props: ReactHelmetPropsTypes) {
       url: canonicalRootUrl,
       name: siteTitle,
       sameAs: sameOrganizationAs,
-      logo: `${canonicalRootUrl}/static/icons/logo192.png`,
+      logo: images.logo192,
       address: config.address,
     },
     {
@@ -299,8 +307,16 @@ function ReactHelmet(props: ReactHelmetPropsTypes) {
   return (
     <Helmet htmlAttributes={{ lang: locale }}>
       <title>{title}</title>
+      <meta name='theme-color' content={theme.color} />
       {metaToHead}
       <link rel='canonical' href={canonicalRootUrl} />
+      <link rel='apple-touch-icon' href={images.logo192} />
+      <link rel='apple-touch-icon' sizes='180x180' href={images.logo180} />
+      <link rel='icon' type='image/png' sizes='32x32' href={images.logo32} />
+      <link rel='icon' type='image/png' sizes='16x16' href={images.logo16} />
+      <link rel='mask-icon' href={images.logo192} color={theme.color} />
+      <link rel='shortcut icon' href={images.favicon} />
+      <link rel='icon' href={images.favicon} />
       <meta httpEquiv='Content-Type' content='text/html; charset=UTF-8' />
       <meta httpEquiv='Content-Language' content={locale} />
       <script id='page-schema' type='application/ld+json'>

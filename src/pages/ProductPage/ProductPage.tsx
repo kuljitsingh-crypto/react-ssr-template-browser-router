@@ -1,20 +1,21 @@
 import React from "react";
-import { UseDispatchType, UseSelectorType } from "../../hooks";
+import { UseDispatchType, UseSelectorType } from "@src/hooks";
 import {
   fetchProduct,
   selectProduct,
   selectProductError,
   selectProductStatus,
 } from "./ProductPageSlice";
-import { stateAndDispatchWrapper } from "../../components/helperComponents/stateAndDispatchWrapper";
-import { FETCH_STATUS } from "../../custom-config";
+import { customConnect } from "@src/components/helperComponents/customConnect";
+import { FETCH_STATUS, FetchStatusVal } from "@src/custom-config";
 import css from "./ProductPage.module.css";
 import { ProductErrorType, ProductType } from "../pageGlobalType";
 import { IntlShape } from "react-intl";
-import Page from "../../components/helperComponents/Page";
+import Page from "@src/components/Page/Page";
+import RightChild from "@src/components/RIghtChild/RightChild";
 
 type ProductPagePropsType = {
-  status: (typeof FETCH_STATUS)[keyof typeof FETCH_STATUS];
+  status: FetchStatusVal;
   product: ProductType | null;
   onFetchProduct: Function;
   error?: ProductErrorType | null;
@@ -25,10 +26,13 @@ function ProductPage(props: ProductPagePropsType) {
   const { status, product, error, intl } = props;
   const description = intl.formatMessage({ id: "Homepage.description" });
   const title = intl.formatMessage({ id: "ProductPage.title" });
-
+  console.log(props);
   return (
-    <Page description={description} metaTitle={title}>
-      <div className={css.root}>
+    <Page
+      description={description}
+      metaTitle={title}
+      contentRootClassName={css.root}>
+      <RightChild>
         {status === FETCH_STATUS.loading ? (
           <span>Loading product...</span>
         ) : null}
@@ -41,7 +45,7 @@ function ProductPage(props: ProductPagePropsType) {
         {status === FETCH_STATUS.failed && !!error ? (
           <p className={css.error}>Failed to get product. Please try again.</p>
         ) : null}
-      </div>
+      </RightChild>
     </Page>
   );
 }
@@ -57,8 +61,4 @@ const mapToDispatchProps = (dispatch: UseDispatchType) => ({
   onFetchProduct: (id: string | undefined) => dispatch(fetchProduct(id)),
 });
 
-export default stateAndDispatchWrapper(
-  ProductPage,
-  mapToStateProps,
-  mapToDispatchProps
-);
+export default customConnect(mapToStateProps, mapToDispatchProps)(ProductPage);

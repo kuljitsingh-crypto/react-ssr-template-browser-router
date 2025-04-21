@@ -3,10 +3,10 @@ import { Navigate, RelativeRoutingType } from "react-router-dom";
 import {
   RoutesNameType,
   pathByRouteName,
-} from "../../utill/routesHelperFunction";
-import { routes } from "../../utill/routes";
+} from "@src/util/routesHelperFunction";
+import { routes } from "@src/util/routes";
 import { bool, object, oneOf, string } from "prop-types";
-import { isBrowser } from "../../utill/browserHelperFunction";
+import { isBrowser } from "@src/util/browserHelperFunction";
 
 type NamedRedirectProps = {
   replace?: boolean;

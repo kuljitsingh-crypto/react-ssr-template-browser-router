@@ -1,15 +1,382 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #282c34;
-  color: #fff;
+:root {
+  /* ======================  ========= */
+  --colorPrimary: #4279ee;
+  --colorPrimaryDark: #185bea;
+  --colorPrimaryLight: #5887ec;
+  --colorBgLightTheme: #f3f6f9;
+  --colorPrimaryDarkTransparent: #185bea44;
+  --colorLightTheme: #2f3349;
+  --colorBgDarkTheme: #26293b;
+  --colorDarkTheme: #fff;
+  --colorMatterNegative: #e7e7e7;
+  --colorMatterAnti: #b2b2b2;
+  --colorLight: #fff;
+  --colorDark: #000;
+  --colorSuccess: #2ecc71;
+  --colorSuccessDark: #239954;
+  --colorSuccessLight: #f0fff6;
+  --colorFail: #ff0000;
+  --colorFailLight: #fda9a9;
+  --colorWhiteGray: #e3ecf8;
+  --colorLightThemeComp: #2f3349;
+  --colorBgLightThemeComp: #fff;
+  --colorDarkThemeComp: #fff;
+  --colorBgDarkThemeComp: #2f3349;
+  --colorHoverLightTheme: #f3f2f3;
+  --colorHoverDarkTheme: #3a3d53f1;
+
+  /* ====================== Layout ========= */
+  --borderWidthThin: 1px;
+  --pixel0: 0px;
+  --pixel2: 2px;
+  --pixel4: 4px;
+  --pixel6: 6px;
+  --pixel8: 8px;
+  --pixel9: 9px;
+  --pixel10: 10px;
+  --pixel12: 12px;
+  --pixel16: 16px;
+  --pixel20: 20px;
+  --pixel24: 24px;
+  --pixel48: 48px;
+  --pixel32: 32px;
+  --pixel64: 64px;
+  --pixel96: 96px;
+
+  /* ================ Font ================ */
+  --fontSize24: 24px;
+  --fontSize22: 22px;
+  --fontSize20: 20px;
+  --fontSize18: 18px;
+  --fontSize16: 16px;
+  --fontSize14: 14px;
+  --fontSize12: 12px;
+  --fontSize10: 10px;
+  --fontSize8: 8px;
+  --fontSize6: 6px;
+  --fontSize4: 4px;
+  --fontSize3: 3px;
+  --fontSize2: 2px;
+  --fontSize1: 1px;
+
+  --lineHeight24: 24px;
+  --lineHeight20: 20px;
+  --lineHeight18: 18px;
+  --lineHeight16: 16px;
+  --lineHeight14: 14px;
+  --lineHeight12: 12px;
+  --lineHeight10: 10px;
+
+  --fontFamily: "poppins", Helvetica, Arial, sans-serif;
+  --cambriaFont: "Cambria";
+  --marketplaceFontInter: "poppins";
+
+  --fontWeightThin: 100;
+  --fontWeightRegular: 400;
+  --fontWeightMedium: 500;
+  --fontWeightSemiBold: 600;
+  --fontWeightBold: 700;
+  --fontWeightBlack: 900;
+  --fontWightExtraLight: 200;
+  --fontWeightLight: 300;
+  --fontWeightExtraBold: 800;
+  --fontWeightHighlightEmail: var(--fontWeightBold);
+
+  /* ================ Border Radius ================ */
+  --borderRadius: 4px;
+  --borderRadiusMobileSearch: 3px;
+  --borderRadius8: 8px;
+  --borderRadius15: 15px;
+  --borderRadiusCircle: 50%;
+
+  /* ================ Text area ================ */
+  --textAreaMinHeight: 96px;
+
+  /* ================== shadow ============== */
+  --boxShadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  --boxShadowTop: 0 -2px 4px 0 rgba(0, 0, 0, 0.1);
+  --boxShadowLight: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  --boxShadowPopup: 0 8px 16px 0 rgba(0, 0, 0, 0.3);
+  --boxShadowPopupLight: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
+  --boxShadowBreakdown: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
+  --boxShadowButton: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+  --boxShadowListingCard: 0 0 50px 0 rgba(0, 0, 0, 0.1);
+  --boxShadowNotFoundPageSearch: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  --boxShadowSectionLocationHover: 0 10px 30px 0 rgba(0, 0, 0, 0.1);
+  --boxShadowBottomForm: 0 -2px 4px 0 rgba(0, 0, 0, 0.05);
+  --boxShadowFilterButton: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
+  --boxShadowSm: 0 0.125rem 0.5rem 0 rgba(47, 43, 61, 0.12);
+
+  /* ====================== Breakpoints ========= */
+  --breakpointMobile: 576px;
+  --breakpointTablet: 768px;
+  --breakpointDesktop: 992px;
+  --breakpointLargeDesktop: 1200px;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+.poppins-thin {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightThin);
+  font-style: normal;
+}
+
+.poppins-extralight {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWightExtraLight);
+  font-style: normal;
+}
+
+.poppins-light {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightLight);
+  font-style: normal;
+}
+
+.poppins-regular {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightRegular);
+  font-style: normal;
+}
+
+.poppins-medium {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightMedium);
+  font-style: normal;
+}
+
+.poppins-semibold {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightSemiBold);
+  font-style: normal;
+}
+
+.poppins-bold {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightBold);
+  font-style: normal;
+}
+
+.poppins-extrabold {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightExtraBold);
+  font-style: normal;
+}
+
+.poppins-black {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightBlack);
+  font-style: normal;
+}
+
+.poppins-thin-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightThin);
+  font-style: italic;
+}
+
+.poppins-extralight-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWightExtraLight);
+  font-style: italic;
+}
+
+.poppins-light-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightLight);
+  font-style: italic;
+}
+
+.poppins-regular-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightRegular);
+  font-style: italic;
+}
+
+.poppins-medium-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightMedium);
+  font-style: italic;
+}
+
+.poppins-semibold-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightSemiBold);
+  font-style: italic;
+}
+
+.poppins-bold-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightBold);
+  font-style: italic;
+}
+
+.poppins-extrabold-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightExtraBold);
+  font-style: italic;
+}
+
+.poppins-black-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightBlack);
+  font-style: italic;
+}
+.poppins-thin {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightThin);
+  font-style: normal;
+}
+
+.poppins-extralight {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWightExtraLight);
+  font-style: normal;
+}
+
+.poppins-light {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightLight);
+  font-style: normal;
+}
+
+.poppins-regular {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightRegular);
+  font-style: normal;
+}
+
+.poppins-medium {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightMedium);
+  font-style: normal;
+}
+
+.poppins-semibold {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightSemiBold);
+  font-style: normal;
+}
+
+.poppins-bold {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightBold);
+  font-style: normal;
+}
+
+.poppins-extrabold {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightExtraBold);
+  font-style: normal;
+}
+
+.poppins-black {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightBlack);
+  font-style: normal;
+}
+
+.poppins-thin-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightThin);
+  font-style: italic;
+}
+
+.poppins-extralight-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWightExtraLight);
+  font-style: italic;
+}
+
+.poppins-light-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightLight);
+  font-style: italic;
+}
+
+.poppins-regular-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightRegular);
+  font-style: italic;
+}
+
+.poppins-medium-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightMedium);
+  font-style: italic;
+}
+
+.poppins-semibold-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightSemiBold);
+  font-style: italic;
+}
+
+.poppins-bold-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightBold);
+  font-style: italic;
+}
+
+.poppins-extrabold-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightExtraBold);
+  font-style: italic;
+}
+
+.poppins-black-italic {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightBlack);
+  font-style: italic;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body * {
+  font-family: var(--fontFamily);
+}
+.normalFont {
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--fontWeightRegular);
+  font-style: normal;
+  font-size: var(--fontSize16);
+  line-height: var(--lineHeight24);
+}
+.ripple {
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: ripple-anim var(--rippleAnimDuration) linear;
+}
+
+@keyframes ripple-anim {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+button {
+  cursor: pointer;
+  outline: none;
+  border: var(--pixel0);
+  background-color: transparent;
+}
+#root {
+  width: 100%;
+  height: 100%;
+}
+.errorText {
+  color: var(--colorFail);
+}
+
+* {
+  box-sizing: border-box;
+}
+.marginLeftAuto {
+  margin-left: auto;
 }

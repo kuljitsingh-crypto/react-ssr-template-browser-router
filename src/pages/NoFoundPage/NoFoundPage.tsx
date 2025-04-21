@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { NamedLink } from "../../components";
-import { routesName } from "../../utill/routesHelperFunction";
+import { NamedLink } from "@src/components";
+import { routesName } from "@src/util/routesHelperFunction";
 import css from "./NoFoundPage.module.css";
 
 export class NoFoundPage extends Component {

@@ -1,0 +1,107 @@
+.button {
+  min-height: 48px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--borderRadius);
+  border: var(--borderWidthThin) solid var(--colorPrimaryLight);
+  padding: var(--pixel10) var(--pixel32);
+  position: relative;
+  overflow: hidden;
+  color: var(--colorPrimary);
+}
+.button:focus,
+.button:hover {
+  border-color: var(--colorPrimaryDark);
+}
+.button * {
+  pointer-events: none;
+}
+.btnText {
+  composes: normalFont from global;
+  color: inherit;
+  /* color: var(--colorPrimary); */
+}
+
+.buttonLoadingIcon {
+  color: inherit;
+  stroke: inherit;
+}
+
+.disabledBtn {
+  cursor: not-allowed;
+  border: var(--colorMatterNegative);
+  background-color: var(--colorMatterNegative);
+  opacity: 0.5;
+}
+
+.disabledBtn:hover,
+.disabledBtn:focus {
+  border: var(--colorMatterNegative);
+  background-color: var(--colorMatterNegative);
+}
+
+.disabledBtn .buttonLoadingIcon {
+  color: var(--colorMatterNegative);
+  stroke: var(--colorMatterNegative);
+}
+
+.disabledBtn .btnText {
+  color: var(--colorLight);
+}
+
+.primaryBtn {
+  background-color: var(--colorPrimaryLight);
+  color: var(--colorLight);
+}
+
+.primaryBtn:hover,
+.primaryBtn:focus {
+  background-color: var(--colorPrimaryDark);
+}
+
+.disabledBtn.primaryBtn {
+  border: var(--colorMatterNegative);
+  background-color: var(--colorMatterNegative);
+}
+.primaryBtn .buttonLoadingIcon {
+  color: var(--colorLight);
+  stroke: var(--colorLight);
+}
+
+.primaryBtnText {
+}
+
+.secondaryBtn {
+}
+
+.secondaryBtn:hover,
+.secondaryBtn:focus {
+  border-color: var(--colorPrimaryDark);
+  color: var(--colorPrimaryDark);
+}
+
+.secondaryBtnText {
+}
+.secondaryBtn:hover .secondaryBtnText,
+.secondaryBtn:focus .secondaryBtnText {
+  /* color: var(--colorLight); */
+}
+
+.inlineTextBtn {
+  border-color: transparent;
+}
+.inlineTextBtn:hover,
+.inlineTextBtn:focus {
+  border-color: transparent;
+}
+
+.inlineTextBtnText {
+}
+
+.btnRipple {
+  position: absolute;
+  transform: scale(0);
+}

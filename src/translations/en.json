@@ -1,10 +1,24 @@
 {
-"greeting":"Hello, {name}",
-"webAuthor":"{name}",
-"Homepage.title":"Homepage",
-"Homepage.description":"React ssr template",
-"About.title":"Aboutpage",
-"ProductsPage.title":"Productspage",
-"ProductPage.title":"Productpage"
-
+  "greeting": "Hello, {name}",
+  "webAuthor": "{name}",
+  "Homepage.title": "Homepage",
+  "general.description": "Express Admin Dashboard",
+  "Homepage.description": "React ssr template",
+  "About.title": "Aboutpage",
+  "ProductsPage.title": "Productspage",
+  "ProductPage.title": "Productpage",
+  "LoginPage.title": "Admin Login",
+  "LoginPage.emailLabel": "Email*",
+  "LoginPage.passwordLabel": "Password*",
+  "LoginPage.emailPlaceholder": "Admin email",
+  "LoginPage.passwordPlaceholder": "Admin password",
+  "LoginPage.submitButton": "Login",
+  "LoginPage.forgotPasswordLink": "Forgot Password?",
+  "LoginPage.noAccountLink": "Don't have an account? Sign up here.",
+  "LoginPage.invalidEmail": "Please enter  a valid email address.",
+  "LoginPage.invalidPassword": "Please enter  a valid password.",
+  "LoginPage.invalidCredential": "Invalid credential provided. Please check and try again.",
+  "LoginPage.loginFailed": "Failed to logged in user. Please check your email or password and try again.",
+  "LoginPage.helpText": "Your admin buddy",
+  "Logout": "Logout"
 }

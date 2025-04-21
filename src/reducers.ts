@@ -1,9 +1,7 @@
-import homePageReducer from "./pages/Homepage/homePageSlice";
-import productsReducer from "./pages/ProductsPage/ProductsPageSlice";
-import productReducer from "./pages/ProductPage/ProductPageSlice";
+import { globalReducer } from "./globalReducers";
+import { pageReducer } from "./pages/pageReducers";
 
 export const reducers = {
-  home: homePageReducer,
-  products: productsReducer,
-  product: productReducer,
+  ...globalReducer,
+  ...pageReducer,
 };

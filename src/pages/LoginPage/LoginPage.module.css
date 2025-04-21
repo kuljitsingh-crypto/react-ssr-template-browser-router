@@ -1,0 +1,58 @@
+.pageRoot {
+  width: 100%;
+  color: var(--themeTextColor) !important;
+  background-color: var(--colorWhiteGray) !important;
+  height: 100%;
+}
+.loginBody {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.bodyContainer {
+  background-color: var(--colorLight);
+  width: 90%;
+  max-width: 400px;
+  border-radius: var(--borderRadius15);
+  box-shadow: var(--boxShadowLight);
+  padding: var(--pixel16);
+  padding-right: var(--pixel16);
+}
+
+.helperTextDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--colorMatterAnti);
+  position: relative;
+  margin: var(--pixel0);
+  margin-top: var(--pixel16);
+}
+.divider {
+  position: absolute;
+  width: calc(100% - 32px);
+  height: 1px;
+  background-color: var(--colorMatterAnti);
+  top: 50%;
+  z-index: 0;
+}
+
+.helperText {
+  position: relative;
+  z-index: 1;
+  padding-left: var(--pixel8);
+  padding-right: var(--pixel8);
+  background-color: var(--colorLight);
+}
+
+@media screen and (max-width: 768px) {
+  .rightLoginBody {
+    flex-basis: 100%;
+    width: 100%;
+    box-shadow: var(--boxShadowPopup);
+  }
+}

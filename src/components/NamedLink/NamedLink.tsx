@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { routes } from "../../utill/routes";
+import { routes } from "@src/util/routes";
 import {
   RoutesNameType,
   pathByRouteName,
-} from "../../utill/routesHelperFunction";
+} from "@src/util/routesHelperFunction";
 import { array, bool, func, object, shape, string } from "prop-types";
 import { RouterTypes, withRouter } from "../helperComponents/withRouter";
 import classNames from "classnames";

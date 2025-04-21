@@ -1,4 +1,63 @@
-const ensureRoolUrl = (url: string) => url.replace(/\/$/, "");
+const logo16 = "/static/icons/logo16.png";
+const logo32 = "/static/icons/logo32.png";
+const logo150 = "/static/icons/logo150.png";
+const logo180 = "/static/icons/logo180.png";
+const logo192 = "/static/icons/logo192.png";
+const logo512 = "/static/icons/logo512.png";
+const favicon = "/static/icons/favicon.ico";
+const brandIcon = "/static/svg/icon.svg";
+
+export const appTheme = {
+  dark: "dark",
+  light: "light",
+  system: "system",
+} as const;
+
+export type Theme = (typeof appTheme)[keyof typeof appTheme];
+export type ConfigurationType = {
+  canonicalRootUrl: string;
+  address: {
+    addressCountry: string;
+    addressRegion: string;
+    postalCode: string;
+    streetAddress: string;
+  };
+  rootPath?: string;
+  apiRootPath?: string;
+  seo: {
+    siteFacebookPage: string;
+    siteTwitterHandle: string;
+    siteInstagramPage: string;
+    contentType: string;
+    twitterHandle: string;
+    description: string;
+    author: string;
+    metaTitle: string;
+    siteTitle?: string;
+    published?: string;
+    updated?: string;
+    referrer?: string;
+    facebookImage?: { url: string; width: number; height: number };
+    twitterImage?: { url: string };
+    schema?: Record<string, unknown> | Record<string, unknown>[];
+    keywords?: string[];
+  };
+  images: {
+    logo16: string;
+    logo32: string;
+    logo150: string;
+    logo180: string;
+    logo192: string;
+    logo512: string;
+    favicon: string;
+  };
+  branding: { icon: string };
+  theme: {
+    name: Theme;
+    color: string;
+  };
+};
+
 const rootUrl =
   process.env.REACT_APP_CANONICAL_ROOT_URL || "http://localhost:3000";
 // Address information is used in SEO schema for Organization (http://schema.org/PostalAddress)
@@ -6,6 +65,9 @@ const addressCountry = "FI";
 const addressRegion = "Helsinki";
 const postalCode = "00100";
 const streetAddress = "Bulevardi 14";
+
+const ensureRootUrl = (url: string) => url.replace(/\/$/, "");
+
 export const FETCH_STATUS = {
   idle: "idle",
   loading: "loading",
@@ -13,12 +75,89 @@ export const FETCH_STATUS = {
   failed: "failed",
 } as const;
 
-export const config = {
-  siteFacebookPage: "http://facebook.com",
-  siteTwitterHandle: "http://x.com",
-  siteInstagramPage: "http://instagram.com",
-  canonicalRootUrl: ensureRoolUrl(rootUrl),
+export type FetchStatusVal = (typeof FETCH_STATUS)[keyof typeof FETCH_STATUS];
+
+export const defaultConfig: ConfigurationType = {
+  canonicalRootUrl: ensureRootUrl(rootUrl),
   address: { addressCountry, addressRegion, postalCode, streetAddress },
-  contentType: "website",
-  twitterHandle: "@me",
-} as const;
+  seo: {
+    siteFacebookPage: "https://facebook.com",
+    siteTwitterHandle: "https://x.com",
+    siteInstagramPage: "https://instagram.com",
+    contentType: "website",
+    twitterHandle: "@me",
+    description: "Dashboard made with express-admin-dashboard",
+    author: "express-admin-dashboard",
+    metaTitle: "Dashboard",
+  },
+  images: {
+    logo150,
+    logo16,
+    logo180,
+    logo192,
+    logo512,
+    logo32,
+    favicon,
+  },
+  branding: { icon: brandIcon },
+  rootPath: "",
+  apiRootPath: "/admin",
+  theme: { name: "light", color: "#fff" },
+};
+
+export const rippleAnimationDuration = 500; // 500ms
+
+const mergeConfigImages = ({
+  oldImages,
+  newImages,
+  rootPath,
+}: {
+  oldImages?: ConfigurationType["images"];
+  newImages?: Partial<ConfigurationType["images"]>;
+  rootPath?: string;
+}) => {
+  const finalImages = {} as ConfigurationType["images"];
+  rootPath = rootPath || "";
+  Object.entries(oldImages || {}).forEach((image) => {
+    const [key, value] = image as [keyof ConfigurationType["images"], string];
+    finalImages[key] = `${rootPath}${newImages?.[key] || value}`;
+  });
+  Object.assign(finalImages, newImages || {});
+  return finalImages;
+};
+
+export const mergeConfig = (
+  oldConfig: Partial<ConfigurationType>,
+  newConfig: Partial<ConfigurationType>
+) => {
+  const finalConfig = { ...oldConfig };
+  newConfig.images = mergeConfigImages({
+    oldImages: oldConfig.images,
+    newImages: newConfig.images,
+    rootPath: newConfig.rootPath,
+  });
+  newConfig.seo = Object.assign({}, oldConfig.seo, newConfig.seo || {});
+  if (newConfig.canonicalRootUrl) {
+    newConfig.canonicalRootUrl = ensureRootUrl(newConfig.canonicalRootUrl);
+  }
+  if (newConfig.branding === undefined) {
+    newConfig.branding = {} as any;
+  }
+  if (!newConfig.branding?.icon) {
+    (newConfig.branding as Record<string, any>).icon = `${
+      newConfig.rootPath || ""
+    }${brandIcon}`;
+  }
+  Object.assign(finalConfig, newConfig);
+  return finalConfig as ConfigurationType;
+};
+
+export class Config {
+  static #config: ConfigurationType = defaultConfig;
+  static getConfig() {
+    return Config.#config;
+  }
+  static updateConfig(newConfig: Partial<ConfigurationType>) {
+    Config.#config = mergeConfig(Config.#config, newConfig);
+  }
+}

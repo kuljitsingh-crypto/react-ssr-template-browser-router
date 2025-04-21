@@ -1,0 +1,113 @@
+.root {
+  background-color: var(--themeBgColor);
+  width: 100%;
+  box-shadow: var(--boxShadowSm);
+  padding: var(--pixel8) var(--pixel10);
+  border-radius: var(--borderRadius8);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.hiddenRoot {
+  display: none;
+  pointer-events: none;
+}
+.hiddenRoot * {
+  pointer-events: none !important;
+}
+.menuLabelBtn {
+  color: var(--themeTextColor);
+  padding: var(--pixel10);
+  border-radius: var(--pixel24);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.menuLabelBtn:hover {
+  background-color: var(--themeHoverColor) !important;
+}
+.menuLabelBtn:focus {
+  background-color: var(--themeHoverColor) !important;
+}
+
+.themIcon {
+  width: var(--pixel20);
+  height: var(--pixel20);
+}
+
+.themeItem {
+  cursor: pointer;
+  display: flex;
+  padding: var(--pixel10) var(--pixel6);
+  align-items: center;
+  background-color: transparent;
+  border-radius: var(--borderRadius);
+  gap: var(--pixel6);
+  width: 100%;
+  font-size: var(--pixel16);
+  line-height: var(--pixel24);
+  color: var(--themeTextColor);
+}
+.themeItem:hover {
+  background-color: var(--themeHoverColor);
+}
+
+.themeItem span {
+  color: inherit;
+  text-transform: capitalize;
+}
+
+.themeContentUl {
+  padding: var(--pixel8) !important;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pixel6);
+}
+
+.themeItemSelected {
+  background-color: var(--colorPrimaryDarkTransparent);
+  color: var(--colorPrimary);
+}
+
+.themeItemSelected:hover {
+  background-color: var(--colorPrimaryDarkTransparent);
+}
+
+.themeItemSelected span {
+  color: var(--colorPrimary);
+}
+
+.profileMenuUl {
+  padding: var(--pixel10);
+}
+.profileEmail {
+}
+
+.profileLabel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--pixel10);
+}
+
+.logoutBtn {
+  display: flex;
+  width: 100%;
+  flex-direction: row !important;
+  background-color: var(--colorFail) !important;
+  color: var(--colorLight) !important;
+  opacity: 0.75;
+  gap: var(--pixel10);
+  min-height: var(--pixel32) !important;
+  padding: var(--pixel6) var(--pixel4) !important;
+}
+.logoutBtn:disabled {
+  background-color: var(--colorMatterAnti) !important;
+}
+.logoutIcon {
+  width: var(--pixel16);
+  height: var(--pixel16);
+}
+.loadingIcon {
+  stroke: var(--colorLight) !important;
+}

@@ -1,4 +1,3 @@
-import { AsyncThunkConfig } from "@reduxjs/toolkit/dist/createAsyncThunk";
 import {
   AsyncThunkOptions,
   AsyncThunkPayloadCreator,
@@ -7,9 +6,15 @@ import {
 
 import { Axios } from "axios";
 import { RootStateType } from "./store";
+import { ConfigurationType } from "./custom-config";
 
+type AsyncThunkConfig = Parameters<typeof createAsyncThunk>;
 type CustomAsyncThunkConfig = AsyncThunkConfig & {
-  extra: Axios;
+  extra: {
+    axios: Axios;
+    config: ConfigurationType;
+    axiosWithCredentials: Axios;
+  };
   state: RootStateType;
 };
 

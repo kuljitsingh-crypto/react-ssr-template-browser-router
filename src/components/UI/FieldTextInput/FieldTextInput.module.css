@@ -1,0 +1,101 @@
+.textRoot {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.inputDiv {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.pwdInputDiv {
+  position: relative;
+}
+.textRoot label {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+.invalidLabel {
+  color: var(--colorFail);
+}
+
+.textInput {
+  composes: poppins-regular from global !important;
+  flex-grow: 1;
+  font-size: var(--fontSize16);
+  line-height: var(--lineHeight24);
+  border: var(--borderWidthThin) solid var(--colorMatterNegative);
+  padding: var(--pixel10) var(--pixel16);
+  outline: none;
+  border-radius: var(--borderRadius);
+}
+.textInput:focus,
+.textInput:hover {
+  border-color: var(--colorDark);
+}
+
+.fieldTextInput {
+  border-color: var(--colorPrimary);
+}
+
+.fieldTextInput:focus,
+.fieldTextInput:hover {
+  border-color: var(--colorPrimary);
+}
+.disabledTextInput {
+  border-color: var(--colorMatterNegative);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.disabledTextInput:hover,
+.disabledTextInput:focus {
+  border-color: var(--colorMatterNegative);
+}
+
+.textArea {
+  resize: none !important;
+  min-height: var(--textAreaMinHeight);
+}
+
+.failedTextInput {
+  border-color: var(--colorFail);
+}
+.failedTextInput:hover,
+.failedTextInput:focus {
+  border-color: var(--colorFail);
+}
+
+.invalidInput {
+  display: flex;
+  flex-direction: column;
+  color: var(--colorFail);
+  padding-left: var(--pixel0);
+  padding-right: var(--pixel0);
+  margin-top: var(--pixel10);
+  margin-bottom: var(--pixel10);
+}
+
+.pwdTextInput {
+  padding-right: 58px;
+}
+.errMsg {
+  margin: 5px var(--pixel0);
+}
+
+.pwdButtonDiv {
+  position: absolute;
+  right: var(--pixel10);
+  top: 50%;
+  transform: translateY(-50%);
+}
+.togglePasswordBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.pwdIcon {
+  color: var(--colorPrimary);
+}

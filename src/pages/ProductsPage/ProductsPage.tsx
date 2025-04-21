@@ -1,25 +1,27 @@
 import React from "react";
-import { UseDispatchType, UseSelectorType } from "../../hooks";
+import { UseDispatchType, UseSelectorType } from "@src/hooks";
 import {
   fetchProducts,
   selectProducts,
   selectProductsError,
   selectProductsStatus,
 } from "./ProductsPageSlice";
-import { stateAndDispatchWrapper } from "../../components/helperComponents/stateAndDispatchWrapper";
-import { FETCH_STATUS } from "../../custom-config";
+import { customConnect } from "@src/components/helperComponents/customConnect";
+import { FETCH_STATUS, FetchStatusVal } from "@src/custom-config";
 import css from "./ProductsPage.module.css";
 import { ProductErrorType, ProductType } from "../pageGlobalType";
-import { NamedLink } from "../../components";
-import { routesName } from "../../utill/routesHelperFunction";
+import { NamedLink } from "@src/components";
+import { routesName } from "@src/util/routesHelperFunction";
 import { IntlShape } from "react-intl";
-import Page from "../../components/helperComponents/Page";
+import Page from "@src/components/Page/Page";
+import RightChild from "@src/components/RIghtChild/RightChild";
 
 type ProductsPagePropsType = {
-  status: (typeof FETCH_STATUS)[keyof typeof FETCH_STATUS];
+  status: FetchStatusVal;
   products: ProductType[];
   onFetchProducts: Function;
   intl: IntlShape;
+  name: string;
   error?: ProductErrorType;
 };
 
@@ -28,8 +30,11 @@ function ProductsPage(props: ProductsPagePropsType) {
   const description = intl.formatMessage({ id: "Homepage.description" });
   const title = intl.formatMessage({ id: "ProductsPage.title" });
   return (
-    <Page metaTitle={title} description={description}>
-      <div className={css.root}>
+    <Page
+      metaTitle={title}
+      description={description}
+      contentRootClassName={css.root}>
+      <RightChild>
         {status === FETCH_STATUS.loading ? (
           <span>Loading products...</span>
         ) : null}
@@ -55,7 +60,7 @@ function ProductsPage(props: ProductsPagePropsType) {
         {status === FETCH_STATUS.failed ? (
           <p className={css.error}>Failed to get products. Please try again.</p>
         ) : null}
-      </div>
+      </RightChild>
     </Page>
   );
 }
@@ -71,8 +76,4 @@ const mapToDispatchProps = (dispatch: UseDispatchType) => ({
   onFetchProducts: () => dispatch(fetchProducts()),
 });
 
-export default stateAndDispatchWrapper(
-  ProductsPage,
-  mapToStateProps,
-  mapToDispatchProps
-);
+export default customConnect(mapToStateProps, mapToDispatchProps)(ProductsPage);
