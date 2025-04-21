@@ -154,8 +154,6 @@ module.exports.render = async (
   const collectWebChunk = webExtractor.collectChunks.bind(webExtractor);
   const data = await renderApp(
     fetchRequest,
-    // webExtractor,
-    // ChunkExtractorManager,
     collectWebChunk,
     checkAndReturnRouterContext(context),
     preloadedState,
@@ -179,9 +177,6 @@ module.exports.render = async (
         serializeData
       )};</script>
   `;
-  console.log(webExtractor.getLinkTags());
-
-  console.log(webExtractor.stats, "server");
 
   const { body, head } = data;
 
@@ -222,7 +217,7 @@ module.exports.dataLoader = async (
   const { pathname } = url.parse(request.url);
   const completeUrl = `${request.protocol}://${request.hostname}${request.url}`;
   const store = createStore();
-  const isAuthenticated = isCurrentUserAuthenticated(currentUser);
+  const isAuthenticated = await isCurrentUserAuthenticated(currentUser);
   store.dispatch(setCurrentUser(currentUser));
   store.dispatch(setAuthenticationState(isAuthenticated));
   try {

@@ -137,7 +137,7 @@ app.get("*", async (req, res) => {
 
     // Server-side entrypoint provides us the functions for server-side data loading and rendering
     const nodeEntrypoint = nodeExtractor.requireEntrypoint();
-    const currentUser = validateAndGetCurrentUserInfo(req);
+    const currentUser = await validateAndGetCurrentUserInfo(req);
     const {
       default: renderApp,
       routes,
