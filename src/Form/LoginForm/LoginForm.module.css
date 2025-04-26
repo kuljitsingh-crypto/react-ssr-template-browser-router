@@ -17,7 +17,7 @@
   width: 100%;
 }
 .linkText {
-  margin-bottom: var(--pixel8);
-  margin-top: var(--pixel16);
-  padding: var(--pixel0);
+  margin-bottom: var(--pixel8) !important;
+  margin-top: var(--pixel16) !important;
+  padding: var(--pixel0) !important;
 }
