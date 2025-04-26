@@ -1,18 +1,14 @@
 import React from "react";
 import { UseDispatchType, UseSelectorType } from "@src/hooks";
-import {
-  fetchProduct,
-  selectProduct,
-  selectProductError,
-  selectProductStatus,
-} from "./ProductPageSlice";
+import { fetchProduct } from "./ProductPageSlice";
 import { customConnect } from "@src/components/helperComponents/customConnect";
-import { FETCH_STATUS, FetchStatusVal } from "@src/custom-config";
+import { fetchStatus, FetchStatusVal } from "@src/custom-config";
 import css from "./ProductPage.module.css";
 import { ProductErrorType, ProductType } from "../pageGlobalType";
 import { IntlShape } from "react-intl";
 import Page from "@src/components/Page/Page";
 import RightChild from "@src/components/RIghtChild/RightChild";
+import { selectStateValue } from "@src/storeHelperFunction";
 
 type ProductPagePropsType = {
   status: FetchStatusVal;
@@ -33,16 +29,14 @@ function ProductPage(props: ProductPagePropsType) {
       metaTitle={title}
       contentRootClassName={css.root}>
       <RightChild>
-        {status === FETCH_STATUS.loading ? (
-          <span>Loading product...</span>
-        ) : null}
-        {status === FETCH_STATUS.succeeded && product ? (
+        {fetchStatus.isLoading(status) ? <span>Loading product...</span> : null}
+        {fetchStatus.isSucceeded(status) && product ? (
           <div>
             <h3>{product.title}</h3>
             <p>{product.description}</p>
           </div>
         ) : null}
-        {status === FETCH_STATUS.failed && !!error ? (
+        {fetchStatus.isFailed(status) && !!error ? (
           <p className={css.error}>Failed to get product. Please try again.</p>
         ) : null}
       </RightChild>
@@ -51,9 +45,9 @@ function ProductPage(props: ProductPagePropsType) {
 }
 
 const mapToStateProps = (selector: UseSelectorType) => {
-  const status = selector(selectProductStatus);
-  const product = selector(selectProduct);
-  const error = selector(selectProductError);
+  const status = selector(selectStateValue("product", "status"));
+  const product = selector(selectStateValue("product", "product"));
+  const error = selector(selectStateValue("product", "error"));
   return { status, product, error };
 };
 

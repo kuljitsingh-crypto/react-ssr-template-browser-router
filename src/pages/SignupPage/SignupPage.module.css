@@ -48,6 +48,18 @@
   padding-right: var(--pixel8);
   background-color: var(--colorLight);
   top: var(--pixelNeg16);
+  font-size: var(--pixel24);
+  line-height: var(--pixel32);
+  color: var(--colorDark);
+}
+
+.loginText {
+  display: flex;
+  flex-direction: row;
+  margin-top: var(--pixelNeg16);
+  margin-bottom: var(--pixel32);
+  gap: var(--pixel8);
+  padding: var(--pixel0) var(--pixel16);
 }
 
 @media screen and (max-width: 768px) {

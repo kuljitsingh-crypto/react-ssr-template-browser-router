@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { rippleAnimationDuration, Theme } from "@src/custom-config";
-import { RootStateType } from "@src/store";
 import { isBrowser } from "@src/util/browserHelperFunction";
 import { isAppHasDarkTheme } from "@src/util/themeHelper";
 
@@ -55,7 +54,5 @@ const uiSlice = createSlice({
 });
 
 export const { changeTheme } = uiSlice.actions;
-
-export const selectTheme = (state: RootStateType) => state.ui.theme;
 
 export default uiSlice.reducer;

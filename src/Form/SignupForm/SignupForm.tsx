@@ -1,32 +1,18 @@
 import React from "react";
-import {
-  ErrorText,
-  FieldTextInput,
-  FormattedMsg,
-  InlineTextButton,
-  PrimaryButton,
-} from "@src/components";
+import { ErrorText, FieldTextInput, PrimaryButton } from "@src/components";
 import { useForm } from "rc-simple-hook-form";
 import { IntlShape } from "react-intl";
 import { GeneralError } from "@src/util/APITypes";
-import css from "./LoginForm.module.css";
-import classNames from "classnames";
+import css from "./SignupForm.module.css";
 
-type LoginProps = {
+type SignupProps = {
   intl: IntlShape;
-  loginInProgress: boolean;
-  loginError: GeneralError | null;
   onSubmit: (email: string, password: string) => void;
-  onNavigateToForgotPassword: () => void;
+  signupInProgress: boolean;
+  signupError: GeneralError | null;
 };
-function LoginForm(props: LoginProps) {
-  const {
-    intl,
-    loginInProgress,
-    loginError,
-    onSubmit,
-    onNavigateToForgotPassword,
-  } = props;
+function SignupForm(props: SignupProps) {
+  const { intl, signupInProgress, signupError, onSubmit } = props;
   const {
     control,
     formState: { isEmpty, invalid },
@@ -40,7 +26,7 @@ function LoginForm(props: LoginProps) {
   const passwordPlaceholder = intl.formatMessage({
     id: "LoginPage.passwordPlaceholder",
   });
-  const submitBtnTitle = intl.formatMessage({ id: "LoginPage.submitButton" });
+  const submitBtnTitle = intl.formatMessage({ id: "SignupPage.submitButton" });
   const invalidEmail = intl.formatMessage({ id: "LoginPage.invalidEmail" });
   const invalidPassword = intl.formatMessage({
     id: "LoginPage.invalidPassword",
@@ -49,10 +35,7 @@ function LoginForm(props: LoginProps) {
     onSubmit(data.email, data.password);
   };
   const submitDisabled = isEmpty || invalid;
-  const errorText =
-    loginError?.code === "ERR_BAD_REQUEST"
-      ? intl.formatMessage({ id: "LoginPage.invalidCredential" })
-      : intl.formatMessage({ id: "LoginPage.loginFailed" });
+  const errorText = intl.formatMessage({ id: "SignupPage.signupFailed" });
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className={css.formRoot}>
       <FieldTextInput
@@ -75,28 +58,18 @@ function LoginForm(props: LoginProps) {
         validations={{ required: invalidPassword }}
         inputContainerClassName={css.input}
       />
-
       <div className={css.actionBtnDiv}>
-        <p className={classNames("linkTextContainer", css.linkText)}>
-          <FormattedMsg id='LoginPage.forgotPwd' />
-          <InlineTextButton
-            type='button'
-            onClick={onNavigateToForgotPassword}
-            buttonClassName={"linkBtn"}>
-            <FormattedMsg id='LoginPage.resetPwdBtn' />
-          </InlineTextButton>
-        </p>
-        <ErrorText shouldShowError={!!loginError} errorMessage={errorText} />
+        <ErrorText shouldShowError={!!signupError} errorMessage={errorText} />
         <PrimaryButton
           type='submit'
           title={submitBtnTitle}
           disabled={submitDisabled}
           buttonClassName={css.submitBtn}
-          isLoading={loginInProgress}
+          isLoading={signupInProgress}
         />
       </div>
     </form>
   );
 }
 
-export default LoginForm;
+export default SignupForm;

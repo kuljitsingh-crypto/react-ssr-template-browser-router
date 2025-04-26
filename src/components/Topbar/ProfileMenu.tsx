@@ -10,17 +10,14 @@ import {
   useNamedRedirect,
   UseSelectorType,
 } from "@src/hooks";
-import {
-  selectLogoutError,
-  selectLogoutStatus,
-  userLogout,
-} from "@src/globalReducers/auth.slice";
+import { userLogout } from "@src/globalReducers/auth.slice";
 import { customConnect } from "../helperComponents/customConnect";
-import { FETCH_STATUS } from "@src/custom-config";
+import { fetchStatus } from "@src/custom-config";
+import { selectStateValue } from "@src/storeHelperFunction";
 
 const mapStateToProps = (selector: UseSelectorType) => {
-  const logoutStatus = selector(selectLogoutStatus);
-  const logoutError = selector(selectLogoutError);
+  const logoutStatus = selector(selectStateValue("auth", "logoutStatus"));
+  const logoutError = selector(selectStateValue("auth", "logoutError"));
   return { logoutStatus, logoutError };
 };
 
@@ -83,7 +80,7 @@ function ProfileMenu({
             onClick={handleLogout}
             buttonClassName={css.logoutBtn}
             iconClassName={css.loadingIcon}
-            isLoading={logoutStatus === FETCH_STATUS.loading}>
+            isLoading={fetchStatus.isLoading(logoutStatus)}>
             <React.Fragment>
               <FormattedMsg id='Logout' className={"normalFont"} />
               <GoSignOut className={css.logoutIcon} />

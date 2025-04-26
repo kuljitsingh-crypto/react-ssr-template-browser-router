@@ -33,3 +33,17 @@ export const customCreateAsyncThunk = <
   >,
   options?: AsyncThunkOptions<ThunkArg, CustomAsyncThunkConfig>
 ) => createAsyncThunk<Returned, ThunkArg>(typePrefix, payloadCreator, options);
+
+type SliceNames = keyof RootStateType;
+export const selectStateValue =
+  <
+    T extends SliceNames,
+    K extends keyof RootStateType[T],
+    R = RootStateType[T][K]
+  >(
+    sliceName: T,
+    stateName: K
+  ) =>
+  (state: RootStateType) => {
+    return state[sliceName][stateName] as R;
+  };

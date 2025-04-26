@@ -8,6 +8,7 @@ export const routeDetails = [
   { path: "/products/:id", name: "ProductPage", isAuth: true },
   { path: "/login", name: "LoginPage" },
   { path: "/signup", name: "SignupPage" },
+  { path: "/recover-password", name: "ForgotPassword" },
   { path: "*", name: "NotFoundPage", notFound: true },
 ] as const;
 

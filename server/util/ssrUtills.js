@@ -17,7 +17,7 @@ class CustomChunkExtractor extends ChunkExtractor {
   }
 }
 
-const buildPath = path.join(__dirname, "..", "build");
+const buildPath = path.join(__dirname, "..", "..", "build");
 
 const redirectCode = new Set([301, 302, 303, 307, 308]);
 const notFoundCode = new Set([404]);
@@ -52,7 +52,7 @@ const templatedWithHtmlAttributes = lodash.template(indexHtml, {
 });
 
 // Template tags inside given template string (templatedWithHtmlAttributes),
-// which cantains <html> attributes already.
+// which contains <html> attributes already.
 const templateTags = (indexHtmlWithHtmlAttributes) =>
   lodash.template(indexHtmlWithHtmlAttributes, {
     // Interpolate variables in the HTML template with the following

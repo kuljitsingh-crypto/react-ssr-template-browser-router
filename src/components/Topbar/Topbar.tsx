@@ -1,19 +1,18 @@
 import React from "react";
-import { selectIsAuthenticated } from "@src/globalReducers/auth.slice";
-import { selectCurrentUser } from "@src/globalReducers/user.slice";
 import { UseDispatchType, UseSelectorType } from "@src/hooks";
 import { customConnect } from "../helperComponents/customConnect";
 import classNames from "classnames";
 import { RiMenu2Fill } from "react-icons/ri";
 import css from "./Topbar.module.css";
 import ThemeMenu from "./ThemeMenu";
-import { changeTheme, selectTheme } from "@src/globalReducers/ui.slice";
+import { changeTheme } from "@src/globalReducers/ui.slice";
 import { Theme } from "@src/custom-config";
 import ProfileMenu from "./ProfileMenu";
+import { selectStateValue } from "@src/storeHelperFunction";
 const mapStateToProps = (selector: UseSelectorType) => {
-  const currentUser = selector(selectCurrentUser);
-  const isAuthenticated = selector(selectIsAuthenticated);
-  const theme = selector(selectTheme);
+  const currentUser = selector(selectStateValue("user", "currentUser"));
+  const isAuthenticated = selector(selectStateValue("auth", "isAuthenticated"));
+  const theme = selector(selectStateValue("ui", "theme"));
   return { currentUser, isAuthenticated, theme };
 };
 const mapDispatchToProps = (dispatch: UseDispatchType) => ({

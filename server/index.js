@@ -4,11 +4,11 @@ const express = require("express");
 const enforceSsl = require("express-enforces-ssl");
 const fs = require("fs");
 const path = require("path");
-const csp = require("./csp");
-const { getExtractor, render, dataLoader } = require("./ssrUtills");
+const csp = require("./csp-util/csp");
+const { getExtractor, render, dataLoader } = require("./util/ssrUtills");
 const { default: helmet } = require("helmet");
 const cors = require("cors");
-const { validateAndGetCurrentUserInfo } = require("./helperFunctions");
+const { validateAndGetCurrentUserInfo } = require("./util/helperFunctions");
 const CSP = process.env.REACT_APP_CSP;
 const PORT = parseInt(process.env.PORT || "3500", 10);
 const USING_SSL = process.env.REACT_APP_USING_SSL === "true";
@@ -167,7 +167,6 @@ app.get("*", async (req, res) => {
       return res.send(html);
     }
   } catch (err) {
-    console.error(err);
     res.status(500).send(errorPage);
   }
 });

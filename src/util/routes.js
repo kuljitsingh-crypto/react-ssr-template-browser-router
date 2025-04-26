@@ -94,6 +94,7 @@ export const routes = routeDetails.map((details) => {
   } else if (details.notFound) {
     extraData.notFound = details.notFound;
   }
+
   return {
     path: details.path,
     element: <Component />,
@@ -163,6 +164,7 @@ export const createRoutesForBrowserAndStaticRouter = (
 ) => {
   const modified = routes.map((route) => {
     const { isAuth, ...restRoute } = route;
+
     if (isAuth) {
       restRoute.element = React.createElement(AuthenticatedPage, {
         children: restRoute.element,

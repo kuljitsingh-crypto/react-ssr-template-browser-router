@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { FETCH_STATUS, FetchStatusVal } from "@src/custom-config";
-import { RootStateType } from "@src/store";
+import { FETCH_STATUS, fetchStatus, FetchStatusVal } from "@src/custom-config";
 import { customCreateAsyncThunk } from "@src/storeHelperFunction";
 import { DataLoaderFunction } from "@src/hooks";
 import { ProductErrorType, ProductType } from "../pageGlobalType";
@@ -49,8 +48,8 @@ export const productsPageSlice = createSlice({
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         if (
-          state.status === FETCH_STATUS.idle ||
-          state.status === FETCH_STATUS.loading
+          fetchStatus.isIdle(state.status) ||
+          fetchStatus.isLoading(state.status)
         ) {
           state.status = FETCH_STATUS.succeeded;
           state.products.push(...action.payload);
@@ -63,11 +62,6 @@ export const productsPageSlice = createSlice({
       });
   },
 });
-export const selectProductsStatus = (state: RootStateType) =>
-  state.products.status;
-export const selectProducts = (state: RootStateType) => state.products.products;
-export const selectProductsError = (state: RootStateType) =>
-  state.products.error;
 
 export default productsPageSlice.reducer;
 

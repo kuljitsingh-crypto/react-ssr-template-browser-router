@@ -1,13 +1,13 @@
-import { selectIsAuthenticated } from "@src/globalReducers/auth.slice";
 import { UseSelectorType } from "@src/hooks";
 import classNames from "classnames";
 import React from "react";
 import { customConnect } from "../helperComponents/customConnect";
 import Topbar from "../Topbar/Topbar";
 import css from "./RightChild.module.css";
+import { selectStateValue } from "@src/storeHelperFunction";
 
 const mapStateToProps = (selector: UseSelectorType) => {
-  const isAuthenticated = selector(selectIsAuthenticated);
+  const isAuthenticated = selector(selectStateValue("auth", "isAuthenticated"));
   return { isAuthenticated };
 };
 

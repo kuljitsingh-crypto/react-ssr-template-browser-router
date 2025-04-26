@@ -1,7 +1,7 @@
 import React from "react";
-import { selectIsAuthenticated } from "@src/globalReducers/auth.slice";
 import NamedRedirect from "../NamedRedirect/NamedRedirect";
 import { useSelector } from "react-redux";
+import { selectStateValue } from "@src/storeHelperFunction";
 
 type AuthenticatedPageState = {
   children: React.JSX.Element;
@@ -10,7 +10,9 @@ type AuthenticatedPageState = {
 
 function AuthenticatedPage(props: AuthenticatedPageState) {
   const { children, name } = props;
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isAuthenticated = useSelector(
+    selectStateValue("auth", "isAuthenticated")
+  );
   if (!isAuthenticated) {
     return <NamedRedirect name='LoginPage' replace={true} />;
   }

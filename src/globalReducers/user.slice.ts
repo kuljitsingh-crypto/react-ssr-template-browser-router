@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { FETCH_STATUS, FetchStatusVal } from "@src/custom-config";
 import { customCreateAsyncThunk } from "@src/storeHelperFunction";
 import { setAuthenticationState } from "./auth.slice";
-import { RootStateType } from "@src/store";
 import { CurrentUser } from "@src/util/APITypes";
 import { waitFor } from "@src/util/functionHelper";
 
@@ -65,5 +64,3 @@ const currentUserSlice = createSlice({
 
 export default currentUserSlice.reducer;
 export const { setCurrentUser } = currentUserSlice.actions;
-export const selectCurrentUser = (state: RootStateType) =>
-  state.user.currentUser;

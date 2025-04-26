@@ -50,3 +50,5 @@ export const useNamedRedirect = () => {
   };
   return navigate;
 };
+
+export type NavigateFunc = ReturnType<typeof useNamedRedirect>;

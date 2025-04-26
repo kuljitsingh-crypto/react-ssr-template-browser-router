@@ -2,46 +2,49 @@ import React from "react";
 import { useIntl } from "react-intl";
 import Page from "@src/components/Page/Page";
 import { useConfiguration } from "@src/context";
-import { LoginForm } from "@src/Form";
 import { AppDispatch } from "@src/store";
 import {
   useFetchStatusHandler,
   useNamedRedirect,
   UseSelectorType,
 } from "@src/hooks";
-import {
-  selectIsAuthenticated,
-  selectLoginError,
-  selectLoginStatus,
-  userLogin,
-} from "@src/globalReducers/auth.slice";
+import { resetLogInStatus, userSignup } from "@src/globalReducers/auth.slice";
 import { customConnect } from "@src/components/helperComponents/customConnect";
-import { FETCH_STATUS, FetchStatusVal } from "@src/custom-config";
+import { fetchStatus, FetchStatusVal } from "@src/custom-config";
 import css from "./SignupPage.module.css";
 import { GeneralError } from "@src/util/APITypes";
-import { FormattedMsg, NamedRedirect } from "@src/components";
+import { FormattedMsg, InlineTextButton, NamedRedirect } from "@src/components";
 import RightChild from "@src/components/RIghtChild/RightChild";
+import SignupForm from "@src/Form/SignupForm/SignupForm";
+import { selectStateValue } from "@src/storeHelperFunction";
 
 const mapStateToProps = (selector: UseSelectorType) => {
-  const loginStatus = selector(selectLoginStatus);
-  const loginError = selector(selectLoginError);
-  const isAuthenticated = selector(selectIsAuthenticated);
-  return { loginStatus, loginError, isAuthenticated };
+  const signupStatus = selector(selectStateValue("auth", "signupStatus"));
+  const signupError = selector(selectStateValue("auth", "signupError"));
+  const isAuthenticated = selector(selectStateValue("auth", "isAuthenticated"));
+  return { signupStatus, signupError, isAuthenticated };
 };
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
-  onUserLogin: (email: string, password: string) =>
-    dispatch(userLogin({ email, password })),
+  onUserSignup: (email: string, password: string) =>
+    dispatch(userSignup({ email, password })),
+  onResetLogInStatus: () => dispatch(resetLogInStatus()),
 });
 
 type SignupPageProps = {
-  loginStatus: FetchStatusVal;
-  loginError: GeneralError | null;
+  signupStatus: FetchStatusVal;
+  signupError: GeneralError | null;
   isAuthenticated: boolean;
 } & ReturnType<typeof mapDispatchToProps>;
 
 function SignupPage(props: SignupPageProps) {
-  const { loginError, loginStatus, isAuthenticated, onUserLogin } = props;
+  const {
+    isAuthenticated,
+    signupStatus,
+    signupError,
+    onUserSignup,
+    onResetLogInStatus,
+  } = props;
   const intl = useIntl();
   const config = useConfiguration();
   const title = intl.formatMessage({ id: "SignupPage.title" });
@@ -50,17 +53,23 @@ function SignupPage(props: SignupPageProps) {
   const navigate = useNamedRedirect();
 
   const handleSubmit = (email: string, password: string) => {
-    onUserLogin(email, password);
+    onUserSignup(email, password);
   };
-  const onLoginSuccess = () => {
+  const onSignupSuccess = () => {
     navigate("Homepage", { replace: true });
   };
 
+  const navigateToLogin = () => {
+    onResetLogInStatus();
+    navigate("LoginPage");
+  };
+
   useFetchStatusHandler({
-    fetchStatus: loginStatus,
-    fetchError: loginError,
-    callback: { succeeded: { handler: onLoginSuccess } },
+    fetchStatus: signupStatus,
+    fetchError: signupError,
+    callback: { succeeded: { handler: onSignupSuccess } },
   });
+
   if (isAuthenticated) {
     return <NamedRedirect name='Homepage' />;
   }
@@ -80,12 +89,21 @@ function SignupPage(props: SignupPageProps) {
                 className={css.helperText}
               />
             </p>
-            <LoginForm
+            <SignupForm
               intl={intl}
               onSubmit={handleSubmit}
-              loginInProgress={loginStatus === FETCH_STATUS.loading}
-              loginError={loginError}
+              signupInProgress={fetchStatus.isLoading(signupStatus)}
+              signupError={signupError}
             />
+            <div className={"linkTextContainer"}>
+              <FormattedMsg id='SignupPage.alreadyAccount' />
+              <InlineTextButton
+                type='button'
+                onClick={navigateToLogin}
+                buttonClassName={"linkBtn"}>
+                <FormattedMsg id='LoginPage.submitButton' />
+              </InlineTextButton>
+            </div>
           </div>
         </div>
       </RightChild>

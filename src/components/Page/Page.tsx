@@ -7,7 +7,6 @@ import { routes } from "@src/util/routes";
 import { canonicalRoutePath } from "@src/util/routesHelperFunction";
 import { useConfiguration } from "@src/context";
 import classNames from "classnames";
-import { selectTheme } from "@src/globalReducers/ui.slice";
 import { useSelector } from "react-redux";
 import LeftChild from "../LeftChild/LeftChild";
 import RightChild from "../RIghtChild/RightChild";
@@ -17,6 +16,7 @@ import {
   windowDimensionProvider,
 } from "../helperComponents/windowDimension";
 import { ScreenDimensionProvider } from "./pageHooks";
+import { selectStateValue } from "@src/storeHelperFunction";
 
 export type ModifiedHelmetProps = Omit<
   ReactHelmetPropsTypes,
@@ -93,7 +93,7 @@ function Page(props: PageProps): React.JSX.Element {
     referrer: config.seo.referrer,
     schema: config.seo.schema,
   };
-  const theme = useSelector(selectTheme);
+  const theme = useSelector(selectStateValue("ui", "theme"));
   const themeClassName = isAppHasDarkTheme(theme) ? "darkTheme" : "lightTheme";
   const rootClasses = classNames(
     appClassName,

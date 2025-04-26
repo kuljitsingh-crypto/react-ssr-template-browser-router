@@ -1,10 +1,12 @@
-import { selectIsAuthenticated } from "@src/globalReducers/auth.slice";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNamedRedirect } from "./useNamedRedirect";
+import { selectStateValue } from "@src/storeHelperFunction";
 
 export const useUnauthenticatedRedirect = () => {
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isAuthenticated = useSelector(
+    selectStateValue("auth", "isAuthenticated")
+  );
   const navigate = useNamedRedirect();
 
   useEffect(() => {

@@ -76,6 +76,13 @@ export const FETCH_STATUS = {
 
 export type FetchStatusVal = (typeof FETCH_STATUS)[keyof typeof FETCH_STATUS];
 
+export const fetchStatus = {
+  isLoading: (status: FetchStatusVal) => status === FETCH_STATUS.loading,
+  isSucceeded: (status: FetchStatusVal) => status === FETCH_STATUS.succeeded,
+  isFailed: (status: FetchStatusVal) => status === FETCH_STATUS.failed,
+  isIdle: (status: FetchStatusVal) => status === FETCH_STATUS.idle,
+};
+
 export const defaultConfig: ConfigurationType = {
   canonicalRootUrl: ensureRootUrl(rootUrl),
   address: { addressCountry, addressRegion, postalCode, streetAddress },

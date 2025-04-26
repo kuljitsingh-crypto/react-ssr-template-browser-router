@@ -10,28 +10,32 @@ import {
   UseSelectorType,
 } from "@src/hooks";
 import {
-  selectIsAuthenticated,
-  selectLoginError,
-  selectLoginStatus,
+  resetForgotPasswordStatus,
+  resetLogoutStatus,
+  resetSignupStatus,
   userLogin,
 } from "@src/globalReducers/auth.slice";
 import { customConnect } from "@src/components/helperComponents/customConnect";
-import { FETCH_STATUS, FetchStatusVal } from "@src/custom-config";
+import { fetchStatus, FetchStatusVal } from "@src/custom-config";
 import css from "./LoginPage.module.css";
 import { GeneralError } from "@src/util/APITypes";
-import { FormattedMsg, NamedRedirect } from "@src/components";
+import { FormattedMsg, InlineTextButton, NamedRedirect } from "@src/components";
 import RightChild from "@src/components/RIghtChild/RightChild";
+import { selectStateValue } from "@src/storeHelperFunction";
 
 const mapStateToProps = (selector: UseSelectorType) => {
-  const loginStatus = selector(selectLoginStatus);
-  const loginError = selector(selectLoginError);
-  const isAuthenticated = selector(selectIsAuthenticated);
+  const loginStatus = selector(selectStateValue("auth", "loginStatus"));
+  const loginError = selector(selectStateValue("auth", "loginError"));
+  const isAuthenticated = selector(selectStateValue("auth", "isAuthenticated"));
   return { loginStatus, loginError, isAuthenticated };
 };
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
   onUserLogin: (email: string, password: string) =>
     dispatch(userLogin({ email, password })),
+  onResetLogoutStatus: () => dispatch(resetLogoutStatus()),
+  onResetSingUpStatus: () => dispatch(resetSignupStatus()),
+  onResetForgotPasswordStatus: () => dispatch(resetForgotPasswordStatus()),
 });
 
 type LoginPageProps = {
@@ -41,7 +45,15 @@ type LoginPageProps = {
 } & ReturnType<typeof mapDispatchToProps>;
 
 function LoginPage(props: LoginPageProps) {
-  const { loginError, loginStatus, isAuthenticated, onUserLogin } = props;
+  const {
+    loginError,
+    loginStatus,
+    isAuthenticated,
+    onResetLogoutStatus,
+    onUserLogin,
+    onResetSingUpStatus,
+    onResetForgotPasswordStatus,
+  } = props;
   const intl = useIntl();
   const config = useConfiguration();
   const title = intl.formatMessage({ id: "LoginPage.title" });
@@ -54,6 +66,16 @@ function LoginPage(props: LoginPageProps) {
   };
   const onLoginSuccess = () => {
     navigate("Homepage", { replace: true });
+  };
+  const navigateToSignup = () => {
+    onResetLogoutStatus();
+    onResetSingUpStatus();
+    navigate("SignupPage");
+  };
+  const onNavigateToForgotPassword = () => {
+    onResetLogoutStatus();
+    onResetForgotPasswordStatus();
+    navigate("ForgotPassword");
   };
 
   useFetchStatusHandler({
@@ -82,14 +104,20 @@ function LoginPage(props: LoginPageProps) {
             </p>
             <LoginForm
               intl={intl}
-              onSubmit={handleSubmit}
-              loginInProgress={loginStatus === FETCH_STATUS.loading}
+              loginInProgress={fetchStatus.isLoading(loginStatus)}
               loginError={loginError}
+              onSubmit={handleSubmit}
+              onNavigateToForgotPassword={onNavigateToForgotPassword}
             />
-            <p>
+            <div className={"linkTextContainer"}>
               <FormattedMsg id='LoginPage.noAccount' />
-              {/* <NamedRedirect name=""></NamedRedirect> */}
-            </p>
+              <InlineTextButton
+                type='button'
+                onClick={navigateToSignup}
+                buttonClassName={"linkBtn"}>
+                <FormattedMsg id='SignupPage.submitButton' />
+              </InlineTextButton>
+            </div>
           </div>
         </div>
       </RightChild>

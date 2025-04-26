@@ -43,6 +43,8 @@
   --pixel64: 64px;
   --pixel96: 96px;
   --pixelNeg16: -16px;
+  --pixelNeg4: -4px;
+  --pixelNeg2: -2px;
 
   /* ================ Font ================ */
   --fontSize24: 24px;
@@ -380,4 +382,25 @@ button {
 }
 .marginLeftAuto {
   margin-left: auto;
+}
+
+.linkBtn {
+  padding: var(--pixel0) !important;
+  margin: var(--pixel0) !important;
+  min-height: var(--pixel24) !important;
+  line-height: var(--pixel24) !important;
+  font-size: var(--pixel16) !important;
+  position: relative !important;
+  border: var(--pixel0) !important;
+  top: var(--pixelNeg2) !important;
+  text-decoration: underline;
+}
+
+.linkTextContainer {
+  display: flex;
+  flex-direction: row;
+  margin-top: var(--pixelNeg16);
+  margin-bottom: var(--pixel32);
+  gap: var(--pixel8);
+  padding: var(--pixel0) var(--pixel16);
 }
