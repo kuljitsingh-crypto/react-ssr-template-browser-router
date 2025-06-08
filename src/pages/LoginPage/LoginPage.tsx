@@ -19,7 +19,12 @@ import { customConnect } from "@src/components/helperComponents/customConnect";
 import { fetchStatus, FetchStatusVal } from "@src/custom-config";
 import css from "./LoginPage.module.css";
 import { GeneralError } from "@src/util/APITypes";
-import { FormattedMsg, InlineTextButton, NamedRedirect } from "@src/components";
+import {
+  BrandIcon,
+  FormattedMsg,
+  InlineTextButton,
+  NamedRedirect,
+} from "@src/components";
 import RightChild from "@src/components/RIghtChild/RightChild";
 import { selectStateValue } from "@src/storeHelperFunction";
 
@@ -94,7 +99,7 @@ function LoginPage(props: LoginPageProps) {
       <RightChild>
         <div className={css.loginBody}>
           <div className={css.bodyContainer}>
-            <img src={config.branding.icon} alt='' />
+            <BrandIcon />
             <p className={css.helperTextDiv}>
               <span className={css.divider} />
               <FormattedMsg

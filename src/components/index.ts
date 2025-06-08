@@ -9,3 +9,5 @@ export {
 } from "./UI/Button/Button";
 export { default as FormattedMsg } from "./FormattedMessage/FormattedMsg";
 export { default as UserAvatar } from "./UserAvatar/UserAvatar";
+export { default as BrandIcon } from "./BrandIcon/BrandIcon";
+export { default as Divider } from "./Divider/Divider";

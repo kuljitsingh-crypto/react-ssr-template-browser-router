@@ -42,7 +42,10 @@ type PageProps = {
 
 const appClassName = "App";
 
-const prepareChildren = (children: React.ReactNode) => {
+const prepareChildren = (
+  children: React.ReactNode,
+  otherOptions: Record<string, any>
+) => {
   const preparedChildren = {} as Record<
     "leftChild" | "rightChild",
     React.ReactNode
@@ -51,10 +54,12 @@ const prepareChildren = (children: React.ReactNode) => {
     if ((child as any).type === LeftChild) {
       preparedChildren.leftChild = React.cloneElement(child as any, {
         rootClassName: "leftChild",
+        ...otherOptions,
       });
     } else if ((child as any).type === RightChild) {
       preparedChildren.rightChild = React.cloneElement(child as any, {
         rootClassName: "rightChild",
+        ...otherOptions,
       });
     } else {
       throw new Error(
@@ -94,6 +99,7 @@ function Page(props: PageProps): React.JSX.Element {
     schema: config.seo.schema,
   };
   const theme = useSelector(selectStateValue("ui", "theme"));
+  const [showLeftChild, setShowLeftChild] = React.useState(true);
   const themeClassName = isAppHasDarkTheme(theme) ? "darkTheme" : "lightTheme";
   const rootClasses = classNames(
     appClassName,
@@ -101,7 +107,13 @@ function Page(props: PageProps): React.JSX.Element {
     contentRootClassName
   );
   const mainClassName = "main";
-  const preparedChildren = prepareChildren(children);
+  const toggleLeftChild = () => {
+    setShowLeftChild((status) => !status);
+  };
+  const preparedChildren = prepareChildren(children, {
+    showLeftChild,
+    toggleLeftChild,
+  });
 
   return (
     <ScreenDimensionProvider value={windowDimensions}>

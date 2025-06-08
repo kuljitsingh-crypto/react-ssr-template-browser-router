@@ -1,5 +1,14 @@
+import e from "express";
+
 const THROTTLE_WAIT_MS = 200; // 200 ms
 const DEBOUNCE_WAIT_MS = 200; // 200 ms
+
+const BREAK_POINTS = {
+  mobile: 576,
+  tablet: 768,
+  desktop: 992,
+  largeDesktop: 1200,
+};
 
 export const throttleFunc = <ParamType>(
   func: (param: ParamType) => void,
@@ -74,4 +83,20 @@ export const createQueryString = (queryParams?: Record<string, any>) => {
     queryStr = `?${queryStr}`;
   }
   return queryStr;
+};
+
+export const isMobileScreen = (width: number) => {
+  return width < BREAK_POINTS.mobile;
+};
+
+export const isTabletScreen = (width: number) => {
+  return width >= BREAK_POINTS.mobile && width < BREAK_POINTS.tablet;
+};
+
+export const isSmallDesktopScreen = (width: number) => {
+  return width >= BREAK_POINTS.tablet && width < BREAK_POINTS.desktop;
+};
+
+export const isLargeDesktopScreen = (width: number) => {
+  return width >= BREAK_POINTS.desktop && width < BREAK_POINTS.largeDesktop;
 };

@@ -111,3 +111,13 @@
 .loadingIcon {
   stroke: var(--colorLight) !important;
 }
+.sideBarBtn {
+  padding-left: var(--pixel0) !important;
+  padding-right: var(--pixel0) !important;
+}
+
+.sideBarIcon {
+  width: var(--pixel20);
+  height: var(--pixel20);
+  color: var(--colorDark);
+}

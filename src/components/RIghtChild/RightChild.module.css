@@ -2,4 +2,20 @@
   display: flex;
   flex-direction: column;
   padding: var(--pixel16);
+  margin-left: auto;
+  width: 100%;
+  max-width: calc(100% - var(--pixel240));
+  transition: max-width var(--transitionDuration) ease-in-out;
+}
+
+@media screen and (max-width: 767px) {
+  .root {
+    max-width: 100%;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .tabShowRoot {
+    max-width: 100%;
+  }
 }

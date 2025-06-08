@@ -1,10 +1,9 @@
 import React from "react";
 import loadable from "@loadable/component";
-import { redirectLoader } from "./routesHelperFunction";
 import { getPageDataLoadingAPI } from "@src/pages/pageDataLoadingAPI";
 import AuthenticatedPage from "@src/components/helperComponents/AuthenticatedPage";
 import { parseQueryString } from "./functionHelper";
-import { routesName, routeDetails } from "@src/routeNames";
+import { routeDetails } from "@src/routeNames";
 
 const loadableComponent = routeDetails.reduce((acc, details) => {
   const name = details.name;

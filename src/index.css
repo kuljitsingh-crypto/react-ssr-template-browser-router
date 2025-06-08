@@ -28,6 +28,7 @@
   /* ====================== Layout ========= */
   --borderWidthThin: 1px;
   --pixel0: 0px;
+  --pixel1: 1px;
   --pixel2: 2px;
   --pixel4: 4px;
   --pixel6: 6px;
@@ -40,8 +41,12 @@
   --pixel24: 24px;
   --pixel48: 48px;
   --pixel32: 32px;
+  --pixel36: 36px;
+  --pixel40: 40px;
   --pixel64: 64px;
   --pixel96: 96px;
+  --pixel240: 240px;
+  --pixelNeg240: -240px;
   --pixelNeg16: -16px;
   --pixelNeg4: -4px;
   --pixelNeg2: -2px;
@@ -115,6 +120,12 @@
   --breakpointTablet: 768px;
   --breakpointDesktop: 992px;
   --breakpointLargeDesktop: 1200px;
+
+  /* ====================== Zindex ========= */
+  --topbarZIndex: 10;
+
+  /*-====================== Transition Duration ========= */
+  --transitionDuration: 0.5s;
 }
 
 .poppins-thin {
@@ -403,4 +414,15 @@ button {
   margin-bottom: var(--pixel32);
   gap: var(--pixel8);
   padding: var(--pixel0) var(--pixel16);
+}
+.brandIcon {
+  width: 100%;
+  height: var(--pixel36);
+}
+
+.divider {
+  height: var(--pixel1);
+  width: 100%;
+  margin: var(--pixel16) var(--pixel0);
+  background-color: var(--colorMatterAnti);
 }

@@ -1,0 +1,53 @@
+.root {
+  width: var(--pixel240);
+  background: var(--colorPrimary);
+  position: fixed;
+  top: var(--pixel0);
+  left: var(--pixel0);
+  height: 100%;
+  z-index: var(--topbarZIndex);
+  padding: var(--pixel16) var(--pixel8);
+  transform: translateX(var(--pixel0));
+  transition: transform var(--transitionDuration) ease-in-out;
+}
+.hiddenRoot {
+  transform: translateX(var(--pixelNeg240));
+}
+
+.top {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--pixel8);
+}
+.brandIcon {
+  width: calc(100% - var(--pixel40));
+}
+
+.iconWrapper {
+  flex-shrink: 0;
+  margin-right: var(--pixel8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.closeIcon {
+  width: var(--pixel24);
+  height: var(--pixel24);
+  color: var(--colorDark);
+}
+
+.closeButton {
+  padding-left: var(--pixel0) !important;
+  padding-right: var(--pixel0) !important;
+  min-height: var(--pixel36) !important;
+}
+
+@media screen and (min-width: 768px) {
+  .iconWrapper {
+    display: none;
+  }
+  .brandIcon {
+    width: 100%;
+  }
+}

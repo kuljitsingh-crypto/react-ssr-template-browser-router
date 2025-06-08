@@ -14,14 +14,19 @@ const mapStateToProps = (selector: UseSelectorType) => {
 type RightChildProps = {
   rootClassName?: string;
   className?: string;
+  showLeftChild?: boolean;
+  toggleLeftChild?: () => void;
 } & { children?: React.ReactNode } & ReturnType<typeof mapStateToProps>;
 
 function RightChildComp(props: RightChildProps) {
-  const { children, rootClassName, className } = props;
-  const rightChildClass = classNames(rootClassName, css.root, className);
+  const { children, rootClassName, className, showLeftChild, toggleLeftChild } =
+    props;
+  const rightChildClass = classNames(rootClassName, css.root, className, {
+    [css.tabShowRoot]: !showLeftChild,
+  });
   return (
     <div className={rightChildClass}>
-      <Topbar />
+      <Topbar showLeftChild={showLeftChild} toggleLeftChild={toggleLeftChild} />
       {children}
     </div>
   );
