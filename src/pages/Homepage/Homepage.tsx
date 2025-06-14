@@ -30,7 +30,9 @@ function HomepageComponent(props: HomepagePropsType): React.JSX.Element {
     <Page description={description} metaTitle={title}>
       <LeftChild />
       <RightChild>
-        <NamedLink name='ProductsPage'>Products</NamedLink>
+        <p>
+          <NamedLink name='ProductsPage'>Products</NamedLink>
+        </p>
       </RightChild>
     </Page>
   );

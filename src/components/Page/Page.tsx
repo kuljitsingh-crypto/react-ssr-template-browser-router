@@ -50,15 +50,18 @@ const prepareChildren = (
     "leftChild" | "rightChild",
     React.ReactNode
   >;
+  let hasLeftChild = false;
   React.Children.forEach(children, (child) => {
     if ((child as any).type === LeftChild) {
+      hasLeftChild = true;
       preparedChildren.leftChild = React.cloneElement(child as any, {
         rootClassName: "leftChild",
         ...otherOptions,
       });
     } else if ((child as any).type === RightChild) {
       preparedChildren.rightChild = React.cloneElement(child as any, {
-        rootClassName: "rightChild",
+        rootClassName: "rightChild" + (hasLeftChild ? "" : " noLeftChild"),
+        hasLeftChild,
         ...otherOptions,
       });
     } else {

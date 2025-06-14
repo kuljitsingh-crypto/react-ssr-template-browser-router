@@ -13,28 +13,6 @@ const loadableComponent = routeDetails.reduce((acc, details) => {
   return acc;
 }, {});
 
-// const HomePage = loadable(() =>
-//   import(/*webpackChunkName:"HomePage"*/ "../pages/Homepage/Homepage")
-// );
-
-// const ProductsPage = loadable(() =>
-//   import(
-//     /*webpackChunkName:"ProductsPage"*/ "../pages/ProductsPage/ProductsPage"
-//   )
-// );
-// const ProductPage = loadable(() =>
-//   import(/*webpackChunkName:"ProductPage"*/ "../pages/ProductPage/ProductPage")
-// );
-
-// const LoginPage = loadable(() =>
-//   import(/*webpackChunkName:"LoginPage"*/ "../pages/LoginPage/LoginPage")
-// );
-// const NoFoundPage = loadable(() =>
-//   import(
-//     /*webpackChunkName:"NotFoundPage"*/ "../pages/NotFoundPage/NotFoundPage"
-//   )
-// );
-
 const pageDataLoadingAPI = getPageDataLoadingAPI();
 
 const dataLoaderWrapper =
@@ -102,53 +80,6 @@ export const routes = routeDetails.map((details) => {
     ...extraData,
   };
 });
-
-// export const routes = [
-//   {
-//     path: "/",
-//     element: <HomePage />,
-//     name: routesName.Homepage,
-//     exact: true,
-//     isAuth: true,
-//   },
-//   {
-//     path: "/products",
-//     element: <ProductsPage />,
-//     name: routesName.ProductsPage,
-//     exact: true,
-//     isAuth: true,
-//   },
-//   {
-//     path: "/products/:id",
-//     element: <ProductPage />,
-//     name: routesName.ProductPage,
-//     exact: true,
-//     isAuth: true,
-//   },
-//   {
-//     path: "/login",
-//     element: <LoginPage />,
-//     name: routesName.LoginPage,
-//     exact: true,
-//   },
-//   // If you want to redirect to some other during routes initialization. Use redirectLoader,like below, instead of NamedRedirectComponent.
-//   {
-//     path: "/home",
-//     loader: redirectLoader(routesName.Homepage),
-//     element: null,
-//     name: routesName.Homepage,
-//     exact: true,
-//   },
-//   // Added notFound Key to tell server during SSR to send 404 status code.
-//   {
-//     path: "*",
-//     element: <NoFoundPage />,
-//     name: routesName.NotFoundPage,
-//     notFound: true,
-//     exact: true,
-//   },
-// ];
-// console.log(routes);
 
 /**
  * @param {UseDispatchType|undefined} dispatch

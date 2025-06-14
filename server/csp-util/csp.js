@@ -14,7 +14,7 @@ const directives = {
   // sets the allowed sources for JavaScript code
   scriptSrc: [self, unsafeInline, unsafeEval],
   // sets the allowed sources for CSS styles
-  styleSrc: [self],
+  styleSrc: [self, unsafeInline],
   // sets the allowed sources for images
   imgSrc: [self, data],
   // sets the allowed sources for network connections

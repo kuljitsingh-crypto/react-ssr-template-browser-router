@@ -1,5 +1,3 @@
-import e from "express";
-
 const THROTTLE_WAIT_MS = 200; // 200 ms
 const DEBOUNCE_WAIT_MS = 200; // 200 ms
 

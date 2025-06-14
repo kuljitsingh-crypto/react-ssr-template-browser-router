@@ -29,6 +29,7 @@ type MapDispatchToProps = ReturnType<typeof mapDispatchToProps>;
 type TopbarProps = {
   className?: string;
   showLeftChild?: boolean;
+  hasLeftChild?: boolean;
   toggleLeftChild?: () => void;
 } & MapStateToProps &
   MapDispatchToProps;
@@ -38,6 +39,7 @@ function TopbarComponent(props: TopbarProps) {
     isAuthenticated,
     theme,
     showLeftChild,
+    hasLeftChild,
     onChangeTheme,
     toggleLeftChild,
   } = props;
@@ -61,12 +63,14 @@ function TopbarComponent(props: TopbarProps) {
 
   return (
     <div className={topbarClassName}>
-      <InlineTextButton
-        type='button'
-        onClick={handleLeftChildToggle}
-        buttonClassName={css.sideBarBtn}>
-        {showIcon()}
-      </InlineTextButton>
+      {hasLeftChild ? (
+        <InlineTextButton
+          type='button'
+          onClick={handleLeftChildToggle}
+          buttonClassName={css.sideBarBtn}>
+          {showIcon()}
+        </InlineTextButton>
+      ) : null}
       <div className='marginLeftAuto' />
       <ThemeMenu theme={theme} onChangeTheme={onChangeTheme} />
       <ProfileMenu

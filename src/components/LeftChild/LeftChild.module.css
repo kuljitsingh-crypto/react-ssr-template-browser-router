@@ -9,6 +9,7 @@
   padding: var(--pixel16) var(--pixel8);
   transform: translateX(var(--pixel0));
   transition: transform var(--transitionDuration) ease-in-out;
+  box-shadow: var(--boxShadow);
 }
 .hiddenRoot {
   transform: translateX(var(--pixelNeg240));

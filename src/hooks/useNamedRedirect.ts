@@ -1,4 +1,3 @@
-import React from "react";
 import { pathByRouteName } from "@src/util/routesHelperFunction";
 import { RelativeRoutingType, useNavigate } from "react-router-dom";
 import { routes } from "@src/util/routes";
