@@ -159,6 +159,7 @@ module.exports.render = async (
     preloadedState,
     config
   );
+
   if (!data) {
     return null;
   }

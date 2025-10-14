@@ -1,13 +1,13 @@
 import "core-js";
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import { loadableReady } from "@loadable/component";
 
+import "./index.css";
 import { routes } from "./util/routes";
 import { ClientApp, renderApp } from "./App";
 import { createStore } from "./store";
 import { matchPathName } from "./util/routesHelperFunction";
-import "./index.css";
 import { Config, defaultConfig, mergeConfig } from "./custom-config";
 import { fetchCurrentUser, setCurrentUser } from "./globalReducers/user.slice";
 import { setAuthenticationState } from "./globalReducers/auth.slice";
@@ -26,25 +26,33 @@ function render(shouldHydrate, preloadedState, config) {
   const store = createStore(preloadedState, finalConfig);
   const isHydrated = shouldHydrate;
   const promises = [loadableReady(), store.dispatch(fetchCurrentUser())];
-
+  console.log("calling render", isHydrated);
   Promise.all(promises).then(() => {
     if (shouldHydrate) {
-      ReactDOM.hydrate(
-        <ClientApp
-          store={store}
-          isHydrated={isHydrated}
-          config={finalConfig}
-        />,
-        rootElement
+      const root = ReactDOM.hydrateRoot(
+        rootElement,
+        <React.StrictMode>
+          <ClientApp
+            store={store}
+            isHydrated={isHydrated}
+            config={finalConfig}
+          />
+        </React.StrictMode>,
+        {
+          onRecoverableError: console.error,
+        }
       );
+      console.log(root);
     } else {
-      ReactDOM.render(
-        <ClientApp
-          store={store}
-          isHydrated={isHydrated}
-          config={finalConfig}
-        />,
-        rootElement
+      const root = ReactDOM.createRoot(rootElement);
+      root.render(
+        <React.StrictMode>
+          <ClientApp
+            store={store}
+            isHydrated={isHydrated}
+            config={finalConfig}
+          />
+        </React.StrictMode>
       );
     }
   });
@@ -59,6 +67,7 @@ if (typeof window !== "undefined") {
   render(hasPreloadedState, preloadedState, configuration);
 }
 
+console.log("here");
 export default renderApp;
 export {
   routes,

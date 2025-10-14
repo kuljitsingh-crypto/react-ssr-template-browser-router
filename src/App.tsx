@@ -179,9 +179,13 @@ const renderApp = async (
       config={finalConfig}
     />
   );
-  const html = ReactDOMServer.renderToString(withChunks);
-  const { helmet: head } = helmetContext;
-  return { head, body: html };
+  // Let's keep react-dom/server out of the main code-chunk.
+  return import("react-dom/server").then((mod) => {
+    const { default: ReactDOMServer } = mod;
+    const body = ReactDOMServer.renderToString(withChunks);
+    const { helmet: head } = helmetContext;
+    return { head, body };
+  });
 };
 
 export { ClientApp, renderApp };
