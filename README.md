@@ -30,7 +30,7 @@ In this template, I leverage React-Router's new CreateBrowserRouter to establish
 │   │   └── csp.js
 |   ├── router
 │   │   ├── wellKnownRouter.js
-│       └── apiRouter.js
+│   |   └── apiRouter.js
 │   ├── index.js
 │   └── util
 │       ├── helperFunctions.js
