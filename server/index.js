@@ -9,6 +9,8 @@ const { getExtractor, render, dataLoader } = require("./util/ssrUtills");
 const { default: helmet } = require("helmet");
 const cors = require("cors");
 const { validateAndGetCurrentUserInfo } = require("./util/helperFunctions");
+const { wellKnownRouter } = require("./router/wellKnownRouter");
+const { apiRouter } = require("./router/apiRouter");
 const CSP = process.env.REACT_APP_CSP;
 const PORT = parseInt(process.env.PORT || "3500", 10);
 const USING_SSL = process.env.REACT_APP_USING_SSL === "true";
@@ -106,6 +108,8 @@ if (isCspEnabled) {
 }
 
 app.use("/static", express.static(staticPath));
+app.use("/.well-known", wellKnownRouter);
+app.use("/api", apiRouter);
 
 const noCacheHeaders = {
   "Cache-control": "no-cache, no-store, must-revalidate",

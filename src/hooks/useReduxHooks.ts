@@ -11,9 +11,9 @@ export const useAppSelector: TypedUseSelectorHook<RootStateType> = useSelector;
 export type UseSelectorType = typeof useAppSelector;
 export type UseDispatchType = ReturnType<typeof useAppDispatch>;
 export type UseGetStateType = () => RootStateType;
-export type DataLoaderFunction = <P = any>(
-  getState: UseGetStateType,
-  dispatch: UseDispatchType,
-  params: Params,
-  search: Record<string, any>
-) => Promise<PayloadAction<P> | PayloadAction<unknown> | any>;
+export type DataLoaderFunction = <P = any>(params: {
+  getState: UseGetStateType;
+  dispatch: UseDispatchType;
+  params: Params;
+  search: Record<string, any>;
+}) => Promise<PayloadAction<P> | PayloadAction<unknown> | any>;

@@ -65,11 +65,11 @@ export const productsPageSlice = createSlice({
 
 export default productsPageSlice.reducer;
 
-export const loadData: DataLoaderFunction = (
+export const loadData: DataLoaderFunction = ({
   getState,
   dispatch,
   params,
-  search
-) => {
+  search,
+}) => {
   return dispatch(fetchProducts());
 };

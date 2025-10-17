@@ -6,6 +6,29 @@ const lodash = require("lodash");
 const url = require("node:url");
 const { isCurrentUserAuthenticated } = require("./helperFunctions");
 
+const parseQueryValue = (value) => {
+  if (value === undefined) return null;
+  value = decodeURIComponent(value);
+  try {
+    return JSON.parse(value);
+  } catch (err) {
+    return value;
+  }
+};
+
+function parseQueryString(queryString) {
+  const queries = (queryString || "").replace("?", "").split("&");
+  const paramObject = queries.reduce((acc, str) => {
+    const [key, value] = str.split("=");
+    if (key) {
+      acc[key] = parseQueryValue(value);
+    }
+    return acc;
+  }, {});
+
+  return paramObject;
+}
+
 class CustomChunkExtractor extends ChunkExtractor {
   addChunk(chunk) {
     chunk = chunk.replace("pages-", "");
@@ -214,8 +237,7 @@ module.exports.dataLoader = async (
   setCurrentUser,
   setAuthenticationState
 ) => {
-  const { pathname } = url.parse(request.url);
-  const completeUrl = `${request.protocol}://${request.hostname}${request.url}`;
+  const { pathname, query } = url.parse(request.url);
   const store = createStore();
   const isAuthenticated = await isCurrentUserAuthenticated(currentUser);
   store.dispatch(setCurrentUser(currentUser));
@@ -230,11 +252,14 @@ module.exports.dataLoader = async (
         typeof matchedRoute.route.loader === "function"
       ) {
         const { params } = matchedRoute;
-        const loaderWithDispatch = matchedRoute.route.loader(
-          store.dispatch,
-          true
-        );
-        acc.push(loaderWithDispatch({ params, request: { url: completeUrl } }));
+        const search = parseQueryString(query);
+        const loaderWithDispatch = matchedRoute.route.loader({
+          dispatch: store.dispatch,
+          getState: store.getState,
+          params,
+          search,
+        });
+        acc.push(loaderWithDispatch);
       }
       return acc;
     }, []);

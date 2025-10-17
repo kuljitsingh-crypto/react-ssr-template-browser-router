@@ -1,6 +1,5 @@
 import React from "react";
 import loadable from "@loadable/component";
-import { getPageDataLoadingAPI } from "@src/pages/pageDataLoadingAPI";
 import AuthenticatedPage from "@src/components/helperComponents/AuthenticatedPage";
 import { parseQueryString } from "./functionHelper";
 import { routeDetails } from "@src/routeNames";
@@ -13,7 +12,7 @@ const loadableComponent = routeDetails.reduce((acc, details) => {
   return acc;
 }, {});
 
-const pageDataLoadingAPI = getPageDataLoadingAPI();
+const pageDataLoadingAPI = {};
 
 const dataLoaderWrapper =
   (loader) =>
@@ -50,16 +49,16 @@ const dataLoaderWrapper =
       // Else again it call loader.
       // Check ProductsPageSlice.ts or ProductPageSlice.ts for more information.
       if (shouldWaitToResolve) {
-        await loader(getState, dispatch, params, searchObject);
+        await loader({ getState, dispatch, params, search: searchObject });
       } else {
-        loader(getState, dispatch, params, searchObject);
+        loader({ getState, dispatch, params, search: searchObject });
       }
     }
     return null;
   };
 
-Object.keys(pageDataLoadingAPI).reduce((acc, key) => {
-  pageDataLoadingAPI[key] = dataLoaderWrapper(pageDataLoadingAPI[key]);
+routeDetails.reduce((acc, route) => {
+  pageDataLoadingAPI[route.name] = dataLoaderWrapper(route.loadData);
   return acc;
 }, pageDataLoadingAPI);
 
@@ -71,7 +70,9 @@ export const routes = routeDetails.map((details) => {
   } else if (details.notFound) {
     extraData.notFound = details.notFound;
   }
-
+  if (details.loadData) {
+    extraData.loader = details.loadData;
+  }
   return {
     path: details.path,
     element: <Component />,

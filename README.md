@@ -28,6 +28,9 @@ In this template, I leverage React-Router's new CreateBrowserRouter to establish
 ├── server
 │   ├── csp-util
 │   │   └── csp.js
+|   ├── router
+│   │   ├── wellKnownRouter.js
+│       └── apiRouter.js
 │   ├── index.js
 │   └── util
 │       ├── helperFunctions.js
@@ -140,7 +143,6 @@ In this template, I leverage React-Router's new CreateBrowserRouter to establish
 │   │   ├── NotFoundPage
 │   │   │   ├── NotFoundPage.module.css
 │   │   │   └── NotFoundPage.tsx
-│   │   ├── pageDataLoadingAPI.ts
 │   │   ├── pageGlobalType.ts
 │   │   ├── pageReducers.ts
 │   │   ├── ProductPage
@@ -214,7 +216,7 @@ Add the route entry in the routeDetails array (found in routeNames.ts or similar
 
     If your page needs to load data on navigation:
 
-    Add an entry to `getPageDataLoadingAPI()` in `pageDataLoadingAPI.ts`
+    Add a loadData function
 
     Follow examples like `ProductsPageSlice.ts` or `ProductPageSlice.ts`
 
@@ -229,11 +231,11 @@ Suppose you’re adding a BlogPage:
 
 2. Add the route:
 
-    `{ path: "/blog", name: "BlogPage", isAuth: false }`
+    `{ path: "/blog", name: "BlogPage", isAuth: false,loadData:loadBlogData }`
 
-3. (Optional) Add loader logic in `pageDataLoadingAPI.ts`:
+3. (Optional) Add loader logic in `Blog.slice.ts`:
 
-         BlogPage: (getState, dispatch, params, searchObject) => { 
+         loadBlogData: ({getState, dispatch, params, search}) => { 
 
             // your loader code here
         }

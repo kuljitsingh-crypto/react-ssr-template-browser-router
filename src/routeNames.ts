@@ -2,10 +2,23 @@
 // For example if your component file name in pages as like pages/ResourcePage/ResourcePage
 // then route name has to be ResourcePage in route details
 
+import { loadData as productsPageLoader } from "@src/pages/ProductsPage/ProductsPageSlice";
+import { loadData as productPageLoader } from "@src/pages/ProductPage/ProductPageSlice";
+
 export const routeDetails = [
   { path: "/", name: "Homepage", isAuth: true },
-  { path: "/products", name: "ProductsPage", isAuth: true },
-  { path: "/products/:id", name: "ProductPage", isAuth: true },
+  {
+    path: "/products",
+    name: "ProductsPage",
+    isAuth: true,
+    loadData: productsPageLoader,
+  },
+  {
+    path: "/products/:id",
+    name: "ProductPage",
+    isAuth: true,
+    loadData: productPageLoader,
+  },
   { path: "/login", name: "LoginPage" },
   { path: "/signup", name: "SignupPage" },
   { path: "/recover-password", name: "ForgotPassword" },
