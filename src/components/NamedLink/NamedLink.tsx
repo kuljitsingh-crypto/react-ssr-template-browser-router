@@ -38,7 +38,7 @@ const NamedLinkComponent = (props: NamedLinkPropsTypes) => {
     router,
     className,
     activeClassName,
-  } = props;
+  } = props || defaultProps;
   const routeList = routes;
   const pathname = pathByRouteName(name, routeList, routeParams);
   const linksProps = {
@@ -70,8 +70,6 @@ const NamedLinkComponent = (props: NamedLinkPropsTypes) => {
 };
 
 const NamedLink = withRouter(NamedLinkComponent);
-
-NamedLink.defaultProps = defaultProps;
 
 NamedLink.propTypes = {
   name: string,

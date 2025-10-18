@@ -52,6 +52,7 @@ const config = configFactory("production");
 // We require that you explicitly set browsers and do not fall back to
 // browserslist defaults.
 const { checkBrowsers } = require("react-dev-utils/browsersHelper");
+const { modifyChunkContent } = require("./modifyChunkContent");
 checkBrowsers(paths.appPath, isInteractive)
   .then(() => {
     // First, read the current file sizes in build directory.
@@ -126,26 +127,7 @@ checkBrowsers(paths.appPath, isInteractive)
     }
   )
   .then(([data, fileName]) => {
-    Object.keys(data.namedChunkGroups).reduce((acc, key) => {
-      const namesArr = key.split("-");
-      if (namesArr.length < 2) {
-        return acc;
-      }
-      if (namesArr.length > 2) {
-        delete acc[key];
-        return acc;
-      }
-      const isCorrectName = namesArr[0] === namesArr[1];
-      if (!isCorrectName) {
-        delete acc[key];
-        return acc;
-      }
-      acc[namesArr[0]] = acc[key];
-      acc[namesArr[0]].name = namesArr[0];
-      delete acc[key];
-      return acc;
-    }, data.namedChunkGroups);
-    return fs.writeJson(fileName, data);
+    return modifyChunkContent(data, fileName);
   })
   .catch((err) => {
     if (err && err.message) {

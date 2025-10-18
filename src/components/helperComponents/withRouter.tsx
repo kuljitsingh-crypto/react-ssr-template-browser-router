@@ -1,18 +1,12 @@
 import React from "react";
-import {
-  Location,
-  NavigateFunction,
-  Params,
-  PathMatch,
-} from "react-router-dom";
 import { routes } from "@src/util/routes";
 import { useCustomRouter } from "@src/hooks";
 
 export type RouterTypes = {
-  matches: PathMatch[];
+  matches: any[];
   location: Location;
-  params: Readonly<Params>;
-  navigate: NavigateFunction;
+  params: Readonly<Record<string, any>>;
+  navigate: Function;
   history: History | undefined;
 };
 
@@ -29,7 +23,6 @@ export function withRouter<T extends WithRouterProps = WithRouterProps>(
     return <WrappedComponent {...(props as T)} router={router} />;
   };
   WithRouterProps.displayName = displayName;
-  WithRouterProps.defaultProps = {} as Record<string, unknown>;
   WithRouterProps.propTypes = {} as Record<string, unknown>;
   return WithRouterProps;
 }

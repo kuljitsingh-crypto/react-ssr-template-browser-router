@@ -166,6 +166,7 @@ function checkAndReturnRouterContext(serverContext = {}) {
 
 module.exports.render = async (
   req,
+  routes,
   context,
   renderApp,
   webExtractor,
@@ -175,16 +176,19 @@ module.exports.render = async (
   const fetchRequest = createFetchRequestForServer(req);
   //This is important as we don't want to set refernce for collectchunk to anything other than webExtractor.
   const collectWebChunk = webExtractor.collectChunks.bind(webExtractor);
+  console.log(req.url);
   const data = await renderApp(
-    fetchRequest,
+    { url: req.url },
+    routes,
+    context,
     collectWebChunk,
-    checkAndReturnRouterContext(context),
     preloadedState,
     config
   );
   if (!data) {
     return null;
   }
+  console.log(context);
   // Preloaded state needs to be passed for client side too.
   // For security reasons we ensure that preloaded state is considered as a string
   // by replacing '<' character with its unicode equivalent.
@@ -221,7 +225,6 @@ module.exports.render = async (
 module.exports.getExtractor = () => {
   const nodeStatsFile = path.resolve(buildPath, "node", "loadable-stats.json");
   const webStatsFile = path.resolve(buildPath, "loadable-stats.json");
-
   const nodeExtractor = new CustomChunkExtractor({ statsFile: nodeStatsFile });
   const webExtractor = new CustomChunkExtractor({ statsFile: webStatsFile });
 

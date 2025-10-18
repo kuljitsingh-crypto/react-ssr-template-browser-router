@@ -1,7 +1,6 @@
 import { TypedUseSelectorHook, useDispatch } from "react-redux";
 import { AppDispatch, RootStateType } from "@src/store";
 import { useSelector } from "react-redux";
-import { Params } from "react-router-dom";
 import { PayloadAction } from "@reduxjs/toolkit";
 type AppDispatchFuncType = () => AppDispatch;
 
@@ -14,6 +13,6 @@ export type UseGetStateType = () => RootStateType;
 export type DataLoaderFunction = <P = any>(params: {
   getState: UseGetStateType;
   dispatch: UseDispatchType;
-  params: Params;
+  params: Record<string, any>;
   search: Record<string, any>;
 }) => Promise<PayloadAction<P> | PayloadAction<unknown> | any>;

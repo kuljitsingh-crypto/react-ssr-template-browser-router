@@ -65,6 +65,10 @@ const applyNodeConfigurations = (
     newConfig.name = "node";
     newConfig.target = "node";
 
+    // This is a needed addition as defined by
+    // https://github.com/liady/webpack-node-externals
+    newConfig.externalsPresets = { node: true };
+
     // Not include @loadable/component and node_modules in build as it will be available outside the build folder.
     newConfig.externals = ["@loadable/component", nodeExternals()];
 

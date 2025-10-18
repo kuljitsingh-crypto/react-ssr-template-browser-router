@@ -159,8 +159,14 @@ app.get("*", async (req, res) => {
       setCurrentUser,
       setAuthenticationState
     );
-    const html = await render(req, context, renderApp, webExtractor, data);
-
+    const html = await render(
+      req,
+      routes,
+      context,
+      renderApp,
+      webExtractor,
+      data
+    );
     if (context.url) {
       return res.redirect(context.url);
     }
@@ -171,6 +177,7 @@ app.get("*", async (req, res) => {
       return res.send(html);
     }
   } catch (err) {
+    console.log(err);
     res.status(500).send(errorPage);
   }
 });

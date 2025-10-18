@@ -1,6 +1,6 @@
 import "core-js";
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOMClient from "react-dom/client";
 import { loadableReady } from "@loadable/component";
 
 import { routes } from "./util/routes";
@@ -20,7 +20,6 @@ if (typeof window !== "undefined") {
 }
 
 function render(shouldHydrate, preloadedState, config) {
-  const rootElement = document.getElementById("root");
   const finalConfig = mergeConfig(defaultConfig, config);
   Config.updateConfig(config);
   const store = createStore(preloadedState, finalConfig);
@@ -29,22 +28,17 @@ function render(shouldHydrate, preloadedState, config) {
 
   Promise.all(promises).then(() => {
     if (shouldHydrate) {
-      ReactDOM.hydrate(
-        <ClientApp
-          store={store}
-          isHydrated={isHydrated}
-          config={finalConfig}
-        />,
-        rootElement
+      const rootElement = document.getElementById("root");
+
+      ReactDOMClient.hydrateRoot(
+        rootElement,
+        <ClientApp store={store} isHydrated={isHydrated} config={finalConfig} />
       );
     } else {
-      ReactDOM.render(
-        <ClientApp
-          store={store}
-          isHydrated={isHydrated}
-          config={finalConfig}
-        />,
-        rootElement
+      const rootElement = document.getElementById("root");
+      const root = ReactDOMClient.createRoot(rootElement);
+      root.render(
+        <ClientApp store={store} isHydrated={isHydrated} config={finalConfig} />
       );
     }
   });

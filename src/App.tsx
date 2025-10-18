@@ -1,12 +1,6 @@
 import React, { useEffect } from "react";
 import ReactDOMServer from "react-dom/server";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import {
-  StaticHandlerContext,
-  StaticRouterProvider,
-  createStaticHandler,
-  createStaticRouter,
-} from "react-router-dom/server";
+
 import { HelmetProvider, HelmetServerState } from "react-helmet-async";
 import { Provider } from "react-redux";
 import { createRoutesForBrowserAndStaticRouter, routes } from "./util/routes";
@@ -23,14 +17,16 @@ import { ConfigurationContextProvider } from "./context";
 import { IntlProvider } from "react-intl";
 import "./App.css";
 import { changeTheme } from "./globalReducers/ui.slice";
+import { RouterProvider, StaticRouterProvider } from "./components";
 
 type ServerAppPropTypes = {
-  routes: ReturnType<typeof createStaticHandler>["dataRoutes"];
-  context: StaticHandlerContext;
+  routes: any;
   config: ConfigurationType;
   helmetContext: object;
   store: StoreType;
   isHydrated: boolean;
+  context: Record<string, any>;
+  location: string;
 };
 
 // If you want to add the language, imports  the wanted locale:
@@ -82,8 +78,6 @@ const ClientApp = (props: ClientAppPropsType) => {
     routes
   );
 
-  const router = createBrowserRouter(modifiedRoutes);
-
   useEffect(() => {
     store.dispatch(changeTheme(config.theme.name));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -98,7 +92,7 @@ const ClientApp = (props: ClientAppPropsType) => {
           defaultLocale={localeOptions.en}>
           <Provider store={store}>
             <HelmetProvider>
-              <RouterProvider router={router} />
+              <RouterProvider routes={modifiedRoutes} />
             </HelmetProvider>
           </Provider>
         </IntlProvider>
@@ -108,7 +102,7 @@ const ClientApp = (props: ClientAppPropsType) => {
 };
 
 const ServerApp = (props: ServerAppPropTypes) => {
-  const { helmetContext, context, store, routes, config } = props;
+  const { helmetContext, context, store, routes, config, location } = props;
   const locale = localeOptions.en;
   const messagesInLocale = messages[locale];
   setLocaleForMoment(locale);
@@ -117,7 +111,6 @@ const ServerApp = (props: ServerAppPropTypes) => {
     store.getState,
     routes
   );
-  const router = createStaticRouter(modifiedRoutes, context);
   return (
     <React.StrictMode>
       <ConfigurationContextProvider value={{ config: config }}>
@@ -128,10 +121,9 @@ const ServerApp = (props: ServerAppPropTypes) => {
           <Provider store={store}>
             <HelmetProvider context={helmetContext}>
               <StaticRouterProvider
-                router={router}
+                routes={modifiedRoutes}
+                location={location}
                 context={context}
-                nonce='the-nonce'
-                hydrate={false}
               />
             </HelmetProvider>
           </Provider>
@@ -141,42 +133,33 @@ const ServerApp = (props: ServerAppPropTypes) => {
   );
 };
 
-type GetRouterContextType = (
-  context: StaticHandlerContext | Response
-) => StaticHandlerContext | null;
-
 // This will be used to create element in server side
 // If you want to use new data api then use it. make sure to change ssrUtills.js as well.
 const renderApp = async (
-  fetchRequest: Request,
+  req: Request,
+  routes: any,
+  routerContext: Record<string, any>,
   collectWebChunk: any,
-  getRouterContext: GetRouterContextType,
   preloadedStore: Record<string, unknown>,
   config: ConfigurationType
 ) => {
   const helmetContext: { helmet?: HelmetServerState } = {};
-
-  const handler = createStaticHandler(
-    createRoutesForBrowserAndStaticRouter(undefined, undefined, routes, true)
-  );
   const finalConfig = mergeConfig(defaultConfig, config || {});
-  const context = await handler.query(fetchRequest);
-
-  const routerContext = getRouterContext(context);
   if (!routerContext) return;
   const store = createStore(preloadedStore, finalConfig);
   const isHydrated = preloadedStore && !isEmpty(preloadedStore);
-
   // When rendering the app on server, we wrap the app with webExtractor.collectChunks
   // This is needed to figure out correct chunks/scripts to be included to server-rendered page.
+
   const withChunks = collectWebChunk(
     <ServerApp
-      routes={handler.dataRoutes}
+      routes={routes}
       helmetContext={helmetContext}
       context={routerContext}
       isHydrated={isHydrated}
       store={store}
       config={finalConfig}
+      location={req.url}
     />
   );
   const html = ReactDOMServer.renderToString(withChunks);

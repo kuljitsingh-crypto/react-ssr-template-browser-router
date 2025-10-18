@@ -24,6 +24,7 @@ const checkRequiredFiles = require("react-dev-utils/checkRequiredFiles");
 const formatWebpackMessages = require("react-dev-utils/formatWebpackMessages");
 const printBuildError = require("react-dev-utils/printBuildError");
 const path = require("path");
+const { modifyChunkContent } = require("./modifyChunkContent");
 
 // Warn and crash if required files are missing
 if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
@@ -80,33 +81,7 @@ build(config)
     }
   )
   .then(([data, fileName]) => {
-    Object.keys(data.namedChunkGroups).reduce((acc, key) => {
-      const keyWithoutPrefix = key.replace("pages-", "");
-      const namesArr = keyWithoutPrefix.split("-");
-      if (keyWithoutPrefix === key) {
-        return acc;
-      }
-      if (namesArr.length < 2) {
-        acc[keyWithoutPrefix] = acc[key];
-        acc[keyWithoutPrefix].name = keyWithoutPrefix;
-        delete acc[key];
-        return acc;
-      }
-      if (namesArr.length > 2) {
-        delete acc[key];
-        return acc;
-      }
-      const isCorrectName = namesArr[0] === namesArr[1];
-      if (!isCorrectName) {
-        delete acc[key];
-        return acc;
-      }
-      acc[namesArr[0]] = acc[key];
-      acc[namesArr[0]].name = namesArr[0];
-      delete acc[key];
-      return acc;
-    }, data.namedChunkGroups);
-    return fs.writeJson(fileName, data);
+    return modifyChunkContent(data, fileName);
   })
   .catch((err) => {
     if (err && err.message) {

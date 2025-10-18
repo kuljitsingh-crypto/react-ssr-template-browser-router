@@ -29,10 +29,10 @@ export const fetchProduct = customCreateAsyncThunk<
     }
 
     const resp = await axios.get(
-      `https://fakestoreapi.in/api/products/${productId}`
+      `https://fakestoreapi.com/products/${productId}`
     );
 
-    return resp.data.product;
+    return resp.data;
   },
   {
     condition: (productId, { getState }) => {

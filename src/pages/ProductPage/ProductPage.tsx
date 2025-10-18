@@ -34,6 +34,7 @@ function ProductPage(props: ProductPagePropsType) {
           <div>
             <h3>{product.title}</h3>
             <p>{product.description}</p>
+            <img alt={product.title} src={product.image} />
           </div>
         ) : null}
         {fetchStatus.isFailed(status) && !!error ? (
