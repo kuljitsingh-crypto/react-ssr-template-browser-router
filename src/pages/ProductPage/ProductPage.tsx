@@ -2,13 +2,13 @@ import React from "react";
 import { UseDispatchType, UseSelectorType } from "@src/hooks";
 import { fetchProduct } from "./ProductPageSlice";
 import { customConnect } from "@src/components/helperComponents/customConnect";
-import { fetchStatus, FetchStatusVal } from "@src/custom-config";
 import css from "./ProductPage.module.css";
 import { ProductErrorType, ProductType } from "../pageGlobalType";
 import { IntlShape } from "react-intl";
 import Page from "@src/components/Page/Page";
 import RightChild from "@src/components/RIghtChild/RightChild";
 import { selectStateValue } from "@src/storeHelperFunction";
+import { FetchStatusVal } from "@src/util/fetchStatusHelper";
 
 type ProductPagePropsType = {
   status: FetchStatusVal;
@@ -29,15 +29,15 @@ function ProductPage(props: ProductPagePropsType) {
       metaTitle={title}
       contentRootClassName={css.root}>
       <RightChild>
-        {fetchStatus.isLoading(status) ? <span>Loading product...</span> : null}
-        {fetchStatus.isSucceeded(status) && product ? (
+        {status.isLoading ? <span>Loading product...</span> : null}
+        {status.isSucceeded && product ? (
           <div>
             <h3>{product.title}</h3>
             <p>{product.description}</p>
             <img alt={product.title} src={product.image} />
           </div>
         ) : null}
-        {fetchStatus.isFailed(status) && !!error ? (
+        {status.isFailed && !!error ? (
           <p className={css.error}>Failed to get product. Please try again.</p>
         ) : null}
       </RightChild>

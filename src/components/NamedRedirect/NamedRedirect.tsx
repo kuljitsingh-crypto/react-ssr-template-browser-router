@@ -59,10 +59,10 @@ function NamedRedirect(props: NamedRedirectProps) {
 }
 
 NamedRedirect.propTypes = {
-  search: string.isRequired,
+  search: string,
   name: string.isRequired,
   state: object,
-  hash: string.isRequired,
+  hash: string,
   params: object,
   replace: bool,
 };

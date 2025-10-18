@@ -13,7 +13,6 @@ import { useConfiguration } from "@src/context";
 import Page from "@src/components/Page/Page";
 import RightChild from "@src/components/RIghtChild/RightChild";
 import ForgotPasswordForm from "@src/Form/ForgotPasswordForm/ForgotPasswordForm";
-import { fetchStatus } from "@src/custom-config";
 import {
   resetLogInStatus,
   sendPasswordResetInstruction,
@@ -70,7 +69,7 @@ function ForgotPassword(props: ForgotPasswordPasswordProps) {
   useFetchStatusHandler({
     fetchStatus: forgotPasswordStatus,
     fetchError: forgotPasswordError,
-    callback: { succeeded: { handler: onForgotPasswordSuccess } },
+    succeeded: onForgotPasswordSuccess,
   });
 
   if (isAuthenticated) {
@@ -98,9 +97,7 @@ function ForgotPassword(props: ForgotPasswordPasswordProps) {
             <ForgotPasswordForm
               intl={intl}
               onSubmit={handleSubmit}
-              forgotPasswordInProgress={fetchStatus.isLoading(
-                forgotPasswordStatus
-              )}
+              forgotPasswordInProgress={forgotPasswordStatus.isLoading}
               forgotPasswordError={forgotPasswordError}
             />
             <div className={"linkTextContainer"}>

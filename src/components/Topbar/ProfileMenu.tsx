@@ -12,7 +12,6 @@ import {
 } from "@src/hooks";
 import { userLogout } from "@src/globalReducers/auth.slice";
 import { customConnect } from "../helperComponents/customConnect";
-import { fetchStatus } from "@src/custom-config";
 import { selectStateValue } from "@src/storeHelperFunction";
 
 const mapStateToProps = (selector: UseSelectorType) => {
@@ -53,7 +52,7 @@ function ProfileMenu({
   useFetchStatusHandler({
     fetchStatus: logoutStatus,
     fetchError: logoutError,
-    callback: { succeeded: { handler: onLogoutSuccess } },
+    succeeded: onLogoutSuccess,
   });
 
   if (!currentUser || !isAuthenticated) {
@@ -80,7 +79,7 @@ function ProfileMenu({
             onClick={handleLogout}
             buttonClassName={css.logoutBtn}
             iconClassName={css.loadingIcon}
-            isLoading={fetchStatus.isLoading(logoutStatus)}>
+            isLoading={logoutStatus.isLoading}>
             <React.Fragment>
               <FormattedMsg id='Logout' className={"normalFont"} />
               <GoSignOut className={css.logoutIcon} />

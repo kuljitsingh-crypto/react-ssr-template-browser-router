@@ -67,22 +67,6 @@ const streetAddress = "Bulevardi 14";
 
 const ensureRootUrl = (url: string) => url.replace(/\/$/, "");
 
-export const FETCH_STATUS = {
-  idle: "idle",
-  loading: "loading",
-  succeeded: "succeeded",
-  failed: "failed",
-} as const;
-
-export type FetchStatusVal = (typeof FETCH_STATUS)[keyof typeof FETCH_STATUS];
-
-export const fetchStatus = {
-  isLoading: (status: FetchStatusVal) => status === FETCH_STATUS.loading,
-  isSucceeded: (status: FetchStatusVal) => status === FETCH_STATUS.succeeded,
-  isFailed: (status: FetchStatusVal) => status === FETCH_STATUS.failed,
-  isIdle: (status: FetchStatusVal) => status === FETCH_STATUS.idle,
-};
-
 export const defaultConfig: ConfigurationType = {
   canonicalRootUrl: ensureRootUrl(rootUrl),
   address: { addressCountry, addressRegion, postalCode, streetAddress },

@@ -1,9 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { FETCH_STATUS, FetchStatusVal } from "../custom-config";
 import { customCreateAsyncThunk } from "@src/storeHelperFunction";
 import { GeneralError } from "@src/util/APITypes";
 import { fetchCurrentUser, setCurrentUser } from "./user.slice";
 import { waitFor } from "@src/util/functionHelper";
+import {
+  FETCH_STATUS,
+  FetchStatus,
+  FetchStatusVal,
+} from "@src/util/fetchStatusHelper";
 
 type InitialState = {
   isAuthenticated: boolean;
@@ -21,13 +25,13 @@ type UserLoginParams = { email: string; password: string };
 
 const initialState: InitialState = {
   isAuthenticated: false,
-  loginStatus: FETCH_STATUS.idle,
+  loginStatus: new FetchStatus(),
   loginError: null,
-  logoutStatus: FETCH_STATUS.idle,
+  logoutStatus: new FetchStatus(),
   logoutError: null,
-  signupStatus: FETCH_STATUS.idle,
+  signupStatus: new FetchStatus(),
   signupError: null,
-  forgotPasswordStatus: FETCH_STATUS.idle,
+  forgotPasswordStatus: new FetchStatus(),
   forgotPasswordError: null,
 };
 
@@ -93,73 +97,73 @@ export const loginSlice = createSlice({
       state.isAuthenticated = action.payload;
     },
     resetLogoutStatus: (state) => {
-      state.logoutStatus = FETCH_STATUS.idle;
+      state.logoutStatus.set(FETCH_STATUS.idle);
     },
     resetLogInStatus: (state) => {
-      state.logoutStatus = FETCH_STATUS.idle;
+      state.logoutStatus.set(FETCH_STATUS.idle);
     },
     resetSignupStatus: (state) => {
-      state.signupStatus = FETCH_STATUS.idle;
+      state.signupStatus.set(FETCH_STATUS.idle);
     },
     resetForgotPasswordStatus: (state) => {
-      state.forgotPasswordStatus = FETCH_STATUS.idle;
+      state.forgotPasswordStatus.set(FETCH_STATUS.idle);
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(userLogin.pending, (state, action) => {
-        state.loginStatus = FETCH_STATUS.loading;
-        state.logoutStatus = FETCH_STATUS.idle;
+        state.loginStatus.set(FETCH_STATUS.loading);
+        state.logoutStatus.set(FETCH_STATUS.idle);
         state.loginError = null;
       })
       .addCase(userLogin.fulfilled, (state, action) => {
-        state.loginStatus = FETCH_STATUS.succeeded;
+        state.loginStatus.set(FETCH_STATUS.succeeded);
         state.isAuthenticated = true;
       })
       .addCase(userLogin.rejected, (state, action) => {
         const { code, name, message } = action.error;
-        state.loginStatus = FETCH_STATUS.failed;
+        state.loginStatus.set(FETCH_STATUS.failed);
         state.loginError = { code, name, message };
       })
       .addCase(userLogout.pending, (state, action) => {
-        state.logoutStatus = FETCH_STATUS.loading;
-        state.loginStatus = FETCH_STATUS.idle;
-        state.signupStatus = FETCH_STATUS.idle;
+        state.logoutStatus.set(FETCH_STATUS.loading);
+        state.loginStatus.set(FETCH_STATUS.idle);
+        state.signupStatus.set(FETCH_STATUS.idle);
         state.logoutError = null;
       })
       .addCase(userLogout.fulfilled, (state, action) => {
-        state.logoutStatus = FETCH_STATUS.succeeded;
+        state.logoutStatus.set(FETCH_STATUS.succeeded);
         state.isAuthenticated = false;
       })
       .addCase(userLogout.rejected, (state, action) => {
         const { code, name, message } = action.error;
-        state.logoutStatus = FETCH_STATUS.failed;
+        state.logoutStatus.set(FETCH_STATUS.failed);
         state.logoutError = { code, name, message };
       })
       .addCase(userSignup.pending, (state, action) => {
-        state.logoutStatus = FETCH_STATUS.idle;
-        state.loginStatus = FETCH_STATUS.idle;
-        state.signupStatus = FETCH_STATUS.loading;
+        state.logoutStatus.set(FETCH_STATUS.idle);
+        state.loginStatus.set(FETCH_STATUS.idle);
+        state.signupStatus.set(FETCH_STATUS.loading);
         state.signupError = null;
       })
       .addCase(userSignup.fulfilled, (state, action) => {
-        state.signupStatus = FETCH_STATUS.succeeded;
+        state.signupStatus.set(FETCH_STATUS.succeeded);
       })
       .addCase(userSignup.rejected, (state, action) => {
         const { code, name, message } = action.error;
-        state.signupStatus = FETCH_STATUS.failed;
+        state.signupStatus.set(FETCH_STATUS.failed);
         state.signupError = { code, name, message };
       })
       .addCase(sendPasswordResetInstruction.pending, (state, action) => {
-        state.forgotPasswordStatus = FETCH_STATUS.loading;
+        state.forgotPasswordStatus.set(FETCH_STATUS.loading);
         state.forgotPasswordError = null;
       })
       .addCase(sendPasswordResetInstruction.fulfilled, (state, action) => {
-        state.forgotPasswordStatus = FETCH_STATUS.succeeded;
+        state.forgotPasswordStatus.set(FETCH_STATUS.succeeded);
       })
       .addCase(sendPasswordResetInstruction.rejected, (state, action) => {
         const { code, name, message } = action.error;
-        state.forgotPasswordStatus = FETCH_STATUS.failed;
+        state.forgotPasswordStatus.set(FETCH_STATUS.failed);
         state.forgotPasswordError = { code, name, message };
       });
   },

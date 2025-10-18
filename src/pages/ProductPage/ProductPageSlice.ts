@@ -1,8 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { FETCH_STATUS, fetchStatus, FetchStatusVal } from "@src/custom-config";
 import { customCreateAsyncThunk } from "@src/storeHelperFunction";
 import { DataLoaderFunction } from "@src/hooks";
 import { ProductErrorType, ProductType } from "../pageGlobalType";
+import {
+  FETCH_STATUS,
+  FetchStatus,
+  FetchStatusVal,
+} from "@src/util/fetchStatusHelper";
 
 type ProductStateType = {
   status: FetchStatusVal;
@@ -13,7 +17,7 @@ type ProductStateType = {
 const PRODUCT_FETCH_NAME = "product/fetchproductbyid";
 
 const initialState: ProductStateType = {
-  status: FETCH_STATUS.idle,
+  status: new FetchStatus(),
   product: null,
   error: undefined,
 };
@@ -55,22 +59,19 @@ export const productPageSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchProduct.pending, (state, action) => {
-        state.status = FETCH_STATUS.loading;
+        state.status.set(FETCH_STATUS.loading);
         state.product = null;
         state.error = undefined;
       })
       .addCase(fetchProduct.fulfilled, (state, action) => {
-        if (
-          fetchStatus.isIdle(state.status) ||
-          fetchStatus.isLoading(state.status)
-        ) {
-          state.status = FETCH_STATUS.succeeded;
+        if (state.status.isIdle || state.status.isLoading) {
+          state.status.set(FETCH_STATUS.succeeded);
           state.product = action.payload;
         }
       })
       .addCase(fetchProduct.rejected, (state, action) => {
         const { code, name, message } = action.error;
-        state.status = FETCH_STATUS.failed;
+        state.status.set(FETCH_STATUS.failed);
         state.error = { code, name, message };
       });
   },

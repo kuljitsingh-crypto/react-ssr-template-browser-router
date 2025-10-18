@@ -16,7 +16,6 @@ import {
   userLogin,
 } from "@src/globalReducers/auth.slice";
 import { customConnect } from "@src/components/helperComponents/customConnect";
-import { fetchStatus, FetchStatusVal } from "@src/custom-config";
 import css from "./LoginPage.module.css";
 import { GeneralError } from "@src/util/APITypes";
 import {
@@ -27,6 +26,7 @@ import {
 } from "@src/components";
 import RightChild from "@src/components/RIghtChild/RightChild";
 import { selectStateValue } from "@src/storeHelperFunction";
+import { FetchStatusVal } from "@src/util/fetchStatusHelper";
 
 const mapStateToProps = (selector: UseSelectorType) => {
   const loginStatus = selector(selectStateValue("auth", "loginStatus"));
@@ -86,11 +86,12 @@ function LoginPage(props: LoginPageProps) {
   useFetchStatusHandler({
     fetchStatus: loginStatus,
     fetchError: loginError,
-    callback: { succeeded: { handler: onLoginSuccess } },
+    succeeded: onLoginSuccess,
   });
   if (isAuthenticated) {
     return <NamedRedirect name='Homepage' replace={true} />;
   }
+  console.log(loginStatus);
   return (
     <Page
       metaTitle={title}
@@ -109,7 +110,7 @@ function LoginPage(props: LoginPageProps) {
             </p>
             <LoginForm
               intl={intl}
-              loginInProgress={fetchStatus.isLoading(loginStatus)}
+              loginInProgress={loginStatus.isLoading}
               loginError={loginError}
               onSubmit={handleSubmit}
               onNavigateToForgotPassword={onNavigateToForgotPassword}

@@ -2,7 +2,6 @@ import React from "react";
 import { UseDispatchType, UseSelectorType } from "@src/hooks";
 import { fetchProducts } from "./ProductsPageSlice";
 import { customConnect } from "@src/components/helperComponents/customConnect";
-import { fetchStatus, FetchStatusVal } from "@src/custom-config";
 import css from "./ProductsPage.module.css";
 import { ProductErrorType, ProductType } from "../pageGlobalType";
 import { NamedLink } from "@src/components";
@@ -11,6 +10,7 @@ import Page from "@src/components/Page/Page";
 import RightChild from "@src/components/RIghtChild/RightChild";
 import { routesName } from "@src/routeNames";
 import { selectStateValue } from "@src/storeHelperFunction";
+import { FetchStatusVal } from "@src/util/fetchStatusHelper";
 
 type ProductsPagePropsType = {
   status: FetchStatusVal;
@@ -31,10 +31,8 @@ function ProductsPage(props: ProductsPagePropsType) {
       description={description}
       contentRootClassName={css.root}>
       <RightChild>
-        {fetchStatus.isLoading(status) ? (
-          <span>Loading products...</span>
-        ) : null}
-        {fetchStatus.isSucceeded(status) && products && products.length > 0 ? (
+        {status.isLoading ? <span>Loading products...</span> : null}
+        {status.isSucceeded && products && products.length > 0 ? (
           <ul>
             <li>
               <h3>Products:</h3>
@@ -51,7 +49,7 @@ function ProductsPage(props: ProductsPagePropsType) {
             ))}
           </ul>
         ) : null}
-        {fetchStatus.isFailed(status) ? (
+        {status.isFailed ? (
           <p className={css.error}>Failed to get products. Please try again.</p>
         ) : null}
       </RightChild>

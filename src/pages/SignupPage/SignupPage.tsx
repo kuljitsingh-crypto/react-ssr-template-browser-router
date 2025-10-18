@@ -10,13 +10,13 @@ import {
 } from "@src/hooks";
 import { resetLogInStatus, userSignup } from "@src/globalReducers/auth.slice";
 import { customConnect } from "@src/components/helperComponents/customConnect";
-import { fetchStatus, FetchStatusVal } from "@src/custom-config";
 import css from "./SignupPage.module.css";
 import { GeneralError } from "@src/util/APITypes";
 import { FormattedMsg, InlineTextButton, NamedRedirect } from "@src/components";
 import RightChild from "@src/components/RIghtChild/RightChild";
 import SignupForm from "@src/Form/SignupForm/SignupForm";
 import { selectStateValue } from "@src/storeHelperFunction";
+import { FetchStatusVal } from "@src/util/fetchStatusHelper";
 
 const mapStateToProps = (selector: UseSelectorType) => {
   const signupStatus = selector(selectStateValue("auth", "signupStatus"));
@@ -67,7 +67,7 @@ function SignupPage(props: SignupPageProps) {
   useFetchStatusHandler({
     fetchStatus: signupStatus,
     fetchError: signupError,
-    callback: { succeeded: { handler: onSignupSuccess } },
+    succeeded: onSignupSuccess,
   });
 
   if (isAuthenticated) {
@@ -92,7 +92,7 @@ function SignupPage(props: SignupPageProps) {
             <SignupForm
               intl={intl}
               onSubmit={handleSubmit}
-              signupInProgress={fetchStatus.isLoading(signupStatus)}
+              signupInProgress={signupStatus.isLoading}
               signupError={signupError}
             />
             <div className={"linkTextContainer"}>

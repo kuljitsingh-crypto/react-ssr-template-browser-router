@@ -1,9 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { FETCH_STATUS, FetchStatusVal } from "@src/custom-config";
 import { customCreateAsyncThunk } from "@src/storeHelperFunction";
 import { setAuthenticationState } from "./auth.slice";
 import { CurrentUser } from "@src/util/APITypes";
 import { waitFor } from "@src/util/functionHelper";
+import {
+  FETCH_STATUS,
+  FetchStatus,
+  FetchStatusVal,
+} from "@src/util/fetchStatusHelper";
 
 type InitialState = {
   currentUser: CurrentUser | null;
@@ -15,7 +19,7 @@ const CURRENT_USER_FETCH_NAME = "app/current_user/fetch";
 
 const initialState: InitialState = {
   currentUser: null,
-  currentUserFetchStatus: FETCH_STATUS.idle,
+  currentUserFetchStatus: new FetchStatus(),
 };
 
 export const fetchCurrentUser = customCreateAsyncThunk<CurrentUser, void>(
@@ -41,23 +45,23 @@ const currentUserSlice = createSlice({
   reducers: {
     setCurrentUser: (state, action: PayloadAction<CurrentUser | null>) => {
       state.currentUser = action.payload;
-      state.currentUserFetchStatus = action.payload
-        ? FETCH_STATUS.succeeded
-        : FETCH_STATUS.idle;
+      state.currentUserFetchStatus.set(
+        action.payload ? FETCH_STATUS.succeeded : FETCH_STATUS.idle
+      );
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCurrentUser.pending, (state) => {
-        state.currentUserFetchStatus = FETCH_STATUS.loading;
+        state.currentUserFetchStatus.set(FETCH_STATUS.loading);
         state.currentUser = null;
       })
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
-        state.currentUserFetchStatus = FETCH_STATUS.succeeded;
+        state.currentUserFetchStatus.set(FETCH_STATUS.succeeded);
         state.currentUser = action.payload;
       })
       .addCase(fetchCurrentUser.rejected, (state, action) => {
-        state.currentUserFetchStatus = FETCH_STATUS.failed;
+        state.currentUserFetchStatus.set(FETCH_STATUS.failed);
       });
   },
 });
