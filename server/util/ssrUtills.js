@@ -1,6 +1,5 @@
 const path = require("path");
 const { ChunkExtractor } = require("@loadable/server");
-const fetch = require("node-fetch");
 const fs = require("fs");
 const lodash = require("lodash");
 const url = require("node:url");
@@ -41,9 +40,6 @@ class CustomChunkExtractor extends ChunkExtractor {
 }
 
 const buildPath = path.join(__dirname, "..", "..", "build");
-
-const redirectCode = new Set([301, 302, 303, 307, 308]);
-const notFoundCode = new Set([404]);
 
 // The HTML build file is generated from the `public/index.html` file
 // and used as a template for server side rendering. The application
@@ -111,58 +107,12 @@ const template = (templateData) => {
   const templateWithHtmlAttributes = templatedWithHtmlAttributes({
     htmlAttributes,
   });
-  return templateTags(templateWithHtmlAttributes)(
+  const finalTemplate = templateTags(templateWithHtmlAttributes)(
     templateDataWithoutHtmlAttributes
   );
+
+  return finalTemplate;
 };
-
-function createFetchRequestForServer(req) {
-  const origin = `${req.protocol}://${req.get("host")}`;
-  const url = new URL(req.originalUrl || req.url, origin);
-
-  const abortController = new AbortController();
-
-  req.on("close", () => abortController.abort());
-
-  const requestObject = {
-    method: req.method,
-    signal: abortController.signal,
-    headers: req.headers,
-  };
-
-  if (req.method !== "GET" && req.method !== "HEAD" && req.body) {
-    requestObject.body = req.body;
-  }
-
-  return new fetch.Request(url.href, requestObject);
-}
-
-function checkAndReturnRouterContext(serverContext = {}) {
-  return function (context) {
-    if (context instanceof Response || !context.matches) {
-      if (redirectCode.has(context.status)) {
-        serverContext.url = context.headers.get("Location");
-      } else if (notFoundCode.has(context.status)) {
-        serverContext.nofound = true;
-        return context;
-      } else {
-        throw new Error(`Server response ${context.status} is not a redirect.`);
-      }
-      return null;
-    }
-    if (
-      context &&
-      Array.isArray(context.matches) &&
-      context.matches.length > 0
-    ) {
-      const [firstMatch] = context.matches;
-      if (firstMatch && firstMatch.route && firstMatch.route.notFound) {
-        serverContext.nofound = true;
-      }
-    }
-    return context;
-  };
-}
 
 module.exports.render = async (
   req,
@@ -173,10 +123,9 @@ module.exports.render = async (
   preloadedState = {},
   config = {}
 ) => {
-  const fetchRequest = createFetchRequestForServer(req);
   //This is important as we don't want to set refernce for collectchunk to anything other than webExtractor.
   const collectWebChunk = webExtractor.collectChunks.bind(webExtractor);
-  console.log(req.url);
+
   const data = await renderApp(
     { url: req.url },
     routes,
@@ -188,12 +137,15 @@ module.exports.render = async (
   if (!data) {
     return null;
   }
-  console.log(context);
   // Preloaded state needs to be passed for client side too.
   // For security reasons we ensure that preloaded state is considered as a string
   // by replacing '<' character with its unicode equivalent.
   // http://redux.js.org/docs/recipes/ServerRendering.html#security-considerations
-  const serializeData = JSON.stringify(preloadedState).replace(/</g, "\\u003c");
+  const serializeStateData = JSON.stringify(preloadedState).replace(
+    /</g,
+    "\\u003c"
+  );
+  const serializeConfigData = JSON.stringify(config).replace(/</g, "\\u003c");
 
   // At this point the serializedState is a string, the second
   // JSON.stringify wraps it within double quotes and escapes the
@@ -201,7 +153,14 @@ module.exports.render = async (
   // as a string.
   const preloadedStateScript = `
       <script>window.__PRELOADED_STATE__ = ${JSON.stringify(
-        serializeData
+        serializeStateData
+      )};</script>
+  `;
+
+  // Use to send Configration data
+  const preloadedConfigScript = `
+      <script>window.__UI_CONFIGURATION__ = ${JSON.stringify(
+        serializeConfigData
       )};</script>
   `;
 
@@ -218,6 +177,7 @@ module.exports.render = async (
     ssrStyles: webExtractor.getStyleTags(),
     ssrScript: webExtractor.getScriptTags(),
     preloadedStateScript,
+    preloadedConfigScript,
   };
   return template(templateData);
 };

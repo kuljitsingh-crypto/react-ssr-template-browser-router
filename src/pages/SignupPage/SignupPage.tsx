@@ -71,7 +71,7 @@ function SignupPage(props: SignupPageProps) {
   });
 
   if (isAuthenticated) {
-    return <NamedRedirect name='Homepage' />;
+    return <NamedRedirect name='Homepage' replace={true} />;
   }
   return (
     <Page

@@ -13,7 +13,10 @@ import germenMessages from "./translations/de.json";
 import { localeOptions } from "./util/localeHelper";
 import moment from "moment";
 import { ConfigurationType, defaultConfig, mergeConfig } from "./custom-config";
-import { ConfigurationContextProvider } from "./context";
+import {
+  ConfigurationContextProvider,
+  RouteConfigurationContextProvider,
+} from "./context";
 import { IntlProvider } from "react-intl";
 import "./App.css";
 import { changeTheme } from "./globalReducers/ui.slice";
@@ -77,7 +80,6 @@ const ClientApp = (props: ClientAppPropsType) => {
     store.getState,
     routes
   );
-
   useEffect(() => {
     store.dispatch(changeTheme(config.theme.name));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -85,18 +87,20 @@ const ClientApp = (props: ClientAppPropsType) => {
 
   return (
     <React.StrictMode>
-      <ConfigurationContextProvider value={{ config: config }}>
-        <IntlProvider
-          locale={locale}
-          messages={messagesInLocale}
-          defaultLocale={localeOptions.en}>
-          <Provider store={store}>
-            <HelmetProvider>
-              <RouterProvider routes={modifiedRoutes} />
-            </HelmetProvider>
-          </Provider>
-        </IntlProvider>
-      </ConfigurationContextProvider>
+      <RouteConfigurationContextProvider value={{ routes: modifiedRoutes }}>
+        <ConfigurationContextProvider value={{ config: config }}>
+          <IntlProvider
+            locale={locale}
+            messages={messagesInLocale}
+            defaultLocale={localeOptions.en}>
+            <Provider store={store}>
+              <HelmetProvider>
+                <RouterProvider routes={modifiedRoutes} />
+              </HelmetProvider>
+            </Provider>
+          </IntlProvider>
+        </ConfigurationContextProvider>
+      </RouteConfigurationContextProvider>
     </React.StrictMode>
   );
 };
@@ -109,26 +113,30 @@ const ServerApp = (props: ServerAppPropTypes) => {
   const modifiedRoutes = createRoutesForBrowserAndStaticRouter(
     store.dispatch,
     store.getState,
-    routes
+    routes,
+    true,
+    context
   );
   return (
     <React.StrictMode>
-      <ConfigurationContextProvider value={{ config: config }}>
-        <IntlProvider
-          locale={locale}
-          messages={messagesInLocale}
-          defaultLocale={localeOptions.en}>
-          <Provider store={store}>
-            <HelmetProvider context={helmetContext}>
-              <StaticRouterProvider
-                routes={modifiedRoutes}
-                location={location}
-                context={context}
-              />
-            </HelmetProvider>
-          </Provider>
-        </IntlProvider>
-      </ConfigurationContextProvider>
+      <RouteConfigurationContextProvider value={{ routes: modifiedRoutes }}>
+        <ConfigurationContextProvider value={{ config: config }}>
+          <IntlProvider
+            locale={locale}
+            messages={messagesInLocale}
+            defaultLocale={localeOptions.en}>
+            <Provider store={store}>
+              <HelmetProvider context={helmetContext}>
+                <StaticRouterProvider
+                  routes={modifiedRoutes}
+                  location={location}
+                  context={context}
+                />
+              </HelmetProvider>
+            </Provider>
+          </IntlProvider>
+        </ConfigurationContextProvider>
+      </RouteConfigurationContextProvider>
     </React.StrictMode>
   );
 };
@@ -150,7 +158,6 @@ const renderApp = async (
   const isHydrated = preloadedStore && !isEmpty(preloadedStore);
   // When rendering the app on server, we wrap the app with webExtractor.collectChunks
   // This is needed to figure out correct chunks/scripts to be included to server-rendered page.
-
   const withChunks = collectWebChunk(
     <ServerApp
       routes={routes}

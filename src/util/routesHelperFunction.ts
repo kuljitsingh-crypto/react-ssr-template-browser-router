@@ -11,16 +11,7 @@ type PathParamsType = {
 
 export type RoutesType = typeof routes;
 
-type RouteType = {
-  path: string;
-  element: JSX.Element | null;
-  name: RoutesNameType;
-  loader?: Function;
-  exact: boolean;
-  children?: React.ReactNode;
-  id?: string;
-  isAuth?: boolean;
-};
+type RouteType = RoutesType[number];
 
 const findRouteByName = (nameToFind: string, routes: RoutesType) =>
   find(routes, (route) => route.name === nameToFind);

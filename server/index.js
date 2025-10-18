@@ -23,6 +23,7 @@ const cspReportUri = "/csp-report";
 const isCspEnabled = CSP === "block" || CSP === "report";
 
 const errorPage = fs.readFileSync(path.join(buildPath, "500.html"), "utf8");
+const unauthPage = fs.readFileSync(path.join(buildPath, "401.html"), "utf8");
 
 const app = express();
 
@@ -167,17 +168,23 @@ app.get("*", async (req, res) => {
       webExtractor,
       data
     );
+    // For now context has three possible key url,notFound and unauthorized
+    // If you wan to handle unauthorized different differently then as per your requriement
     if (context.url) {
       return res.redirect(context.url);
+    } else if (context.unauthorized) {
+      res.setHeader("Content-Type", "text/html");
+      return res.status(401).end(unauthPage);
     }
     res.setHeader("Content-Type", "text/html");
-    if (context.nofound) {
+    if (context.notFound) {
       return res.status(404).send(html);
     } else {
       return res.send(html);
     }
   } catch (err) {
     console.log(err);
+    res.setHeader("Content-Type", "text/html");
     res.status(500).send(errorPage);
   }
 });

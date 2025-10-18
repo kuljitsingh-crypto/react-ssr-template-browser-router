@@ -26,11 +26,11 @@ export const routeDetails = [
 ] as const;
 
 type RouteNames = (typeof routeDetails)[number]["name"];
+type routesKey = keyof typeof routesName;
 
 export const routesName = routeDetails.reduce((acc, value) => {
   acc[value.name] = value.name;
   return acc;
 }, {} as Record<RouteNames, RouteNames>);
 
-type routesKey = keyof typeof routesName;
 export type RoutesNameType = (typeof routesName)[routesKey];

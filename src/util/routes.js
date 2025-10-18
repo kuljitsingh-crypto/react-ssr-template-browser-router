@@ -87,7 +87,8 @@ export const createRoutesForBrowserAndStaticRouter = (
   dispatch,
   getState,
   routes,
-  shouldWaitToResolve = false
+  shouldWaitToResolve = false,
+  staticContext = {}
 ) => {
   const modified = routes.map((route) => {
     const { isAuth, ...restRoute } = route;
@@ -95,15 +96,23 @@ export const createRoutesForBrowserAndStaticRouter = (
       restRoute.element = React.createElement(AuthenticatedPage, {
         children: restRoute.element,
         name: restRoute.name,
+        staticContext,
       });
     } else if (restRoute.element !== null) {
       restRoute.element = React.cloneElement(restRoute.element, {
         name: restRoute.name,
       });
     }
+    if (restRoute.notFound) {
+      restRoute.element = React.cloneElement(restRoute.element, {
+        name: restRoute.name,
+        staticContext,
+      });
+    }
     if (restRoute.element === null) {
       return { ...restRoute, key: restRoute.name };
     }
+
     const loader = pageDataLoadingAPI[restRoute.name];
     const loaderMaybe =
       loader && typeof loader === "function"

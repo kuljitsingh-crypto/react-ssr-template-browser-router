@@ -1,7 +1,7 @@
 module.exports.validateAndGetCurrentUserInfo = async (req) => {
   // your custom logic to validate current user
   // return current user Data or null
-  return {};
+  return null;
 };
 
 module.exports.isCurrentUserAuthenticated = async (currentUser) => {

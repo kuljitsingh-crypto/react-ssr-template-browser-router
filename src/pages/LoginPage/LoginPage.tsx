@@ -89,7 +89,7 @@ function LoginPage(props: LoginPageProps) {
     callback: { succeeded: { handler: onLoginSuccess } },
   });
   if (isAuthenticated) {
-    return <NamedRedirect name='Homepage' />;
+    return <NamedRedirect name='Homepage' replace={true} />;
   }
   return (
     <Page

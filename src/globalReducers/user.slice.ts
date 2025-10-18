@@ -25,7 +25,7 @@ export const fetchCurrentUser = customCreateAsyncThunk<CurrentUser, void>(
     { extra: { axiosWithCredentials, config }, dispatch, getState }
   ) => {
     // your Custom login logic
-    const resp = await waitFor(2000);
+    const resp = await waitFor(1000);
     const isAlreadyAuthenticated = getState().auth.isAuthenticated;
     if (resp.data === "success" && !isAlreadyAuthenticated) {
       dispatch(setAuthenticationState(true));

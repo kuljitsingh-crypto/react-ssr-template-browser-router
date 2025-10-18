@@ -1,10 +1,10 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import { pathByRouteName } from "@src/util/routesHelperFunction";
-import { routes } from "@src/util/routes";
 import { bool, object, string } from "prop-types";
 import { isBrowser } from "@src/util/browserHelperFunction";
 import { RoutesNameType } from "@src/routeNames";
+import { useRouteConfiguration } from "@src/context";
 
 type NamedRedirectProps = {
   replace?: boolean;
@@ -16,13 +16,20 @@ type NamedRedirectProps = {
 };
 
 const defaultProps = {
-  replace: false,
   search: "",
   hash: "",
   params: {},
 };
 function NamedRedirect(props: NamedRedirectProps) {
-  const { replace, state, search, hash, name, params } = props || defaultProps;
+  const {
+    state,
+    search,
+    hash,
+    name,
+    params,
+    replace = false,
+  } = props || defaultProps;
+  const routes = useRouteConfiguration();
   const pathname = pathByRouteName(name, routes, params);
   const searchParams =
     search && typeof search === "string"
@@ -52,12 +59,12 @@ function NamedRedirect(props: NamedRedirectProps) {
 }
 
 NamedRedirect.propTypes = {
-  replace: bool.isRequired,
   search: string.isRequired,
   name: string.isRequired,
   state: object,
   hash: string.isRequired,
   params: object,
+  replace: bool,
 };
 
 export default NamedRedirect;

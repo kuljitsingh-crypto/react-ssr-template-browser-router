@@ -620,7 +620,8 @@ module.exports = function (webpackEnv, target = "web") {
         Object.assign(
           {},
           {
-            inject: true,
+            //  inject scripts only in dev env, prod env server already injects required scripts.
+            inject: isEnvDevelopment,
             template: paths.appHtml,
           },
           isEnvProduction
