@@ -11,6 +11,7 @@ import { matchPathName } from "./util/routesHelperFunction";
 import { Config, defaultConfig, mergeConfig } from "./custom-config";
 import { fetchCurrentUser, setCurrentUser } from "./globalReducers/user.slice";
 import { setAuthenticationState } from "./globalReducers/auth.slice";
+import { deserialize } from "./util/serialization";
 
 const onRecoverableError = (...args) => {
   // Error when hydration occur
@@ -29,7 +30,6 @@ function render(shouldHydrate, preloadedState, config) {
   const store = createStore(preloadedState, finalConfig);
   const isHydrated = shouldHydrate;
   const promises = [loadableReady(), store.dispatch(fetchCurrentUser())];
-
   Promise.all(promises).then(() => {
     if (shouldHydrate) {
       const key = Date.now() - Math.random();
@@ -61,8 +61,8 @@ function render(shouldHydrate, preloadedState, config) {
 
 if (typeof window !== "undefined") {
   const hasPreloadedState = !!window.__PRELOADED_STATE__;
-  const preloadedState = JSON.parse(window.__PRELOADED_STATE__ || "{}");
-  const configuration = JSON.parse(window.__UI_CONFIGURATION__ || "{}");
+  const preloadedState = deserialize(window.__PRELOADED_STATE__ || "{}");
+  const configuration = deserialize(window.__UI_CONFIGURATION__ || "{}");
 
   require("./util/polyfills");
   render(hasPreloadedState, preloadedState, configuration);

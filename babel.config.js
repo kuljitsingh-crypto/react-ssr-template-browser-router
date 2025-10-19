@@ -10,5 +10,6 @@ module.exports = module.exports = {
         },
       },
     ],
+    [require.resolve("@babel/plugin-transform-class-static-block")],
   ],
 };

@@ -1,3 +1,5 @@
+import { Serializable } from "./serialization";
+
 const FETCH_STATUS = {
   idle: "idle",
   loading: "loading",
@@ -8,10 +10,25 @@ const FETCH_STATUS = {
 export type InternalFetchStatusVal =
   (typeof FETCH_STATUS)[keyof typeof FETCH_STATUS];
 
-export class FetchStatus {
+/**
+ * FetchStatus is a subclass of Serializable.
+ *
+ * ⚠️ IMPORTANT: To ensure automatic registration for serialization,
+ * developers must add a static block like this:
+ *
+ *   static { FetchStatus.register(); }
+ *
+ * This allows the class to be accessible globally (window) for deserialization.
+ */
+export class FetchStatus extends Serializable {
   #status: InternalFetchStatusVal = FETCH_STATUS.idle;
   constructor(status?: InternalFetchStatusVal) {
+    super();
     this.#status = status || FETCH_STATUS.idle;
+  }
+
+  static {
+    FetchStatus.register();
   }
 
   static #create(status: InternalFetchStatusVal) {
@@ -57,6 +74,9 @@ export class FetchStatus {
   }
 
   valueOf() {
+    return this.#status;
+  }
+  getValue() {
     return this.#status;
   }
 }

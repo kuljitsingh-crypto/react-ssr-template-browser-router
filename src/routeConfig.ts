@@ -9,7 +9,7 @@ import { ConfigurationType } from "./custom-config";
 export const routeConfiguration = (config: ConfigurationType) => {
   /// Based On Config your custom custom routing logic
   return [
-    { path: "/", name: "Homepage", isAuth: true },
+    { path: "/", name: "Homepage" },
     {
       path: "/products",
       name: "ProductsPage",

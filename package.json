@@ -130,6 +130,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-transform-class-static-block": "^7.28.3",
     "babel-plugin-module-resolver": "^5.0.2",
     "concurrently": "^8.2.1",
     "cross-env": "^10.1.0",
