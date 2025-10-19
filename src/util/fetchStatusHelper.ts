@@ -1,4 +1,4 @@
-export const FETCH_STATUS = {
+const FETCH_STATUS = {
   idle: "idle",
   loading: "loading",
   succeeded: "succeeded",
@@ -13,12 +13,30 @@ export class FetchStatus {
   constructor(status?: InternalFetchStatusVal) {
     this.#status = status || FETCH_STATUS.idle;
   }
-  set(status: InternalFetchStatusVal) {
+
+  static #create(status: InternalFetchStatusVal) {
     const instance = new FetchStatus(status);
     //@ts-ignore
     return instance;
   }
-  get() {
+
+  static get idle() {
+    return FetchStatus.#create(FETCH_STATUS.idle);
+  }
+
+  static get loading() {
+    return FetchStatus.#create(FETCH_STATUS.loading);
+  }
+
+  static get succeeded() {
+    return FetchStatus.#create(FETCH_STATUS.succeeded);
+  }
+
+  static get failed() {
+    return FetchStatus.#create(FETCH_STATUS.failed);
+  }
+
+  get status() {
     return this.#status;
   }
   get isLoading() {
@@ -32,6 +50,14 @@ export class FetchStatus {
   }
   get isIdle() {
     return this.#status === FETCH_STATUS.idle;
+  }
+
+  toString() {
+    return this.#status;
+  }
+
+  valueOf() {
+    return this.#status;
   }
 }
 

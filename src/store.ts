@@ -4,15 +4,15 @@ import axiosInstance from "axios";
 import { defaultConfig } from "./custom-config";
 
 const axios = axiosInstance.create();
-const axiosWithCredentials = axiosInstance.create();
-axiosWithCredentials.defaults.withCredentials = true;
+const axiosWithCred = axiosInstance.create();
+axiosWithCred.defaults.withCredentials = true;
 export const createStore = (preloadedState = {}, config = defaultConfig) =>
   configureStore({
     reducer: reducers,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         thunk: {
-          extraArgument: { axios, config, axiosWithCredentials },
+          extraArgument: { axios, config, axiosWithCred },
         },
         serializableCheck: false,
       }),

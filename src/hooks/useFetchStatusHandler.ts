@@ -20,7 +20,7 @@ export const useFetchStatusHandler = (
   const { fetchStatus, fetchError, ...handlers } = params;
 
   const handlerCb = useCallback(() => {
-    const status = fetchStatus.get();
+    const status = fetchStatus.status;
     const handler = handlers[status] || null;
     if (typeof handler !== "function") {
       return;

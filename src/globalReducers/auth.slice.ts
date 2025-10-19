@@ -3,11 +3,7 @@ import { customCreateAsyncThunk } from "@src/storeHelperFunction";
 import { GeneralError } from "@src/util/APITypes";
 import { fetchCurrentUser, setCurrentUser } from "./user.slice";
 import { waitFor } from "@src/util/functionHelper";
-import {
-  FETCH_STATUS,
-  FetchStatus,
-  FetchStatusVal,
-} from "@src/util/fetchStatusHelper";
+import { FetchStatus, FetchStatusVal } from "@src/util/fetchStatusHelper";
 
 type InitialState = {
   isAuthenticated: boolean;
@@ -43,7 +39,7 @@ const FORGOT_PASSWORD = "app/auth-slice/forgotPassword";
 
 export const userLogin = customCreateAsyncThunk<string, UserLoginParams>(
   LOGIN,
-  async (params, { extra: { config, axiosWithCredentials }, dispatch }) => {
+  async (params, { extra: { config, axiosWithCred }, dispatch }) => {
     // const { email, password } = params;
     // your Custom login logic
     const resp = await waitFor(2000);
@@ -54,7 +50,7 @@ export const userLogin = customCreateAsyncThunk<string, UserLoginParams>(
 
 export const userSignup = customCreateAsyncThunk<string, UserLoginParams>(
   SIGNUP,
-  async (params, { extra: { config, axiosWithCredentials }, dispatch }) => {
+  async (params, { extra: { config, axiosWithCred }, dispatch }) => {
     const { email, password } = params;
     // your Custom login logic
     const resp = await waitFor(2000);
@@ -65,9 +61,9 @@ export const userSignup = customCreateAsyncThunk<string, UserLoginParams>(
 
 export const userLogout = customCreateAsyncThunk<string, void>(
   LOGOUT,
-  async (_, { extra: { config, axiosWithCredentials }, dispatch }) => {
+  async (_, { extra: { config, axiosWithCred }, dispatch }) => {
     // const url = `${getApiBaseUrl(config)}/logout`;
-    // const resp = await axiosWithCredentials.post(url, {});
+    // const resp = await axiosWithCred.post(url, {});
     // your Custom login logic
     const resp = await waitFor(2000);
     dispatch(setCurrentUser(null));
@@ -82,7 +78,7 @@ export const sendPasswordResetInstruction = customCreateAsyncThunk<
   FORGOT_PASSWORD,
   async ({ email }, { extra: { config, axios }, dispatch }) => {
     // const url = `${getApiBaseUrl(config)}/logout`;
-    // const resp = await axiosWithCredentials.post(url, {});
+    // const resp = await axiosWithCred.post(url, {});
     // your Custom login logic
     const resp = await waitFor(2000);
     return resp.data;
@@ -97,73 +93,73 @@ export const loginSlice = createSlice({
       state.isAuthenticated = action.payload;
     },
     resetLogoutStatus: (state) => {
-      state.logoutStatus.set(FETCH_STATUS.idle);
+      state.logoutStatus = FetchStatus.idle;
     },
     resetLogInStatus: (state) => {
-      state.logoutStatus.set(FETCH_STATUS.idle);
+      state.logoutStatus = FetchStatus.idle;
     },
     resetSignupStatus: (state) => {
-      state.signupStatus.set(FETCH_STATUS.idle);
+      state.signupStatus = FetchStatus.idle;
     },
     resetForgotPasswordStatus: (state) => {
-      state.forgotPasswordStatus.set(FETCH_STATUS.idle);
+      state.forgotPasswordStatus = FetchStatus.idle;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(userLogin.pending, (state, action) => {
-        state.loginStatus.set(FETCH_STATUS.loading);
-        state.logoutStatus.set(FETCH_STATUS.idle);
+        state.loginStatus = FetchStatus.loading;
+        state.logoutStatus = FetchStatus.idle;
         state.loginError = null;
       })
       .addCase(userLogin.fulfilled, (state, action) => {
-        state.loginStatus.set(FETCH_STATUS.succeeded);
+        state.loginStatus = FetchStatus.succeeded;
         state.isAuthenticated = true;
       })
       .addCase(userLogin.rejected, (state, action) => {
         const { code, name, message } = action.error;
-        state.loginStatus.set(FETCH_STATUS.failed);
+        state.loginStatus = FetchStatus.failed;
         state.loginError = { code, name, message };
       })
       .addCase(userLogout.pending, (state, action) => {
-        state.logoutStatus.set(FETCH_STATUS.loading);
-        state.loginStatus.set(FETCH_STATUS.idle);
-        state.signupStatus.set(FETCH_STATUS.idle);
+        state.logoutStatus = FetchStatus.loading;
+        state.loginStatus = FetchStatus.idle;
+        state.signupStatus = FetchStatus.idle;
         state.logoutError = null;
       })
       .addCase(userLogout.fulfilled, (state, action) => {
-        state.logoutStatus.set(FETCH_STATUS.succeeded);
+        state.logoutStatus = FetchStatus.succeeded;
         state.isAuthenticated = false;
       })
       .addCase(userLogout.rejected, (state, action) => {
         const { code, name, message } = action.error;
-        state.logoutStatus.set(FETCH_STATUS.failed);
+        state.logoutStatus = FetchStatus.failed;
         state.logoutError = { code, name, message };
       })
       .addCase(userSignup.pending, (state, action) => {
-        state.logoutStatus.set(FETCH_STATUS.idle);
-        state.loginStatus.set(FETCH_STATUS.idle);
-        state.signupStatus.set(FETCH_STATUS.loading);
+        state.logoutStatus = FetchStatus.idle;
+        state.loginStatus = FetchStatus.idle;
+        state.signupStatus = FetchStatus.loading;
         state.signupError = null;
       })
       .addCase(userSignup.fulfilled, (state, action) => {
-        state.signupStatus.set(FETCH_STATUS.succeeded);
+        state.signupStatus = FetchStatus.succeeded;
       })
       .addCase(userSignup.rejected, (state, action) => {
         const { code, name, message } = action.error;
-        state.signupStatus.set(FETCH_STATUS.failed);
+        state.signupStatus = FetchStatus.failed;
         state.signupError = { code, name, message };
       })
       .addCase(sendPasswordResetInstruction.pending, (state, action) => {
-        state.forgotPasswordStatus.set(FETCH_STATUS.loading);
+        state.forgotPasswordStatus = FetchStatus.loading;
         state.forgotPasswordError = null;
       })
       .addCase(sendPasswordResetInstruction.fulfilled, (state, action) => {
-        state.forgotPasswordStatus.set(FETCH_STATUS.succeeded);
+        state.forgotPasswordStatus = FetchStatus.succeeded;
       })
       .addCase(sendPasswordResetInstruction.rejected, (state, action) => {
         const { code, name, message } = action.error;
-        state.forgotPasswordStatus.set(FETCH_STATUS.failed);
+        state.forgotPasswordStatus = FetchStatus.failed;
         state.forgotPasswordError = { code, name, message };
       });
   },

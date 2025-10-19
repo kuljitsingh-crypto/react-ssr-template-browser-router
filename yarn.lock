@@ -8271,10 +8271,10 @@ raw-body@2.5.1:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-rc-simple-hook-form@^1.1.7:
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/rc-simple-hook-form/-/rc-simple-hook-form-1.1.7.tgz#e062b2ca5de7a613cb6f33e5b951e3912052956e"
-  integrity sha512-eKUrSt1e9CPjd1woI6fNDnHC4NeeJl0cGgu5+2Oh7ocRB+y0zbLHUhRcZzQWr+z53VJX3WKTWCfJgUBV3g+3eA==
+rc-simple-hook-form@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/rc-simple-hook-form/-/rc-simple-hook-form-1.2.0.tgz#32ae03599137296f8cdc5c85e8d9b788fcb03d7a"
+  integrity sha512-eyXUc+PtowoBM8XgZd/0ZL5SNElWBTzJv4w/+C9tnQZ1G8WrUnB73Qzp9PX432uWMGIGhnWqKH7zpgpzYH7E0g==
   dependencies:
     lodash "^4.17.21"
 

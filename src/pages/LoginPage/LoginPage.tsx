@@ -91,7 +91,6 @@ function LoginPage(props: LoginPageProps) {
   if (isAuthenticated) {
     return <NamedRedirect name='Homepage' replace={true} />;
   }
-  console.log(loginStatus);
   return (
     <Page
       metaTitle={title}

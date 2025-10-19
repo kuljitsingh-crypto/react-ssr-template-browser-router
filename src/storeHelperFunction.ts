@@ -13,7 +13,7 @@ type CustomAsyncThunkConfig = AsyncThunkConfig & {
   extra: {
     axios: Axios;
     config: ConfigurationType;
-    axiosWithCredentials: Axios;
+    axiosWithCred: Axios;
   };
   state: RootStateType;
 };
