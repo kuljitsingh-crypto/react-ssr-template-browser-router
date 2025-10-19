@@ -1,9 +1,9 @@
 import React from "react";
 import NamedRedirect from "../NamedRedirect/NamedRedirect";
-import { useSelector } from "react-redux";
-import { selectStateValue } from "@src/storeHelperFunction";
+
 import { pathByRouteName } from "@src/util/routesHelperFunction";
 import { useRouteConfiguration } from "@src/context";
+import { useSelector } from "@src/hooks/useSelector";
 
 type AuthenticatedPageState = {
   children: React.JSX.Element;
@@ -13,9 +13,9 @@ type AuthenticatedPageState = {
 
 function AuthenticatedPage(props: AuthenticatedPageState) {
   const { children, name, staticContext } = props;
-  const isAuthenticated = useSelector(
-    selectStateValue("auth", "isAuthenticated")
-  );
+  const { isAuthenticated } = useSelector({
+    isAuthenticated: "auth.isAuthenticated",
+  });
   const routes = useRouteConfiguration();
   if (!isAuthenticated) {
     const path = pathByRouteName("LoginPage", routes);
