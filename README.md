@@ -1,7 +1,7 @@
 # React SSR Template 
 This project is built after ejecting the default  react app (generated using Create-React-App) and modifying the necessary part to create ssr functionality. Loadable components package is utilized to efficiently split and manage components, especially those designated for server-side rendering. 
 
-In this template, I leverage React-Router's new CreateBrowserRouter to establish routes, providing the flexibility to tap into new data APIs if required.
+
 
 ## Folder Structure 
 ``` bash
@@ -217,6 +217,7 @@ Add the route entry in the routeDetails array (found in routeNames.ts or similar
     If your page needs to load data on navigation:
 
     Add a loadData function
+    `{ path: "/contact", name: "ContactPage", isAuth: true,loadData:loaderCb }`
 
     Follow examples like `ProductsPageSlice.ts` or `ProductPageSlice.ts`
 

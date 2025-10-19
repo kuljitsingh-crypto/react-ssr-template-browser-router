@@ -35,5 +35,7 @@
   "LoginPage.forgotPwd": "Forgot Password?",
   "LoginPage.resetPwdBtn": "Reset Password",
   "SignupPage.helpText": "Sign Up",
-  "Logout": "Logout"
+  "Logout": "Logout",
+  "ProductsPage.loadFailed": "Failed to get products. Please try again.",
+  "ProductPage.loadFailed": "Failed to get product. Please try again."
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  ErrorText,
+  Error,
   FieldTextInput,
   FormattedMsg,
   InlineTextButton,
@@ -11,11 +11,13 @@ import { IntlShape } from "react-intl";
 import { GeneralError } from "@src/util/APITypes";
 import css from "./LoginForm.module.css";
 import classNames from "classnames";
+import { FetchStatusVal } from "@src/util/fetchStatusHelper";
 
 type LoginProps = {
   intl: IntlShape;
   loginInProgress: boolean;
   loginError: GeneralError | null;
+  loginStatus: FetchStatusVal;
   onSubmit: (email: string, password: string) => void;
   onNavigateToForgotPassword: () => void;
 };
@@ -24,6 +26,7 @@ function LoginForm(props: LoginProps) {
     intl,
     loginInProgress,
     loginError,
+    loginStatus,
     onSubmit,
     onNavigateToForgotPassword,
   } = props;
@@ -86,7 +89,7 @@ function LoginForm(props: LoginProps) {
             <FormattedMsg id='LoginPage.resetPwdBtn' />
           </InlineTextButton>
         </p>
-        <ErrorText shouldShowError={!!loginError} errorMessage={errorText} />
+        <Error status={loginStatus} error={loginError} errorMsg={errorText} />
         <PrimaryButton
           type='submit'
           title={submitBtnTitle}

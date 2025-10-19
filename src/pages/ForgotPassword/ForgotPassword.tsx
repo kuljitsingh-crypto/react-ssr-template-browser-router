@@ -99,6 +99,7 @@ function ForgotPassword(props: ForgotPasswordPasswordProps) {
               onSubmit={handleSubmit}
               forgotPasswordInProgress={forgotPasswordStatus.isLoading}
               forgotPasswordError={forgotPasswordError}
+              forgotPwdStatus={forgotPasswordStatus}
             />
             <div className={"linkTextContainer"}>
               <FormattedMsg id='ForgotPasswordPage.loginRedirect' />

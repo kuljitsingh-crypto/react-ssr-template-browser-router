@@ -1,20 +1,27 @@
 import React from "react";
-import { ErrorText, FieldTextInput, PrimaryButton } from "@src/components";
+import { Error, FieldTextInput, PrimaryButton } from "@src/components";
 import { useForm } from "rc-simple-hook-form";
 import css from "./ForgotPasswordForm.module.css";
 import { IntlShape } from "react-intl";
 import { GeneralError } from "@src/util/APITypes";
+import { FetchStatusVal } from "@src/util/fetchStatusHelper";
 
 type ForgotPasswordFormProps = {
   intl: IntlShape;
   forgotPasswordInProgress: boolean;
   forgotPasswordError: GeneralError | null;
+  forgotPwdStatus: FetchStatusVal;
   onSubmit: (email: string) => void;
 };
 
 function ForgotPasswordForm(props: ForgotPasswordFormProps) {
-  const { intl, forgotPasswordInProgress, forgotPasswordError, onSubmit } =
-    props;
+  const {
+    intl,
+    forgotPasswordInProgress,
+    forgotPasswordError,
+    forgotPwdStatus,
+    onSubmit,
+  } = props;
   const {
     control,
     formState: { isEmpty, invalid },
@@ -48,9 +55,10 @@ function ForgotPasswordForm(props: ForgotPasswordFormProps) {
         inputContainerClassName={css.input}
       />
       <div className={css.actionBtnDiv}>
-        <ErrorText
-          shouldShowError={!!forgotPasswordError}
-          errorMessage={errorText}
+        <Error
+          status={forgotPwdStatus}
+          error={forgotPasswordError}
+          errorMsg={errorText}
         />
         <PrimaryButton
           type='submit'

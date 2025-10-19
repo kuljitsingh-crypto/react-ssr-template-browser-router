@@ -94,6 +94,7 @@ function SignupPage(props: SignupPageProps) {
               onSubmit={handleSubmit}
               signupInProgress={signupStatus.isLoading}
               signupError={signupError}
+              signupStatus={signupStatus}
             />
             <div className={"linkTextContainer"}>
               <FormattedMsg id='SignupPage.alreadyAccount' />

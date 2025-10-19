@@ -1,18 +1,20 @@
 import React from "react";
-import { ErrorText, FieldTextInput, PrimaryButton } from "@src/components";
+import { Error, FieldTextInput, PrimaryButton } from "@src/components";
 import { useForm } from "rc-simple-hook-form";
 import { IntlShape } from "react-intl";
 import { GeneralError } from "@src/util/APITypes";
 import css from "./SignupForm.module.css";
+import { FetchStatusVal } from "@src/util/fetchStatusHelper";
 
 type SignupProps = {
   intl: IntlShape;
   onSubmit: (email: string, password: string) => void;
   signupInProgress: boolean;
+  signupStatus: FetchStatusVal;
   signupError: GeneralError | null;
 };
 function SignupForm(props: SignupProps) {
-  const { intl, signupInProgress, signupError, onSubmit } = props;
+  const { intl, signupInProgress, signupError, signupStatus, onSubmit } = props;
   const {
     control,
     formState: { isEmpty, invalid },
@@ -59,7 +61,7 @@ function SignupForm(props: SignupProps) {
         inputContainerClassName={css.input}
       />
       <div className={css.actionBtnDiv}>
-        <ErrorText shouldShowError={!!signupError} errorMessage={errorText} />
+        <Error status={signupStatus} errorMsg={errorText} error={signupError} />
         <PrimaryButton
           type='submit'
           title={submitBtnTitle}

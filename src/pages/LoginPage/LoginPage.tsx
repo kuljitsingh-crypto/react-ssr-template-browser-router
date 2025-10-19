@@ -113,6 +113,7 @@ function LoginPage(props: LoginPageProps) {
               loginError={loginError}
               onSubmit={handleSubmit}
               onNavigateToForgotPassword={onNavigateToForgotPassword}
+              loginStatus={loginStatus}
             />
             <div className={"linkTextContainer"}>
               <FormattedMsg id='LoginPage.noAccount' />

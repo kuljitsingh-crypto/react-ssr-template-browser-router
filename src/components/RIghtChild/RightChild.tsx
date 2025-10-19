@@ -17,6 +17,7 @@ type RightChildProps = {
   showLeftChild?: boolean;
   toggleLeftChild?: () => void;
   hasLeftChild?: boolean;
+  showTopbar?: boolean;
 } & { children?: React.ReactNode } & ReturnType<typeof mapStateToProps>;
 
 function RightChildComp(props: RightChildProps) {
@@ -26,6 +27,7 @@ function RightChildComp(props: RightChildProps) {
     className,
     showLeftChild,
     hasLeftChild,
+    showTopbar = true,
     toggleLeftChild,
   } = props;
   const rightChildClass = classNames(rootClassName, css.root, className, {
@@ -33,11 +35,13 @@ function RightChildComp(props: RightChildProps) {
   });
   return (
     <div className={rightChildClass}>
-      <Topbar
-        showLeftChild={showLeftChild}
-        toggleLeftChild={toggleLeftChild}
-        hasLeftChild={hasLeftChild}
-      />
+      {showTopbar ? (
+        <Topbar
+          showLeftChild={showLeftChild}
+          toggleLeftChild={toggleLeftChild}
+          hasLeftChild={hasLeftChild}
+        />
+      ) : null}
       {children}
     </div>
   );

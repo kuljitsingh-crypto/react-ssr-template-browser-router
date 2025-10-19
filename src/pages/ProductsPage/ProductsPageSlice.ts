@@ -1,13 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { customCreateAsyncThunk } from "@src/storeHelperFunction";
 import { DataLoaderFunction } from "@src/hooks";
-import { ProductErrorType, ProductType } from "../pageGlobalType";
+import { ProductType } from "../pageGlobalType";
 import { FetchStatus, FetchStatusVal } from "@src/util/fetchStatusHelper";
+import { GeneralError } from "@src/util/APITypes";
 
 type ProductStateType = {
   status: FetchStatusVal;
   products: ProductType[];
-  error?: ProductErrorType | null;
+  error: GeneralError | null;
 };
 
 const PRODUCTS_FETCH_NAME = "products/fetchproducts";
@@ -15,7 +16,7 @@ const PRODUCTS_FETCH_NAME = "products/fetchproducts";
 const initialState: ProductStateType = {
   status: new FetchStatus(),
   products: [],
-  error: undefined,
+  error: null,
 };
 
 export const fetchProducts = customCreateAsyncThunk<ProductType[]>(
@@ -44,7 +45,7 @@ export const productsPageSlice = createSlice({
       .addCase(fetchProducts.pending, (state, action) => {
         state.status = FetchStatus.loading;
         state.products = [];
-        state.error = undefined;
+        state.error = null;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         if (state.status.isIdle || state.status.isLoading) {
