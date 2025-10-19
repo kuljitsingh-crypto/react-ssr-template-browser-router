@@ -1,7 +1,7 @@
 import { pathByRouteName } from "@src/util/routesHelperFunction";
 import { useHistory } from "react-router-dom";
-import { routes } from "@src/util/routes";
-import { RoutesNameType } from "@src/routeNames";
+import { RouteNames } from "@src/routeConfig";
+import { useRouteConfiguration } from "@src/context";
 
 type NamedRedirectOptions = {
   replace?: boolean;
@@ -12,7 +12,8 @@ type NamedRedirectOptions = {
 };
 export const useNamedRedirect = () => {
   const history = useHistory();
-  const navigate = (name: RoutesNameType, options?: NamedRedirectOptions) => {
+  const routes = useRouteConfiguration();
+  const navigate = (name: RouteNames, options?: NamedRedirectOptions) => {
     const { replace, state, search, hash, params } = options || {};
     const pathname = pathByRouteName(name, routes, params);
     const searchParams =

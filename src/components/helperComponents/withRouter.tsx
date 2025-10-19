@@ -1,6 +1,6 @@
 import React from "react";
-import { routes } from "@src/util/routes";
 import { useCustomRouter } from "@src/hooks";
+import { useRouteConfiguration } from "@src/context";
 
 export type RouterTypes = {
   matches: any[];
@@ -18,6 +18,7 @@ export function withRouter<T extends WithRouterProps = WithRouterProps>(
   const displayName =
     WrappedComponent.displayName || WrappedComponent.name || "Component";
   const WithRouterProps = (props: Omit<T, keyof WithRouterProps>) => {
+    const routes = useRouteConfiguration();
     const router = useCustomRouter(routes);
 
     return <WrappedComponent {...(props as T)} router={router} />;

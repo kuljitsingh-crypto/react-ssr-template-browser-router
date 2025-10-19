@@ -8,7 +8,6 @@ import { Error, Loader, NamedLink, Success } from "@src/components";
 import { IntlShape } from "react-intl";
 import Page from "@src/components/Page/Page";
 import RightChild from "@src/components/RIghtChild/RightChild";
-import { routesName } from "@src/routeNames";
 import { selectStateValue } from "@src/storeHelperFunction";
 import { FetchStatusVal } from "@src/util/fetchStatusHelper";
 import { GeneralError } from "@src/util/APITypes";
@@ -43,7 +42,7 @@ function ProductsPage(props: ProductsPagePropsType) {
                 <li key={product.id}>
                   <span>{product.title}</span>
                   <NamedLink
-                    name={routesName.ProductPage}
+                    name={"ProductPage"}
                     routeParams={{ id: product.id }}>
                     See More
                   </NamedLink>

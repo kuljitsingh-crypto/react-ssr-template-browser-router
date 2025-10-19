@@ -4,7 +4,7 @@ import ReactDOMClient from "react-dom/client";
 import { loadableReady } from "@loadable/component";
 
 import "./index.css";
-import { routes } from "./util/routes";
+import { prepareRoutes } from "./util/routes";
 import { ClientApp, renderApp } from "./App";
 import { createStore } from "./store";
 import { matchPathName } from "./util/routesHelperFunction";
@@ -70,9 +70,11 @@ if (typeof window !== "undefined") {
 
 export default renderApp;
 export {
-  routes,
+  prepareRoutes,
   createStore,
   matchPathName,
+  mergeConfig,
   setCurrentUser,
   setAuthenticationState,
+  defaultConfig,
 };

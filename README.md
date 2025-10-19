@@ -199,8 +199,8 @@ Create a folder and file inside the pages directory with the same name as the ro
 
     Example: To create a ContactPage: `pages/ContactPage/ContactPage.tsx`
 
-2. 🛣️ Update routeDetails
-Add the route entry in the routeDetails array (found in routeNames.ts or similar file):
+2. 🛣️ Update routeConfiguration
+Add the route entry in the `routeConfiguration` array (found in routeNames.ts or similar file):
         `{ path: "/contact", name: "ContactPage", isAuth: true }`
         
     Note: The name must exactly match the folder/file name you created in the pages directory.

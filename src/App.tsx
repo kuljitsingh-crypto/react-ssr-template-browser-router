@@ -3,7 +3,7 @@ import ReactDOMServer from "react-dom/server";
 
 import { HelmetProvider, HelmetServerState } from "react-helmet-async";
 import { Provider } from "react-redux";
-import { createRoutesForBrowserAndStaticRouter, routes } from "./util/routes";
+import { createRoutesForRouter, prepareRoutes } from "./util/routes";
 import { StoreType, createStore } from "./store";
 import { isEmpty } from "lodash";
 import englishMessages from "./translations/en.json";
@@ -12,7 +12,7 @@ import spanishMessages from "./translations/es.json";
 import germenMessages from "./translations/de.json";
 import { localeOptions } from "./util/localeHelper";
 import moment from "moment";
-import { ConfigurationType, defaultConfig, mergeConfig } from "./custom-config";
+import { ConfigurationType } from "./custom-config";
 import {
   ConfigurationContextProvider,
   RouteConfigurationContextProvider,
@@ -75,7 +75,8 @@ const ClientApp = (props: ClientAppPropsType) => {
   const locale = localeOptions.en;
   const messagesInLocale = messages[locale];
   setLocaleForMoment(locale);
-  const modifiedRoutes = createRoutesForBrowserAndStaticRouter(
+  const routes = prepareRoutes(config);
+  const modifiedRoutes = createRoutesForRouter(
     store.dispatch,
     store.getState,
     routes
@@ -110,7 +111,7 @@ const ServerApp = (props: ServerAppPropTypes) => {
   const locale = localeOptions.en;
   const messagesInLocale = messages[locale];
   setLocaleForMoment(locale);
-  const modifiedRoutes = createRoutesForBrowserAndStaticRouter(
+  const modifiedRoutes = createRoutesForRouter(
     store.dispatch,
     store.getState,
     routes,
@@ -149,10 +150,9 @@ const renderApp = async (
   routerContext: Record<string, any>,
   collectWebChunk: any,
   preloadedStore: Record<string, unknown>,
-  config: ConfigurationType
+  finalConfig: ConfigurationType
 ) => {
   const helmetContext: { helmet?: HelmetServerState } = {};
-  const finalConfig = mergeConfig(defaultConfig, config || {});
   if (!routerContext) return;
   const store = createStore(preloadedStore, finalConfig);
   const isHydrated = preloadedStore && !isEmpty(preloadedStore);

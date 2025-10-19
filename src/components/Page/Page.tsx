@@ -3,9 +3,8 @@ import ReactHelmet, {
   ReactHelmetPropsTypes,
 } from "@src/components/helperComponents/ReactHelmet";
 import { useCustomRouter } from "@src/hooks";
-import { routes } from "@src/util/routes";
 import { canonicalRoutePath } from "@src/util/routesHelperFunction";
-import { useConfiguration } from "@src/context";
+import { useConfiguration, useRouteConfiguration } from "@src/context";
 import classNames from "classnames";
 import { useSelector } from "react-redux";
 import LeftChild from "../LeftChild/LeftChild";
@@ -80,6 +79,7 @@ function Page(props: PageProps): React.JSX.Element {
     metaTitle,
     windowDimensions,
   } = props;
+  const routes = useRouteConfiguration();
   const router = useCustomRouter(routes);
   const url = canonicalRoutePath(router.location);
   const config = useConfiguration();

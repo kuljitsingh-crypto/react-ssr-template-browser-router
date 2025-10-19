@@ -1,15 +1,22 @@
 import { find } from "lodash";
 import { compile } from "path-to-regexp";
 import { matchPath } from "react-router-dom";
-import { routes } from "./routes";
-import { RoutesNameType } from "@src/routeNames";
+import { RouteNames } from "@src/routeConfig";
 
 type PathParamsType = {
   slug?: string;
   id?: string;
 };
 
-export type RoutesType = typeof routes;
+export type RoutesType = {
+  isAuth?: boolean;
+  notFound?: boolean;
+  loader: Function;
+  path: string;
+  element: JSX.Element;
+  name: RouteNames;
+  exact: boolean;
+}[];
 
 type RouteType = RoutesType[number];
 
@@ -25,7 +32,7 @@ const toPathByRouteName = (nameToFind: string, routes: RoutesType) => {
 };
 
 export const pathByRouteName = (
-  name: RoutesNameType,
+  name: RouteNames,
   routes: RoutesType,
   params: PathParamsType = {}
 ) => {
@@ -68,37 +75,3 @@ export const canonicalRoutePath = (location: any, pathOnly = false) => {
   const cleanedPath = pathname.replace(/\/$/, "") || "/";
   return pathOnly ? cleanedPath : `${cleanedPath}${search}${hash}`;
 };
-
-// export const namedRedirect = (
-//   name: RoutesNameType,
-//   routes: RoutesType,
-//   params: Record<string, unknown> = {},
-//   search?: string,
-//   hash?: string
-// ) => {
-//   const pathname = pathByRouteName(name, routes, params);
-//   const searchParams =
-//     search && typeof search === "string"
-//       ? search.startsWith("?")
-//         ? search
-//         : `?${search}`
-//       : "";
-
-//   const hashParams =
-//     hash && typeof hash === "string"
-//       ? hash.startsWith("#")
-//         ? hash
-//         : `#${hash}`
-//       : "";
-//   const redirectUrl = `${pathname}${searchParams}${hashParams}`;
-//   return
-// };
-
-// export const redirectLoader = (
-//   name: RoutesNameType,
-//   params: Record<string, unknown> = {},
-//   search?: string,
-//   hash?: string
-// ) => {
-//   return  () => namedRedirect(name, routes, params, search, hash);
-// };

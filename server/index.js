@@ -8,7 +8,10 @@ const csp = require("./csp-util/csp");
 const { getExtractor, render, dataLoader } = require("./util/ssrUtills");
 const { default: helmet } = require("helmet");
 const cors = require("cors");
-const { validateAndGetCurrentUserInfo } = require("./util/helperFunctions");
+const {
+  validateAndGetCurrentUserInfo,
+  fetchCustomConfig,
+} = require("./util/helperFunctions");
 const { wellKnownRouter } = require("./router/wellKnownRouter");
 const { apiRouter } = require("./router/apiRouter");
 const CSP = process.env.REACT_APP_CSP;
@@ -145,12 +148,17 @@ app.get("*", async (req, res) => {
     const currentUser = await validateAndGetCurrentUserInfo(req);
     const {
       default: renderApp,
-      routes,
+      prepareRoutes,
       createStore,
       matchPathName,
       setCurrentUser,
       setAuthenticationState,
+      mergeConfig,
+      defaultConfig,
     } = nodeEntrypoint;
+    const newConfig = await fetchCustomConfig(req);
+    const finalConfig = mergeConfig(defaultConfig, newConfig);
+    const routes = prepareRoutes(finalConfig);
     const data = await dataLoader(
       req,
       routes,
@@ -166,7 +174,8 @@ app.get("*", async (req, res) => {
       context,
       renderApp,
       webExtractor,
-      data
+      data,
+      finalConfig
     );
     // For now context has three possible key url,notFound and unauthorized
     // If you wan to handle unauthorized different differently then as per your requriement

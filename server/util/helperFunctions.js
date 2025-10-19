@@ -9,3 +9,9 @@ module.exports.isCurrentUserAuthenticated = async (currentUser) => {
 
   return currentUser !== null;
 };
+
+module.exports.fetchCustomConfig = async (req) => {
+  // your custom logic that fetch configuration and send to frontend
+
+  return {};
+};

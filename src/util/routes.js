@@ -2,15 +2,7 @@ import React from "react";
 import loadable from "@loadable/component";
 import AuthenticatedPage from "@src/components/helperComponents/AuthenticatedPage";
 import { parseQueryString } from "./functionHelper";
-import { routeDetails } from "@src/routeNames";
-
-const loadableComponent = routeDetails.reduce((acc, details) => {
-  const name = details.name;
-  acc[name] = loadable(() =>
-    import(/*webpackChunkName: "[request]" */ `../pages/${name}/${name}`)
-  );
-  return acc;
-}, {});
+import { routeConfiguration } from "@src/routeConfig";
 
 const pageDataLoadingAPI = {};
 
@@ -53,37 +45,54 @@ const dataLoaderWrapper = (loader) => {
   }
 };
 
-routeDetails.reduce((acc, route) => {
-  pageDataLoadingAPI[route.name] = dataLoaderWrapper(route.loadData);
-  return acc;
-}, pageDataLoadingAPI);
+const updatedPageDataLoadingAPI = (routes) => {
+  routes.reduce((acc, route) => {
+    pageDataLoadingAPI[route.name] = dataLoaderWrapper(route.loadData);
+    return acc;
+  }, pageDataLoadingAPI);
+};
 
-export const routes = routeDetails.map((details) => {
-  const Component = loadableComponent[details.name];
-  const extraData = {};
-  if (details.isAuth) {
-    extraData.isAuth = details.isAuth;
-  } else if (details.notFound) {
-    extraData.notFound = details.notFound;
-  }
-  if (details.loadData) {
-    extraData.loader = details.loadData;
-  }
-  return {
-    path: details.path,
-    element: <Component />,
-    name: details.name,
-    exact: true,
-    ...extraData,
-  };
-});
+export const prepareRoutes = (config) => {
+  const routes = routeConfiguration(config);
+  const loadableComponent = routes.reduce((acc, details) => {
+    const name = details.name;
+    acc[name] = loadable(() =>
+      import(/*webpackChunkName: "[request]" */ `../pages/${name}/${name}`)
+    );
+    return acc;
+  }, {});
+
+  updatedPageDataLoadingAPI(routes);
+
+  const updatedRoutes = routes.map((details) => {
+    const Component = loadableComponent[details.name];
+    const extraData = {};
+    if (details.isAuth) {
+      extraData.isAuth = details.isAuth;
+    } else if (details.notFound) {
+      extraData.notFound = details.notFound;
+    }
+    if (details.loadData) {
+      extraData.loader = details.loadData;
+    }
+    return {
+      path: details.path,
+      element: <Component />,
+      name: details.name,
+      exact: true,
+      ...extraData,
+    };
+  });
+
+  return updatedRoutes;
+};
 
 /**
  * @param {UseDispatchType|undefined} dispatch
  * @param {Array} routes
  * @returns {Array}
  * */
-export const createRoutesForBrowserAndStaticRouter = (
+export const createRoutesForRouter = (
   dispatch,
   getState,
   routes,
