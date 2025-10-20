@@ -5,6 +5,7 @@ This project is built after ejecting the default  react app (generated using Cre
 
 ## Folder Structure 
 ``` bash
+
 ├── package.json
 ├── public
 │   ├── 401.html
@@ -15,6 +16,8 @@ This project is built after ejecting the default  react app (generated using Cre
 │       ├── icons
 │       │   ├── browserconfig.xml
 │       │   ├── favicon.ico
+│       │   ├── homeIcon.png
+│       │   ├── logo.png
 │       │   ├── logo150.png
 │       │   ├── logo16.png
 │       │   ├── logo180.png
@@ -26,9 +29,8 @@ This project is built after ejecting the default  react app (generated using Cre
 │       │   └── twitter.png
 │       ├── manifest.json
 │       └── svg
-│           └── icon.svg
 ├── README.md
-│   
+├── scripts
 ├── server
 │   ├── csp-util
 │   │   └── csp.js
@@ -58,6 +60,8 @@ This project is built after ejecting the default  react app (generated using Cre
 │   │   │   ├── ReactHelmet.tsx
 │   │   │   ├── windowDimension.tsx
 │   │   │   └── withRouter.tsx
+│   │   ├── HomeIcon
+│   │   │   └── HomeIcon.tsx
 │   │   ├── IconSpinner
 │   │   │   ├── IconSpinner.module.css
 │   │   │   └── IconSpinner.tsx
