@@ -6,6 +6,7 @@ import { IoMdClose } from "react-icons/io";
 import Divider from "../Divider/Divider";
 import { InlineTextButton } from "../UI/Button/Button";
 import css from "./LeftChild.module.css";
+import NamedLink from "../NamedLink/NamedLink";
 
 type LeftChildProps = {
   rootClassName?: string;
@@ -24,7 +25,9 @@ function LeftChild(props: LeftChildProps) {
   return (
     <div className={leftChildClass}>
       <div className={css.top}>
-        <BrandIcon className={css.brandIcon} />
+        <NamedLink name='Homepage'>
+          <BrandIcon className={css.brandIcon} />
+        </NamedLink>
         <div className={css.iconWrapper}>
           <InlineTextButton
             type='button'
