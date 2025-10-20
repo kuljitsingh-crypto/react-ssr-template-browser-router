@@ -1,22 +1,14 @@
-import {
-  Location,
-  NavigateFunction,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useLocation, useHistory, useParams } from "react-router-dom";
 import { RoutesType, matchPathName } from "@src/util/routesHelperFunction";
+import { useNamedRedirect } from "./useNamedRedirect";
 
 //---------------------location helper hooks -------------------------
 export const useCustomRouter = (routes: RoutesType) => {
-  const location: Location = useLocation();
-  const navigate: NavigateFunction = useNavigate();
+  const location = useLocation();
+  const history = useHistory();
   const params = useParams();
-  const history = typeof window !== "undefined" ? window.history : undefined;
   const matches =
-    location && location.pathname
-      ? matchPathName(location.pathname, routes)
-      : [];
-
+    location && location.pathname ? matchPathName(location, routes) : [];
+  const navigate = useNamedRedirect();
   return { location, params, history, matches, navigate };
 };

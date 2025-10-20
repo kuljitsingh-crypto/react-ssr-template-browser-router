@@ -1,21 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { FETCH_STATUS, fetchStatus, FetchStatusVal } from "@src/custom-config";
 import { customCreateAsyncThunk } from "@src/storeHelperFunction";
 import { DataLoaderFunction } from "@src/hooks";
-import { ProductErrorType, ProductType } from "../pageGlobalType";
+import { ProductType } from "../pageGlobalType";
+import { FetchStatus, FetchStatusVal } from "@src/util/fetchStatusHelper";
+import { GeneralError } from "@src/util/APITypes";
 
 type ProductStateType = {
   status: FetchStatusVal;
   product: ProductType | null;
-  error?: ProductErrorType | null;
+  error: GeneralError | null;
 };
 
 const PRODUCT_FETCH_NAME = "product/fetchproductbyid";
 
 const initialState: ProductStateType = {
-  status: FETCH_STATUS.idle,
+  status: new FetchStatus(),
   product: null,
-  error: undefined,
+  error: null,
 };
 
 export const fetchProduct = customCreateAsyncThunk<
@@ -29,10 +30,10 @@ export const fetchProduct = customCreateAsyncThunk<
     }
 
     const resp = await axios.get(
-      `https://fakestoreapi.in/api/products/${productId}`
+      `https://fakestoreapi.com/products/${productId}`
     );
 
-    return resp.data.product;
+    return resp.data;
   },
   {
     condition: (productId, { getState }) => {
@@ -55,22 +56,19 @@ export const productPageSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchProduct.pending, (state, action) => {
-        state.status = FETCH_STATUS.loading;
+        state.status = FetchStatus.loading;
         state.product = null;
-        state.error = undefined;
+        state.error = null;
       })
       .addCase(fetchProduct.fulfilled, (state, action) => {
-        if (
-          fetchStatus.isIdle(state.status) ||
-          fetchStatus.isLoading(state.status)
-        ) {
-          state.status = FETCH_STATUS.succeeded;
+        if (state.status.isIdle || state.status.isLoading) {
+          state.status = FetchStatus.succeeded;
           state.product = action.payload;
         }
       })
       .addCase(fetchProduct.rejected, (state, action) => {
         const { code, name, message } = action.error;
-        state.status = FETCH_STATUS.failed;
+        state.status = FetchStatus.failed;
         state.error = { code, name, message };
       });
   },

@@ -1,36 +1,37 @@
 import React from "react";
 import { customConnect } from "@src/components/helperComponents/customConnect";
 import {
-  UseDispatchType,
+  AppDispatch,
   useFetchStatusHandler,
   useNamedRedirect,
-  UseSelectorType,
+  AppSelect,
 } from "@src/hooks";
-import { selectStateValue } from "@src/storeHelperFunction";
-import { FormattedMsg, InlineTextButton, NamedRedirect } from "@src/components";
+import {
+  BrandIcon,
+  FormattedMsg,
+  InlineTextButton,
+  NamedRedirect,
+} from "@src/components";
 import { IntlShape } from "react-intl";
 import { useConfiguration } from "@src/context";
 import Page from "@src/components/Page/Page";
 import RightChild from "@src/components/RIghtChild/RightChild";
 import ForgotPasswordForm from "@src/Form/ForgotPasswordForm/ForgotPasswordForm";
-import { fetchStatus } from "@src/custom-config";
 import {
   resetLogInStatus,
   sendPasswordResetInstruction,
 } from "@src/globalReducers/auth.slice";
 import css from "./ForgotPassword.module.css";
 
-const mapStateToProps = (selector: UseSelectorType) => {
-  const isAuthenticated = selector(selectStateValue("auth", "isAuthenticated"));
-  const forgotPasswordStatus = selector(
-    selectStateValue("auth", "forgotPasswordStatus")
-  );
-  const forgotPasswordError = selector(
-    selectStateValue("auth", "forgotPasswordError")
-  );
-  return { isAuthenticated, forgotPasswordStatus, forgotPasswordError };
+const mapStateToProps = (select: AppSelect) => {
+  const state = select({
+    isAuthenticated: "auth.isAuthenticated",
+    forgotPasswordStatus: "auth.forgotPasswordStatus",
+    forgotPasswordError: "auth.forgotPasswordError",
+  });
+  return state;
 };
-const mapDispatchToProps = (dispatch: UseDispatchType) => ({
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
   onSendInstruction: (email: string) =>
     dispatch(sendPasswordResetInstruction({ email })),
   onResetLoginStatus: () => dispatch(resetLogInStatus()),
@@ -70,11 +71,11 @@ function ForgotPassword(props: ForgotPasswordPasswordProps) {
   useFetchStatusHandler({
     fetchStatus: forgotPasswordStatus,
     fetchError: forgotPasswordError,
-    callback: { succeeded: { handler: onForgotPasswordSuccess } },
+    succeeded: onForgotPasswordSuccess,
   });
 
   if (isAuthenticated) {
-    return <NamedRedirect name='Homepage' />;
+    return <NamedRedirect name='Homepage' replace={true} />;
   }
   return (
     <Page
@@ -84,7 +85,7 @@ function ForgotPassword(props: ForgotPasswordPasswordProps) {
       <RightChild>
         <div className={css.loginBody}>
           <div className={css.bodyContainer}>
-            <img src={config.branding.icon} alt='' />
+            <BrandIcon />
             <p className={css.helperTextDiv}>
               <span className={css.divider} />
               <FormattedMsg
@@ -98,10 +99,9 @@ function ForgotPassword(props: ForgotPasswordPasswordProps) {
             <ForgotPasswordForm
               intl={intl}
               onSubmit={handleSubmit}
-              forgotPasswordInProgress={fetchStatus.isLoading(
-                forgotPasswordStatus
-              )}
+              forgotPasswordInProgress={forgotPasswordStatus.isLoading}
               forgotPasswordError={forgotPasswordError}
+              forgotPwdStatus={forgotPasswordStatus}
             />
             <div className={"linkTextContainer"}>
               <FormattedMsg id='ForgotPasswordPage.loginRedirect' />

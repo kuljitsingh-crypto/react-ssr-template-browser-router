@@ -3,11 +3,11 @@ import { useIntl } from "react-intl";
 import Page from "@src/components/Page/Page";
 import { useConfiguration } from "@src/context";
 import { LoginForm } from "@src/Form";
-import { AppDispatch } from "@src/store";
 import {
   useFetchStatusHandler,
   useNamedRedirect,
-  UseSelectorType,
+  AppSelect,
+  AppDispatch,
 } from "@src/hooks";
 import {
   resetForgotPasswordStatus,
@@ -16,7 +16,6 @@ import {
   userLogin,
 } from "@src/globalReducers/auth.slice";
 import { customConnect } from "@src/components/helperComponents/customConnect";
-import { fetchStatus, FetchStatusVal } from "@src/custom-config";
 import css from "./LoginPage.module.css";
 import { GeneralError } from "@src/util/APITypes";
 import {
@@ -26,13 +25,17 @@ import {
   NamedRedirect,
 } from "@src/components";
 import RightChild from "@src/components/RIghtChild/RightChild";
-import { selectStateValue } from "@src/storeHelperFunction";
+import { FetchStatusVal } from "@src/util/fetchStatusHelper";
+import { useLocation } from "react-router-dom";
+import { parseQueryString } from "@src/util/functionHelper";
 
-const mapStateToProps = (selector: UseSelectorType) => {
-  const loginStatus = selector(selectStateValue("auth", "loginStatus"));
-  const loginError = selector(selectStateValue("auth", "loginError"));
-  const isAuthenticated = selector(selectStateValue("auth", "isAuthenticated"));
-  return { loginStatus, loginError, isAuthenticated };
+const mapStateToProps = (select: AppSelect) => {
+  const state = select({
+    loginStatus: "auth.loginStatus",
+    loginError: "auth.loginError",
+    isAuthenticated: "auth.isAuthenticated",
+  });
+  return state;
 };
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
@@ -59,12 +62,17 @@ function LoginPage(props: LoginPageProps) {
     onResetSingUpStatus,
     onResetForgotPasswordStatus,
   } = props;
+  const location = useLocation();
   const intl = useIntl();
   const config = useConfiguration();
   const title = intl.formatMessage({ id: "LoginPage.title" });
   const desc =
     config.seo.description || intl.formatMessage({ id: "general.description" });
   const navigate = useNamedRedirect();
+
+  const { state, search } = location;
+  const searchFrom = parseQueryString(search)?.from;
+  const from = (state as any)?.from || searchFrom;
 
   const handleSubmit = (email: string, password: string) => {
     onUserLogin(email, password);
@@ -86,10 +94,20 @@ function LoginPage(props: LoginPageProps) {
   useFetchStatusHandler({
     fetchStatus: loginStatus,
     fetchError: loginError,
-    callback: { succeeded: { handler: onLoginSuccess } },
+    succeeded: onLoginSuccess,
   });
+
   if (isAuthenticated) {
-    return <NamedRedirect name='Homepage' />;
+    const { name = "Homepage", search, hash, params = {} } = from || {};
+    return (
+      <NamedRedirect
+        name={name}
+        replace={true}
+        search={search}
+        hash={hash}
+        params={params}
+      />
+    );
   }
   return (
     <Page
@@ -109,10 +127,11 @@ function LoginPage(props: LoginPageProps) {
             </p>
             <LoginForm
               intl={intl}
-              loginInProgress={fetchStatus.isLoading(loginStatus)}
+              loginInProgress={loginStatus.isLoading}
               loginError={loginError}
               onSubmit={handleSubmit}
               onNavigateToForgotPassword={onNavigateToForgotPassword}
+              loginStatus={loginStatus}
             />
             <div className={"linkTextContainer"}>
               <FormattedMsg id='LoginPage.noAccount' />

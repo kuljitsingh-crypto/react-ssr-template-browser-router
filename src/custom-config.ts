@@ -5,7 +5,8 @@ const logo180 = "/static/icons/logo180.png";
 const logo192 = "/static/icons/logo192.png";
 const logo512 = "/static/icons/logo512.png";
 const favicon = "/static/icons/favicon.ico";
-const brandIcon = "/static/svg/icon.svg";
+const homeIcon = "/static/icons/homeIcon.png";
+const brandIcon = "/static/icons/logo.png";
 
 export const appTheme = {
   dark: "dark",
@@ -49,6 +50,7 @@ export type ConfigurationType = {
     logo192: string;
     logo512: string;
     favicon: string;
+    homeIcon: string;
   };
   branding: { icon: string };
   theme: {
@@ -66,22 +68,6 @@ const postalCode = "00100";
 const streetAddress = "Bulevardi 14";
 
 const ensureRootUrl = (url: string) => url.replace(/\/$/, "");
-
-export const FETCH_STATUS = {
-  idle: "idle",
-  loading: "loading",
-  succeeded: "succeeded",
-  failed: "failed",
-} as const;
-
-export type FetchStatusVal = (typeof FETCH_STATUS)[keyof typeof FETCH_STATUS];
-
-export const fetchStatus = {
-  isLoading: (status: FetchStatusVal) => status === FETCH_STATUS.loading,
-  isSucceeded: (status: FetchStatusVal) => status === FETCH_STATUS.succeeded,
-  isFailed: (status: FetchStatusVal) => status === FETCH_STATUS.failed,
-  isIdle: (status: FetchStatusVal) => status === FETCH_STATUS.idle,
-};
 
 export const defaultConfig: ConfigurationType = {
   canonicalRootUrl: ensureRootUrl(rootUrl),
@@ -104,6 +90,7 @@ export const defaultConfig: ConfigurationType = {
     logo512,
     logo32,
     favicon,
+    homeIcon,
   },
   branding: { icon: brandIcon },
   apiRootPath: "/",

@@ -1,3 +1,11 @@
+// @remove-on-eject-begin
+/**
+ * Copyright (c) 2015-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+// @remove-on-eject-end
 "use strict";
 
 const fs = require("fs");
@@ -25,9 +33,14 @@ const ForkTsCheckerWebpackPlugin =
     ? require("react-dev-utils/ForkTsCheckerWarningWebpackPlugin")
     : require("react-dev-utils/ForkTsCheckerWebpackPlugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
+// @remove-on-eject-begin
+const getCacheIdentifier = require("react-dev-utils/getCacheIdentifier");
+// @remove-on-eject-end
+
+const { applyNodeConfigurations } = require("./nodeBackendConfig");
 
 const createEnvironmentHash = require("./webpack/persistentCache/createEnvironmentHash");
-const { applyNodeConfigurations } = require("./nodeBackendConfig");
+const { modifyChunkName } = require("./helper/modifyChunkName");
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== "false";
@@ -210,34 +223,12 @@ module.exports = function (webpackEnv, target = "web") {
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
       filename: isEnvProduction
-        ? function (pathData, assetInfo) {
-            if (pathData.chunk.name === "main" || !pathData.chunk.name) {
-              return "static/js/[name].[contenthash:8].js";
-            }
-            let namesArr = pathData.chunk.name.split("-");
-            if (namesArr.length < 2) {
-              return "static/js/[name].[contenthash:8].js";
-            }
-            // const nameWithoutPages = pathData.chunk.name.replace("pages-", "");
-            pathData.chunk.name = namesArr[0];
-
-            return "static/js/[name].[contenthash:8].js";
-          }
+        ? modifyChunkName
         : isEnvDevelopment && "static/js/bundle.js",
       // There are also additional JS chunk files if you use code splitting.
       chunkFilename: isEnvProduction
-        ? function (pathData, assetInfo) {
-            if (pathData.chunk.name === "main" || !pathData.chunk.name) {
-              return "static/js/[name].[contenthash:8].chunk.js";
-            }
-            let namesArr = pathData.chunk.name.split("-");
-            if (namesArr.length < 2) {
-              return "static/js/[name].[contenthash:8].chunk.js";
-            }
-            // const nameWithoutPages = pathData.chunk.name.replace("pages-", "");
-            pathData.chunk.name = namesArr[0];
-            return "static/js/[name].[contenthash:8].chunk.js";
-          }
+        ? // ? "static/js/[name].[contenthash:8].chunk.js"
+          modifyChunkName
         : isEnvDevelopment && "static/js/[name].chunk.js",
       assetModuleFilename: "static/media/[name].[hash][ext]",
       // webpack uses `publicPath` to determine where the app is being served from.
@@ -448,12 +439,31 @@ module.exports = function (webpackEnv, target = "web") {
                     },
                   ],
                 ],
-
+                // @remove-on-eject-begin
+                babelrc: false,
+                configFile: true,
+                // Make sure we have a unique cache identifier, erring on the
+                // side of caution.
+                // We remove this when the user ejects because the default
+                // is sane and uses Babel options. Instead of options, we use
+                // the react-scripts and babel-preset-react-app versions.
+                cacheIdentifier: getCacheIdentifier(
+                  isEnvProduction
+                    ? "production"
+                    : isEnvDevelopment && "development",
+                  [
+                    "babel-plugin-named-asset-import",
+                    "babel-preset-react-app",
+                    "react-dev-utils",
+                    "react-scripts",
+                  ]
+                ),
+                // @remove-on-eject-end
                 plugins: [
+                  require.resolve("@loadable/babel-plugin"),
                   isEnvDevelopment &&
                     shouldUseReactRefresh &&
                     require.resolve("react-refresh/babel"),
-                  isNodeTarget && require.resolve("@loadable/babel-plugin"),
                 ].filter(Boolean),
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -483,7 +493,19 @@ module.exports = function (webpackEnv, target = "web") {
                 cacheDirectory: true,
                 // See #6846 for context on why cacheCompression is disabled
                 cacheCompression: false,
-
+                // @remove-on-eject-begin
+                cacheIdentifier: getCacheIdentifier(
+                  isEnvProduction
+                    ? "production"
+                    : isEnvDevelopment && "development",
+                  [
+                    "babel-plugin-named-asset-import",
+                    "babel-preset-react-app",
+                    "react-dev-utils",
+                    "react-scripts",
+                  ]
+                ),
+                // @remove-on-eject-end
                 // Babel sourcemaps are needed for debugging into node_modules
                 // code.  Without the options below, debuggers like VSCode
                 // show incorrect code and set breakpoints on the wrong lines.
@@ -598,7 +620,8 @@ module.exports = function (webpackEnv, target = "web") {
         Object.assign(
           {},
           {
-            inject: true,
+            //  inject scripts only in dev env, prod env server already injects required scripts.
+            inject: isEnvDevelopment,
             template: paths.appHtml,
           },
           isEnvProduction

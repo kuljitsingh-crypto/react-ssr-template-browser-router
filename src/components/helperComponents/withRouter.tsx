@@ -1,35 +1,23 @@
 import React from "react";
-import {
-  Location,
-  NavigateFunction,
-  Params,
-  PathMatch,
-} from "react-router-dom";
-import { routes } from "@src/util/routes";
 import { useCustomRouter } from "@src/hooks";
+import { useRouteConfiguration } from "@src/context";
 
-export type RouterTypes = {
-  matches: PathMatch[];
-  location: Location;
-  params: Readonly<Params>;
-  navigate: NavigateFunction;
-  history: History | undefined;
-};
+export type RouterTypes = ReturnType<typeof useCustomRouter>;
 
-type WithRouterProps = { router: RouterTypes };
+export type WithRouter = { router: RouterTypes };
 
-export function withRouter<T extends WithRouterProps = WithRouterProps>(
+export function withRouter<T extends WithRouter = any>(
   WrappedComponent: React.ComponentType<T>
 ) {
   const displayName =
     WrappedComponent.displayName || WrappedComponent.name || "Component";
-  const WithRouterProps = (props: Omit<T, keyof WithRouterProps>) => {
+  const WithRouterProps = (props: Omit<T, keyof WithRouter>) => {
+    const routes = useRouteConfiguration();
     const router = useCustomRouter(routes);
 
     return <WrappedComponent {...(props as T)} router={router} />;
   };
   WithRouterProps.displayName = displayName;
-  WithRouterProps.defaultProps = {} as Record<string, unknown>;
   WithRouterProps.propTypes = {} as Record<string, unknown>;
   return WithRouterProps;
 }

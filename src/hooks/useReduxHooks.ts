@@ -1,19 +1,15 @@
-import { TypedUseSelectorHook, useDispatch } from "react-redux";
-import { AppDispatch, RootStateType } from "@src/store";
-import { useSelector } from "react-redux";
-import { Params } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Dispatch, RootState } from "@src/store";
 import { PayloadAction } from "@reduxjs/toolkit";
-type AppDispatchFuncType = () => AppDispatch;
+type AppDispatchFuncType = () => Dispatch;
 
 //----------------------redux hooks --------------------------------
 export const useAppDispatch: AppDispatchFuncType = useDispatch;
-export const useAppSelector: TypedUseSelectorHook<RootStateType> = useSelector;
-export type UseSelectorType = typeof useAppSelector;
-export type UseDispatchType = ReturnType<typeof useAppDispatch>;
-export type UseGetStateType = () => RootStateType;
+export type AppDispatch = ReturnType<typeof useAppDispatch>;
+export type GetState = () => RootState;
 export type DataLoaderFunction = <P = any>(params: {
-  getState: UseGetStateType;
-  dispatch: UseDispatchType;
-  params: Params;
+  getState: GetState;
+  dispatch: AppDispatch;
+  params: Record<string, any>;
   search: Record<string, any>;
 }) => Promise<PayloadAction<P> | PayloadAction<unknown> | any>;

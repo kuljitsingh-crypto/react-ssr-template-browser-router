@@ -1,11 +1,14 @@
 # React SSR Template 
 This project is built after ejecting the default  react app (generated using Create-React-App) and modifying the necessary part to create ssr functionality. Loadable components package is utilized to efficiently split and manage components, especially those designated for server-side rendering. 
 
-In this template, I leverage React-Router's new CreateBrowserRouter to establish routes, providing the flexibility to tap into new data APIs if required.
+
 
 ## Folder Structure 
 ``` bash
+
+├── package.json
 ├── public
+│   ├── 401.html
 │   ├── 500.html
 │   ├── index.html
 │   ├── robots.txt
@@ -13,6 +16,8 @@ In this template, I leverage React-Router's new CreateBrowserRouter to establish
 │       ├── icons
 │       │   ├── browserconfig.xml
 │       │   ├── favicon.ico
+│       │   ├── homeIcon.png
+│       │   ├── logo.png
 │       │   ├── logo150.png
 │       │   ├── logo16.png
 │       │   ├── logo180.png
@@ -24,14 +29,15 @@ In this template, I leverage React-Router's new CreateBrowserRouter to establish
 │       │   └── twitter.png
 │       ├── manifest.json
 │       └── svg
-│           └── icon.svg
+├── README.md
+├── scripts
 ├── server
 │   ├── csp-util
 │   │   └── csp.js
-|   ├── router
-│   │   ├── wellKnownRouter.js
-│   |   └── apiRouter.js
 │   ├── index.js
+│   ├── router
+│   │   ├── apiRouter.js
+│   │   └── wellKnownRouter.js
 │   └── util
 │       ├── helperFunctions.js
 │       └── ssrUtills.js
@@ -46,8 +52,6 @@ In this template, I leverage React-Router's new CreateBrowserRouter to establish
 │   │   │   └── BrandIcon.tsx
 │   │   ├── Divider
 │   │   │   └── Divider.tsx
-│   │   ├── ErrorText
-│   │   │   └── ErrorText.tsx
 │   │   ├── FormattedMessage
 │   │   │   └── FormattedMsg.tsx
 │   │   ├── helperComponents
@@ -56,6 +60,8 @@ In this template, I leverage React-Router's new CreateBrowserRouter to establish
 │   │   │   ├── ReactHelmet.tsx
 │   │   │   ├── windowDimension.tsx
 │   │   │   └── withRouter.tsx
+│   │   ├── HomeIcon
+│   │   │   └── HomeIcon.tsx
 │   │   ├── IconSpinner
 │   │   │   ├── IconSpinner.module.css
 │   │   │   └── IconSpinner.tsx
@@ -82,6 +88,10 @@ In this template, I leverage React-Router's new CreateBrowserRouter to establish
 │   │   ├── RIghtChild
 │   │   │   ├── RightChild.module.css
 │   │   │   └── RightChild.tsx
+│   │   ├── RouteProvider
+│   │   │   ├── BrowserRouteProvider.tsx
+│   │   │   ├── renderRoutes.tsx
+│   │   │   └── StaticRouterProvider.tsx
 │   │   ├── Sidebar
 │   │   │   └── Sidebar.tsx
 │   │   ├── Topbar
@@ -93,15 +103,23 @@ In this template, I leverage React-Router's new CreateBrowserRouter to establish
 │   │   │   ├── Button
 │   │   │   │   ├── Button.module.css
 │   │   │   │   └── Button.tsx
-│   │   │   └── FieldTextInput
-│   │   │       ├── FieldTextInput.module.css
-│   │   │       └── FieldTextInput.tsx
+│   │   │   ├── DataLoader
+│   │   │   │   ├── DataLoader.module.css
+│   │   │   │   └── DataLoader.tsx
+│   │   │   ├── ErrorText
+│   │   │   │   └── ErrorText.tsx
+│   │   │   ├── FieldTextInput
+│   │   │   │   ├── FieldTextInput.module.css
+│   │   │   │   └── FieldTextInput.tsx
+│   │   │   └── SuccessContainer
+│   │   │       └── SuccessContainer.tsx
 │   │   └── UserAvatar
 │   │       ├── index.module.css
 │   │       └── UserAvatar.tsx
 │   ├── context
 │   │   ├── index.ts
-│   │   └── useConfigurationContext.ts
+│   │   ├── useConfigurationContext.ts
+│   │   └── useRouteContext.ts
 │   ├── custom-config.ts
 │   ├── Form
 │   │   ├── ForgotPasswordForm
@@ -125,6 +143,7 @@ In this template, I leverage React-Router's new CreateBrowserRouter to establish
 │   │   ├── useFetchStatusHandler.ts
 │   │   ├── useNamedRedirect.ts
 │   │   ├── useReduxHooks.ts
+│   │   ├── useSelector.ts
 │   │   └── useUnauthenticatedRedirect.tsx
 │   ├── index.css
 │   ├── index.js
@@ -158,7 +177,7 @@ In this template, I leverage React-Router's new CreateBrowserRouter to establish
 │   │       └── SignupPage.tsx
 │   ├── react-app-env.d.ts
 │   ├── reducers.ts
-│   ├── routeNames.ts
+│   ├── routeConfig.ts
 │   ├── store.ts
 │   ├── storeHelperFunction.ts
 │   ├── translations
@@ -171,14 +190,18 @@ In this template, I leverage React-Router's new CreateBrowserRouter to establish
 │       ├── api.ts
 │       ├── APITypes.ts
 │       ├── browserHelperFunction.ts
+│       ├── fetchStatusHelper.ts
 │       ├── functionHelper.ts
 │       ├── localeHelper.ts
 │       ├── objectHelper.ts
 │       ├── polyfills.js
 │       ├── routes.js
 │       ├── routesHelperFunction.ts
+│       ├── serialization.ts
 │       └── themeHelper.ts
-└── tsconfig.json
+├── tsconfig.json
+└── yarn.lock
+
 ```
 
 ## Enviroment Value
@@ -199,8 +222,8 @@ Create a folder and file inside the pages directory with the same name as the ro
 
     Example: To create a ContactPage: `pages/ContactPage/ContactPage.tsx`
 
-2. 🛣️ Update routeDetails
-Add the route entry in the routeDetails array (found in routeNames.ts or similar file):
+2. 🛣️ Update routeConfiguration
+Add the route entry in the `routeConfiguration` array (found in routeNames.ts or similar file):
         `{ path: "/contact", name: "ContactPage", isAuth: true }`
         
     Note: The name must exactly match the folder/file name you created in the pages directory.
@@ -217,6 +240,7 @@ Add the route entry in the routeDetails array (found in routeNames.ts or similar
     If your page needs to load data on navigation:
 
     Add a loadData function
+    `{ path: "/contact", name: "ContactPage", isAuth: true,loadData:loaderCb }`
 
     Follow examples like `ProductsPageSlice.ts` or `ProductPageSlice.ts`
 
@@ -361,29 +385,119 @@ if (!currentUser && route.requiresAuth) {
 | Public + Auth Views         | ✅ Best for SEO & UX balance      |
 
 
-## Available Scripts
-
-In the project directory, you can run:
+## 🧩 Available Scripts
 
 ### `yarn start`
+Runs the **production server**.
 
-Runs the app in the development mode.\
-Open [http://localhost:3500](http://localhost:3500) to view it in the browser.
-It also render preloaded data, if available.
+```bash
+node --icu-data-dir=node_modules/full-icu server/index.js
+```
 
+- Starts the backend from `server/index.js`.
+- Loads **full ICU data** for complete locale and internationalization support.
+- Typically used **after building** the project.
+
+---
+
+### `yarn run build`
+Builds both the **frontend** and **backend** for production.
+
+```bash
+yarn run build-web && yarn run build-server
+```
+
+- Builds client and server bundles sequentially.
+- Output files are optimized for production deployment.
+
+---
+
+### `yarn run build-web`
+Builds the **frontend (React)** application.
+
+```bash
+node scripts/build.js
+```
+
+- Runs the custom frontend build script.
+- Produces optimized static assets for production.
+
+---
+
+### `yarn run build-server`
+Builds the **backend (Node.js)** application.
+
+```bash
+node scripts/build-server.js
+```
+
+- Prepares or transpiles server files for production.
+
+---
 
 ### `yarn test`
+Runs all **tests** defined in your project.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+node scripts/test.js
+```
 
-### `yarn build`
+- Can include unit, integration, or end-to-end tests.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React and Node in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🧑‍💻 Development Commands
+
+### `yarn run dev-frontend`
+Runs only the **frontend** development server.
+
+```bash
+node scripts/start.js
+```
+
+- Starts the React app in development mode with hot reloading.
+- Useful when working exclusively on the frontend.
+
+---
+
+### `yarn run dev-backend`
+Runs only the **backend** in development mode.
+
+```bash
+nodemon server/index.js
+```
+
+- Uses `nodemon` to automatically restart on file changes.
+- Useful for backend-only development.
+
+---
+
+### `yarn run dev`
+Runs **both frontend and backend** concurrently in development mode.
+
+```bash
+cross-env NODE_ENV=development BABEL_ENV=development REACT_APP_API_SERVER_PORT=3500 concurrently --kill-others "yarn run dev-backend" "yarn run dev-frontend"
+```
+
+- Uses `cross-env` for cross-platform environment variables.
+- Runs frontend and backend together.
+- Kills both processes if one stops.
+- Backend API runs on **port 3500** by default.
+- Run `yarn run build` before running this command.
+
+---
+
+### `yarn run dev-server`
+Builds and runs the **server** locally with automatic reload.
+
+```bash
+cross-env-shell NODE_ENV=development PORT=4000 REACT_APP_CANONICAL_ROOT_URL=http://localhost:4000 "yarn run build && nodemon --watch server server/index.js"
+```
+
+- Builds both frontend and backend before starting.
+- Starts backend on **port 4000**.
+- Watches the `server/` folder and reloads automatically.
+- Useful for testing production builds locally.
 
 ## Learn More
 

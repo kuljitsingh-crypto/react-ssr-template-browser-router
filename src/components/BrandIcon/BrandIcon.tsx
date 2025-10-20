@@ -9,7 +9,12 @@ function BrandIcon(props: BrandIconProps) {
   const { className } = props;
   const config = useConfiguration();
   const brandClasses = classNames("brandIcon", className);
-  return <img src={config.branding.icon} alt='' className={brandClasses} />;
+  const brandDivClass = classNames("brandIconContainer");
+  return (
+    <div className={brandDivClass}>
+      <img src={config.branding.icon} alt='' className={brandClasses} />
+    </div>
+  );
 }
 
 export default BrandIcon;

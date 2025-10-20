@@ -1,23 +1,35 @@
 import React from "react";
-import { Navigate, RelativeRoutingType } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { pathByRouteName } from "@src/util/routesHelperFunction";
-import { routes } from "@src/util/routes";
-import { bool, object, oneOf, string } from "prop-types";
+import { bool, object, string } from "prop-types";
 import { isBrowser } from "@src/util/browserHelperFunction";
-import { RoutesNameType } from "@src/routeNames";
+import { RouteNames } from "@src/routeConfig";
+import { useRouteConfiguration } from "@src/context";
 
 type NamedRedirectProps = {
   replace?: boolean;
   state?: any;
-  relative?: RelativeRoutingType;
-  name: RoutesNameType;
+  name: RouteNames;
   search?: string;
   hash?: string;
   params?: object;
 };
 
+const defaultProps = {
+  search: "",
+  hash: "",
+  params: {},
+};
 function NamedRedirect(props: NamedRedirectProps) {
-  const { replace, state, relative, search, hash, name, params } = props;
+  const {
+    state,
+    search,
+    hash,
+    name,
+    params,
+    replace = false,
+  } = props || defaultProps;
+  const routes = useRouteConfiguration();
   const pathname = pathByRouteName(name, routes, params);
   const searchParams =
     search && typeof search === "string"
@@ -39,31 +51,20 @@ function NamedRedirect(props: NamedRedirectProps) {
   }
 
   return (
-    <Navigate
-      replace={replace}
-      state={state}
-      relative={relative}
-      to={{ pathname, search: searchParams, hash: hashParams }}
+    <Redirect
+      push={!replace}
+      to={{ pathname, search: searchParams, hash: hashParams, state }}
     />
   );
 }
 
-NamedRedirect.defaultProps = {
-  replace: false,
-  search: "",
-  hash: "",
-  relative: "route",
-  params: {},
-};
-
 NamedRedirect.propTypes = {
-  replace: bool.isRequired,
-  search: string.isRequired,
+  search: string,
   name: string.isRequired,
-  relative: oneOf(["route", "path"]),
   state: object,
-  hash: string.isRequired,
+  hash: string,
   params: object,
+  replace: bool,
 };
 
 export default NamedRedirect;

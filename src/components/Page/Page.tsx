@@ -2,12 +2,10 @@ import React from "react";
 import ReactHelmet, {
   ReactHelmetPropsTypes,
 } from "@src/components/helperComponents/ReactHelmet";
-import { useCustomRouter } from "@src/hooks";
-import { routes } from "@src/util/routes";
+import { useCustomRouter, useAppSelect } from "@src/hooks";
 import { canonicalRoutePath } from "@src/util/routesHelperFunction";
-import { useConfiguration } from "@src/context";
+import { useConfiguration, useRouteConfiguration } from "@src/context";
 import classNames from "classnames";
-import { useSelector } from "react-redux";
 import LeftChild from "../LeftChild/LeftChild";
 import RightChild from "../RIghtChild/RightChild";
 import { isAppHasDarkTheme } from "@src/util/themeHelper";
@@ -16,7 +14,6 @@ import {
   windowDimensionProvider,
 } from "../helperComponents/windowDimension";
 import { ScreenDimensionProvider } from "./pageHooks";
-import { selectStateValue } from "@src/storeHelperFunction";
 
 export type ModifiedHelmetProps = Omit<
   ReactHelmetPropsTypes,
@@ -80,6 +77,7 @@ function Page(props: PageProps): React.JSX.Element {
     metaTitle,
     windowDimensions,
   } = props;
+  const routes = useRouteConfiguration();
   const router = useCustomRouter(routes);
   const url = canonicalRoutePath(router.location);
   const config = useConfiguration();
@@ -101,7 +99,11 @@ function Page(props: PageProps): React.JSX.Element {
     referrer: config.seo.referrer,
     schema: config.seo.schema,
   };
-  const theme = useSelector(selectStateValue("ui", "theme"));
+
+  const { theme } = useAppSelect({
+    theme: "ui.theme",
+  });
+
   const [showLeftChild, setShowLeftChild] = React.useState(true);
   const themeClassName = isAppHasDarkTheme(theme) ? "darkTheme" : "lightTheme";
   const rootClasses = classNames(

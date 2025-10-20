@@ -1,6 +1,6 @@
 import React from "react";
-import { UseDispatchType, UseSelectorType } from "@src/hooks";
-import { incrementCount, selectCount, incrementCountBy } from "./homePageSlice";
+import { AppDispatch, AppSelect } from "@src/hooks";
+import { incrementCount, incrementCountBy } from "./homePageSlice";
 import { customConnect } from "@src/components/helperComponents/customConnect";
 import Page from "@src/components/Page/Page";
 import { IntlShape } from "react-intl";
@@ -37,11 +37,11 @@ function HomepageComponent(props: HomepagePropsType): React.JSX.Element {
     </Page>
   );
 }
-const customMapToState = (selector: UseSelectorType) => {
-  const count = selector(selectCount);
+const customMapToState = (select: AppSelect) => {
+  const { count } = select({ count: "home.count" });
   return { count };
 };
-const customMapToDispatch = (dispatch: UseDispatchType) => {
+const customMapToDispatch = (dispatch: AppDispatch) => {
   return {
     onIncrementCount: () => dispatch(incrementCount()),
     onIncrementCountBy: (value: number) => dispatch(incrementCountBy(value)),

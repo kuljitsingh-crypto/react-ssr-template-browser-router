@@ -1,51 +1,30 @@
 import { pathByRouteName } from "@src/util/routesHelperFunction";
-import { RelativeRoutingType, useNavigate } from "react-router-dom";
-import { routes } from "@src/util/routes";
-import { RoutesNameType } from "@src/routeNames";
+import { useHistory } from "react-router-dom";
+import { RouteNames } from "@src/routeConfig";
+import { useRouteConfiguration } from "@src/context";
 
 type NamedRedirectOptions = {
   replace?: boolean;
   state?: any;
-  relative?: RelativeRoutingType;
   search?: string;
   hash?: string;
   params?: object;
-  preventScrollReset?: boolean;
 };
 export const useNamedRedirect = () => {
-  const routerNavigate = useNavigate();
-  const navigate = (name: RoutesNameType, options?: NamedRedirectOptions) => {
-    const {
-      replace,
-      state,
-      relative,
-      search,
-      hash,
-      params,
-      preventScrollReset,
-    } = options || {};
+  const history = useHistory();
+  const routes = useRouteConfiguration();
+  const navigate = (name: RouteNames, options?: NamedRedirectOptions) => {
+    const { replace, state, search, hash, params } = options || {};
     const pathname = pathByRouteName(name, routes, params);
     const searchParams =
-      search && typeof search === "string"
-        ? search.startsWith("?")
-          ? search
-          : `?${search}`
-        : "";
+      search && typeof search === "string" ? `?${search.replace("?", "")}` : "";
     const hashParams =
-      hash && typeof hash === "string"
-        ? hash.startsWith("#")
-          ? hash
-          : `#${hash}`
-        : "";
-    routerNavigate(
-      { pathname, search: searchParams, hash: hashParams },
-      {
-        replace,
-        state,
-        relative,
-        preventScrollReset,
-      }
-    );
+      hash && typeof hash === "string" ? `#${hash.replace("#", "")}` : "";
+    const path = `${pathname}${searchParams}${hashParams}`;
+    if (replace) {
+      return history.replace(path, state || {});
+    }
+    return history.push(path, state || {});
   };
   return navigate;
 };

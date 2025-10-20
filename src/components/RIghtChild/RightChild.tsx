@@ -1,13 +1,14 @@
-import { UseSelectorType } from "@src/hooks";
+import { AppSelect } from "@src/hooks";
 import classNames from "classnames";
 import React from "react";
 import { customConnect } from "../helperComponents/customConnect";
 import Topbar from "../Topbar/Topbar";
 import css from "./RightChild.module.css";
-import { selectStateValue } from "@src/storeHelperFunction";
 
-const mapStateToProps = (selector: UseSelectorType) => {
-  const isAuthenticated = selector(selectStateValue("auth", "isAuthenticated"));
+const mapStateToProps = (select: AppSelect) => {
+  const { isAuthenticated } = select({
+    isAuthenticated: "auth.isAuthenticated",
+  });
   return { isAuthenticated };
 };
 
@@ -17,6 +18,7 @@ type RightChildProps = {
   showLeftChild?: boolean;
   toggleLeftChild?: () => void;
   hasLeftChild?: boolean;
+  showTopbar?: boolean;
 } & { children?: React.ReactNode } & ReturnType<typeof mapStateToProps>;
 
 function RightChildComp(props: RightChildProps) {
@@ -26,6 +28,7 @@ function RightChildComp(props: RightChildProps) {
     className,
     showLeftChild,
     hasLeftChild,
+    showTopbar = true,
     toggleLeftChild,
   } = props;
   const rightChildClass = classNames(rootClassName, css.root, className, {
@@ -33,11 +36,13 @@ function RightChildComp(props: RightChildProps) {
   });
   return (
     <div className={rightChildClass}>
-      <Topbar
-        showLeftChild={showLeftChild}
-        toggleLeftChild={toggleLeftChild}
-        hasLeftChild={hasLeftChild}
-      />
+      {showTopbar ? (
+        <Topbar
+          showLeftChild={showLeftChild}
+          toggleLeftChild={toggleLeftChild}
+          hasLeftChild={hasLeftChild}
+        />
+      ) : null}
       {children}
     </div>
   );

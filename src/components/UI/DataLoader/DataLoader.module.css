@@ -1,0 +1,13 @@
+.root {
+  width: 100%;
+  margin: var(--pixel2) var(--pixel0);
+  padding: var(--pixel8) var(--pixel0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.icon {
+  width: var(--pixel36);
+  height: var(--pixel36);
+}

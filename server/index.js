@@ -8,7 +8,10 @@ const csp = require("./csp-util/csp");
 const { getExtractor, render, dataLoader } = require("./util/ssrUtills");
 const { default: helmet } = require("helmet");
 const cors = require("cors");
-const { validateAndGetCurrentUserInfo } = require("./util/helperFunctions");
+const {
+  validateAndGetCurrentUserInfo,
+  fetchCustomConfig,
+} = require("./util/helperFunctions");
 const { wellKnownRouter } = require("./router/wellKnownRouter");
 const { apiRouter } = require("./router/apiRouter");
 const CSP = process.env.REACT_APP_CSP;
@@ -23,6 +26,7 @@ const cspReportUri = "/csp-report";
 const isCspEnabled = CSP === "block" || CSP === "report";
 
 const errorPage = fs.readFileSync(path.join(buildPath, "500.html"), "utf8");
+const unauthPage = fs.readFileSync(path.join(buildPath, "401.html"), "utf8");
 
 const app = express();
 
@@ -144,12 +148,17 @@ app.get("*", async (req, res) => {
     const currentUser = await validateAndGetCurrentUserInfo(req);
     const {
       default: renderApp,
-      routes,
+      prepareRoutes,
       createStore,
       matchPathName,
       setCurrentUser,
       setAuthenticationState,
+      mergeConfig,
+      defaultConfig,
     } = nodeEntrypoint;
+    const newConfig = await fetchCustomConfig(req);
+    const finalConfig = mergeConfig(defaultConfig, newConfig);
+    const routes = prepareRoutes(finalConfig);
     const data = await dataLoader(
       req,
       routes,
@@ -159,18 +168,36 @@ app.get("*", async (req, res) => {
       setCurrentUser,
       setAuthenticationState
     );
-    const html = await render(req, context, renderApp, webExtractor, data);
+    const html = await render(
+      req,
+      routes,
+      context,
+      renderApp,
+      webExtractor,
+      data,
+      finalConfig
+    );
 
+    const fromMaybe = context.from
+      ? `?from=${encodeURIComponent(JSON.stringify(context.from))}`
+      : "";
+    // For now context has three possible key url,notFound and unauthorized
+    // If you wan to handle unauthorized different differently then as per your requriement
     if (context.url) {
-      return res.redirect(context.url);
+      return res.redirect(`${context.url}${fromMaybe}`);
+    } else if (context.unauthorized) {
+      res.setHeader("Content-Type", "text/html");
+      return res.status(401).end(unauthPage);
     }
     res.setHeader("Content-Type", "text/html");
-    if (context.nofound) {
+    if (context.notFound) {
       return res.status(404).send(html);
     } else {
       return res.send(html);
     }
   } catch (err) {
+    console.log(err);
+    res.setHeader("Content-Type", "text/html");
     res.status(500).send(errorPage);
   }
 });

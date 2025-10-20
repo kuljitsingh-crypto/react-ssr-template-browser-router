@@ -6,8 +6,8 @@
     "@babel/core": "^7.16.0",
     "@formatjs/intl-relativetimeformat": "^11.2.10",
     "@loadable/babel-plugin": "^5.16.1",
-    "@loadable/component": "^5.15.3",
-    "@loadable/server": "^5.16.1",
+    "@loadable/component": "^5.16.7",
+    "@loadable/server": "^5.16.7",
     "@loadable/webpack-plugin": "^5.15.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
     "@reduxjs/toolkit": "^2.0.1",
@@ -71,17 +71,17 @@
     "postcss-preset-env": "^7.0.1",
     "prompts": "^2.4.2",
     "prop-types": "^15.8.1",
-    "rc-simple-hook-form": "^1.1.7",
-    "react": "16.14.0",
+    "rc-simple-hook-form": "^1.2.0",
+    "react": "18.3.1",
     "react-app-polyfill": "^3.0.0",
     "react-dev-utils": "^12.0.1",
-    "react-dom": "16.14.0",
+    "react-dom": "18.3.1",
     "react-helmet-async": "^2.0.3",
     "react-icons": "4.12.0",
     "react-intl": "^6.5.5",
     "react-redux": "8.0.0",
     "react-refresh": "^0.11.0",
-    "react-router-dom": "^6.16.0",
+    "react-router-dom": "5.3.4",
     "resolve": "^1.20.0",
     "resolve-url-loader": "^4.0.0",
     "sass-loader": "^12.3.0",
@@ -107,9 +107,8 @@
     "test": "node scripts/test.js",
     "dev-frontend": "node scripts/start.js",
     "dev-backend": "nodemon server/index.js",
-    "dev-win": "SET NODE_ENV=development&&SET BABEL_ENV=development&&SET REACT_APP_API_SERVER_PORT=3500 && concurrently --kill-others \"yarn run dev-backend\" \"yarn run dev-frontend\"",
     "dev": "cross-env  NODE_ENV=development BABEL_ENV=development  REACT_APP_API_SERVER_PORT=3500  concurrently --kill-others \"yarn run dev-backend\" \"yarn run dev-frontend\"",
-    "dev-server": "cross-env-shell NODE_ENV=development PORT=4001 REACT_APP_CANONICAL_ROOT_URL=http://localhost:4001 \"yarn run build&&nodemon --watch server server/index.js\""
+    "dev-server": "cross-env-shell NODE_ENV=development PORT=4000 REACT_APP_CANONICAL_ROOT_URL=http://localhost:4000 \"yarn run build&&nodemon --watch server server/index.js\""
   },
   "eslintConfig": {
     "extends": [
@@ -130,6 +129,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-transform-class-static-block": "^7.28.3",
     "babel-plugin-module-resolver": "^5.0.2",
     "concurrently": "^8.2.1",
     "cross-env": "^10.1.0",

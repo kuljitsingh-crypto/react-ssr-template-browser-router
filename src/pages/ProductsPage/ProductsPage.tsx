@@ -1,16 +1,15 @@
 import React from "react";
-import { UseDispatchType, UseSelectorType } from "@src/hooks";
+import { AppDispatch, AppSelect } from "@src/hooks";
 import { fetchProducts } from "./ProductsPageSlice";
 import { customConnect } from "@src/components/helperComponents/customConnect";
-import { fetchStatus, FetchStatusVal } from "@src/custom-config";
 import css from "./ProductsPage.module.css";
-import { ProductErrorType, ProductType } from "../pageGlobalType";
-import { NamedLink } from "@src/components";
+import { ProductType } from "../pageGlobalType";
+import { Error, Loader, NamedLink, Success } from "@src/components";
 import { IntlShape } from "react-intl";
 import Page from "@src/components/Page/Page";
 import RightChild from "@src/components/RIghtChild/RightChild";
-import { routesName } from "@src/routeNames";
-import { selectStateValue } from "@src/storeHelperFunction";
+import { FetchStatusVal } from "@src/util/fetchStatusHelper";
+import { GeneralError } from "@src/util/APITypes";
 
 type ProductsPagePropsType = {
   status: FetchStatusVal;
@@ -18,11 +17,11 @@ type ProductsPagePropsType = {
   onFetchProducts: Function;
   intl: IntlShape;
   name: string;
-  error?: ProductErrorType;
+  error: GeneralError;
 };
 
 function ProductsPage(props: ProductsPagePropsType) {
-  const { status, products, intl } = props;
+  const { status, products, intl, error } = props;
   const description = intl.formatMessage({ id: "Homepage.description" });
   const title = intl.formatMessage({ id: "ProductsPage.title" });
   return (
@@ -31,42 +30,46 @@ function ProductsPage(props: ProductsPagePropsType) {
       description={description}
       contentRootClassName={css.root}>
       <RightChild>
-        {fetchStatus.isLoading(status) ? (
-          <span>Loading products...</span>
-        ) : null}
-        {fetchStatus.isSucceeded(status) && products && products.length > 0 ? (
-          <ul>
-            <li>
-              <h3>Products:</h3>
-            </li>
-            {products.map((product) => (
-              <li key={product.id}>
-                <span>{product.title}</span>
-                <NamedLink
-                  name={routesName.ProductPage}
-                  routeParams={{ id: product.id }}>
-                  See More
-                </NamedLink>
+        <Loader status={status} />
+        <Success status={status}>
+          {products && products.length > 0 ? (
+            <ul>
+              <li>
+                <h3>Products:</h3>
               </li>
-            ))}
-          </ul>
-        ) : null}
-        {fetchStatus.isFailed(status) ? (
-          <p className={css.error}>Failed to get products. Please try again.</p>
-        ) : null}
+              {products.map((product) => (
+                <li key={product.id}>
+                  <span>{product.title}</span>
+                  <NamedLink
+                    name={"ProductPage"}
+                    routeParams={{ id: product.id }}>
+                    See More
+                  </NamedLink>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </Success>
+        <Error
+          status={status}
+          error={error}
+          errorMsg={intl.formatMessage({ id: "ProductsPage.loadFailed" })}
+        />
       </RightChild>
     </Page>
   );
 }
 
-const mapToStateProps = (selector: UseSelectorType) => {
-  const status = selector(selectStateValue("products", "status"));
-  const products = selector(selectStateValue("products", "products"));
-  const error = selector(selectStateValue("products", "error"));
-  return { status, products, error };
+const mapToStateProps = (select: AppSelect) => {
+  const state = select({
+    status: "products.status",
+    error: "products.error",
+    products: "products.products",
+  });
+  return state;
 };
 
-const mapToDispatchProps = (dispatch: UseDispatchType) => ({
+const mapToDispatchProps = (dispatch: AppDispatch) => ({
   onFetchProducts: () => dispatch(fetchProducts()),
 });
 

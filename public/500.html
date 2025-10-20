@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Server Failed</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=0" />
+    <title>Server Error</title>
     <style>
         body {
             margin: 0;
@@ -15,13 +15,30 @@
             -moz-osx-font-smoothing: grayscale;
             background-color: #282c34;
             color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0 0 1rem;
+        }
+
+        p {
+            font-size: 1.25rem;
+            margin: 0;
         }
     </style>
 </head>
 
 <body>
-    <!--update this as per your requirement -->
-    <h3>Falied to get server response.</h3>
+    <div>
+        <h1>500 - Internal Server Error</h1>
+        <p>Something went wrong on our end. Please try again later.</p>
+    </div>
 </body>
 
 </html>

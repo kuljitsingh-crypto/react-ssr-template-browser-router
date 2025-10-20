@@ -2,27 +2,36 @@ import React from "react";
 import { useIntl } from "react-intl";
 import Page from "@src/components/Page/Page";
 import { useConfiguration } from "@src/context";
-import { AppDispatch } from "@src/store";
+
 import {
   useFetchStatusHandler,
   useNamedRedirect,
-  UseSelectorType,
+  AppSelect,
+  AppDispatch,
 } from "@src/hooks";
 import { resetLogInStatus, userSignup } from "@src/globalReducers/auth.slice";
 import { customConnect } from "@src/components/helperComponents/customConnect";
-import { fetchStatus, FetchStatusVal } from "@src/custom-config";
 import css from "./SignupPage.module.css";
 import { GeneralError } from "@src/util/APITypes";
-import { FormattedMsg, InlineTextButton, NamedRedirect } from "@src/components";
+import {
+  BrandIcon,
+  FormattedMsg,
+  InlineTextButton,
+  NamedRedirect,
+} from "@src/components";
 import RightChild from "@src/components/RIghtChild/RightChild";
 import SignupForm from "@src/Form/SignupForm/SignupForm";
-import { selectStateValue } from "@src/storeHelperFunction";
+import { FetchStatusVal } from "@src/util/fetchStatusHelper";
+import { useLocation } from "react-router-dom";
+import { parseQueryString } from "@src/util/functionHelper";
 
-const mapStateToProps = (selector: UseSelectorType) => {
-  const signupStatus = selector(selectStateValue("auth", "signupStatus"));
-  const signupError = selector(selectStateValue("auth", "signupError"));
-  const isAuthenticated = selector(selectStateValue("auth", "isAuthenticated"));
-  return { signupStatus, signupError, isAuthenticated };
+const mapStateToProps = (select: AppSelect) => {
+  const state = select({
+    signupStatus: "auth.signupStatus",
+    signupError: "auth.signupError",
+    isAuthenticated: "auth.isAuthenticated",
+  });
+  return state;
 };
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
@@ -51,6 +60,11 @@ function SignupPage(props: SignupPageProps) {
   const desc =
     config.seo.description || intl.formatMessage({ id: "general.description" });
   const navigate = useNamedRedirect();
+  const location = useLocation();
+
+  const { state, search } = location;
+  const searchFrom = parseQueryString(search)?.from;
+  const from = (state as any)?.from || searchFrom;
 
   const handleSubmit = (email: string, password: string) => {
     onUserSignup(email, password);
@@ -67,11 +81,20 @@ function SignupPage(props: SignupPageProps) {
   useFetchStatusHandler({
     fetchStatus: signupStatus,
     fetchError: signupError,
-    callback: { succeeded: { handler: onSignupSuccess } },
+    succeeded: onSignupSuccess,
   });
 
   if (isAuthenticated) {
-    return <NamedRedirect name='Homepage' />;
+    const { name = "Homepage", search, hash, params = {} } = from || {};
+    return (
+      <NamedRedirect
+        name={name}
+        replace={true}
+        search={search}
+        hash={hash}
+        params={params}
+      />
+    );
   }
   return (
     <Page
@@ -81,7 +104,7 @@ function SignupPage(props: SignupPageProps) {
       <RightChild>
         <div className={css.loginBody}>
           <div className={css.bodyContainer}>
-            <img src={config.branding.icon} alt='' />
+            <BrandIcon />
             <p className={css.helperTextDiv}>
               <span className={css.divider} />
               <FormattedMsg
@@ -92,8 +115,9 @@ function SignupPage(props: SignupPageProps) {
             <SignupForm
               intl={intl}
               onSubmit={handleSubmit}
-              signupInProgress={fetchStatus.isLoading(signupStatus)}
+              signupInProgress={signupStatus.isLoading}
               signupError={signupError}
+              signupStatus={signupStatus}
             />
             <div className={"linkTextContainer"}>
               <FormattedMsg id='SignupPage.alreadyAccount' />

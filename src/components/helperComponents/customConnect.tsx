@@ -2,14 +2,14 @@ import React from "react";
 import { IntlShape, useIntl } from "react-intl";
 import {
   useAppDispatch,
-  useAppSelector,
-  UseDispatchType,
-  UseSelectorType,
+  AppDispatch,
+  AppSelect,
+  useAppSelect,
 } from "@src/hooks";
 
-type MapToStateFuncType<T> = ((selector: UseSelectorType) => T) | null;
+type MapToStateFuncType<T> = ((select: AppSelect) => T) | null;
 
-type MapToDisPatchFuncType<T> = ((dispatch: UseDispatchType) => T) | null;
+type MapToDisPatchFuncType<T> = ((dispatch: AppDispatch) => T) | null;
 
 export function customConnect<
   StateProps extends Record<string, any> = Record<string, any>,
@@ -30,7 +30,7 @@ export function customConnect<
       const intl = useIntl();
       const componentState =
         typeof mapToStateFunc === "function"
-          ? mapToStateFunc(useAppSelector)
+          ? mapToStateFunc(useAppSelect)
           : {};
 
       const componentDispatchFunction =

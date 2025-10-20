@@ -2,114 +2,127 @@ import React from "react";
 import loadable from "@loadable/component";
 import AuthenticatedPage from "@src/components/helperComponents/AuthenticatedPage";
 import { parseQueryString } from "./functionHelper";
-import { routeDetails } from "@src/routeNames";
-
-const loadableComponent = routeDetails.reduce((acc, details) => {
-  const name = details.name;
-  acc[name] = loadable(() =>
-    import(/*webpackChunkName: "[request]" */ `../pages/${name}/${name}`)
-  );
-  return acc;
-}, {});
+import { routeConfiguration } from "@src/routeConfig";
 
 const pageDataLoadingAPI = {};
 
-const dataLoaderWrapper =
-  (loader) =>
-  (
-    getState,
-    dispatch,
-    routeName,
-    isAuthCheckReq,
-    shouldWaitToResolve = false
-  ) =>
-  async (arg) => {
-    const { params, request } = arg;
-    let search = "";
-    if (request && request.url && typeof request.url === "string") {
-      const url = new URL(request.url);
-      search = url.search;
-    }
-    const {
-      auth: { isAuthenticated },
-    } = getState();
+const dataLoaderWrapper = (loader) => {
+  const isLoaderDefined = loader && typeof loader === "function";
+  if (isLoaderDefined) {
+    return (
+        getState,
+        dispatch,
+        routeName,
+        isAuthCheckReq,
+        shouldWaitToResolve = false
+      ) =>
+      async (arg) => {
+        const { params, search } = arg;
+        const {
+          auth: { isAuthenticated },
+        } = getState();
 
-    const shouldLoadData =
-      loader &&
-      typeof loader === "function" &&
-      typeof dispatch === "function" &&
-      typeof getState === "function" &&
-      (!isAuthCheckReq || isAuthenticated);
+        const shouldLoadData =
+          typeof dispatch === "function" &&
+          typeof getState === "function" &&
+          (!isAuthCheckReq || isAuthenticated);
 
-    if (shouldLoadData) {
-      const searchObject = parseQueryString(search);
-      // Add checker to your loader function (created using Redux Slice), so that it doesn't call loader again
-      // when the data is already loaded from SSR.
-      // Until you figure out way to remove this, Please add your checker.
-      // Else again it call loader.
-      // Check ProductsPageSlice.ts or ProductPageSlice.ts for more information.
-      if (shouldWaitToResolve) {
-        await loader({ getState, dispatch, params, search: searchObject });
-      } else {
-        loader({ getState, dispatch, params, search: searchObject });
-      }
-    }
-    return null;
-  };
-
-routeDetails.reduce((acc, route) => {
-  pageDataLoadingAPI[route.name] = dataLoaderWrapper(route.loadData);
-  return acc;
-}, pageDataLoadingAPI);
-
-export const routes = routeDetails.map((details) => {
-  const Component = loadableComponent[details.name];
-  const extraData = {};
-  if (details.isAuth) {
-    extraData.isAuth = details.isAuth;
-  } else if (details.notFound) {
-    extraData.notFound = details.notFound;
+        if (shouldLoadData) {
+          const searchObject = parseQueryString(search);
+          // Add checker to your loader function (created using Redux Slice), so that it doesn't call loader again
+          // when the data is already loaded from SSR.
+          // Until you figure out way to remove this, Please add your checker.
+          // Else it call loader again.
+          // Check ProductsPageSlice.ts or ProductPageSlice.ts for more information.
+          if (shouldWaitToResolve) {
+            await loader({ getState, dispatch, params, search: searchObject });
+          } else {
+            loader({ getState, dispatch, params, search: searchObject });
+          }
+        }
+        return null;
+      };
   }
-  if (details.loadData) {
-    extraData.loader = details.loadData;
-  }
-  return {
-    path: details.path,
-    element: <Component />,
-    name: details.name,
-    exact: true,
-    ...extraData,
-  };
-});
+};
+
+const updatedPageDataLoadingAPI = (routes) => {
+  routes.reduce((acc, route) => {
+    pageDataLoadingAPI[route.name] = dataLoaderWrapper(route.loadData);
+    return acc;
+  }, pageDataLoadingAPI);
+};
+
+export const prepareRoutes = (config) => {
+  const routes = routeConfiguration(config);
+  const loadableComponent = routes.reduce((acc, details) => {
+    const name = details.name;
+    acc[name] = loadable(() =>
+      import(/*webpackChunkName: "[request]" */ `../pages/${name}/${name}`)
+    );
+    return acc;
+  }, {});
+
+  updatedPageDataLoadingAPI(routes);
+
+  const updatedRoutes = routes.map((details) => {
+    const Component = loadableComponent[details.name];
+    const extraData = {};
+    if (details.isAuth) {
+      extraData.isAuth = details.isAuth;
+    } else if (details.notFound) {
+      extraData.notFound = details.notFound;
+    }
+    if (details.loadData) {
+      extraData.loader = details.loadData;
+    }
+    return {
+      path: details.path,
+      element: <Component />,
+      name: details.name,
+      exact: true,
+      ...extraData,
+    };
+  });
+
+  return updatedRoutes;
+};
 
 /**
- * @param {UseDispatchType|undefined} dispatch
+ * @param {AppDispatch|undefined} dispatch
  * @param {Array} routes
  * @returns {Array}
  * */
-export const createRoutesForBrowserAndStaticRouter = (
+export const createRoutesForRouter = (
   dispatch,
   getState,
   routes,
-  shouldWaitToResolve = false
+  shouldWaitToResolve = false,
+  staticContext = {}
 ) => {
   const modified = routes.map((route) => {
     const { isAuth, ...restRoute } = route;
-
     if (isAuth) {
       restRoute.element = React.createElement(AuthenticatedPage, {
         children: restRoute.element,
         name: restRoute.name,
+        staticContext,
       });
     } else if (restRoute.element !== null) {
       restRoute.element = React.cloneElement(restRoute.element, {
         name: restRoute.name,
       });
     }
+    if (restRoute.notFound) {
+      restRoute.element = React.cloneElement(restRoute.element, {
+        name: restRoute.name,
+        staticContext,
+      });
+    }
     if (restRoute.element === null) {
       return { ...restRoute, key: restRoute.name };
     }
-    const loader = pageDataLoadingAPI[restRoute.name] || restRoute.loader;
+
+    const loader = pageDataLoadingAPI[restRoute.name];
     const loaderMaybe =
       loader && typeof loader === "function"
         ? {

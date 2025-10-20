@@ -1,5 +1,4 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import type { RootStateType } from "@src/store";
 
 const initialState = {
   count: 0,
@@ -23,7 +22,5 @@ export const homePageSlice = createSlice({
 
 export const { incrementCount, incrementCountBy, decrementCount } =
   homePageSlice.actions;
-
-export const selectCount = (state: RootStateType) => state.home.count;
 
 export default homePageSlice.reducer;
