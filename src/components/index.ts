@@ -10,6 +10,7 @@ export {
 export { default as FormattedMsg } from "./FormattedMessage/FormattedMsg";
 export { default as UserAvatar } from "./UserAvatar/UserAvatar";
 export { default as BrandIcon } from "./BrandIcon/BrandIcon";
+export { default as HomeIcon } from "./HomeIcon/HomeIcon";
 export { default as Divider } from "./Divider/Divider";
 export { default as RouterProvider } from "./RouteProvider/BrowserRouteProvider";
 export { default as StaticRouterProvider } from "./RouteProvider/StaticRouterProvider";

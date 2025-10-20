@@ -5,7 +5,9 @@ This project is built after ejecting the default  react app (generated using Cre
 
 ## Folder Structure 
 ``` bash
+├── package.json
 ├── public
+│   ├── 401.html
 │   ├── 500.html
 │   ├── index.html
 │   ├── robots.txt
@@ -25,13 +27,15 @@ This project is built after ejecting the default  react app (generated using Cre
 │       ├── manifest.json
 │       └── svg
 │           └── icon.svg
+├── README.md
+│   
 ├── server
 │   ├── csp-util
 │   │   └── csp.js
-|   ├── router
-│   │   ├── wellKnownRouter.js
-│   |   └── apiRouter.js
 │   ├── index.js
+│   ├── router
+│   │   ├── apiRouter.js
+│   │   └── wellKnownRouter.js
 │   └── util
 │       ├── helperFunctions.js
 │       └── ssrUtills.js
@@ -46,8 +50,6 @@ This project is built after ejecting the default  react app (generated using Cre
 │   │   │   └── BrandIcon.tsx
 │   │   ├── Divider
 │   │   │   └── Divider.tsx
-│   │   ├── ErrorText
-│   │   │   └── ErrorText.tsx
 │   │   ├── FormattedMessage
 │   │   │   └── FormattedMsg.tsx
 │   │   ├── helperComponents
@@ -82,6 +84,10 @@ This project is built after ejecting the default  react app (generated using Cre
 │   │   ├── RIghtChild
 │   │   │   ├── RightChild.module.css
 │   │   │   └── RightChild.tsx
+│   │   ├── RouteProvider
+│   │   │   ├── BrowserRouteProvider.tsx
+│   │   │   ├── renderRoutes.tsx
+│   │   │   └── StaticRouterProvider.tsx
 │   │   ├── Sidebar
 │   │   │   └── Sidebar.tsx
 │   │   ├── Topbar
@@ -93,15 +99,23 @@ This project is built after ejecting the default  react app (generated using Cre
 │   │   │   ├── Button
 │   │   │   │   ├── Button.module.css
 │   │   │   │   └── Button.tsx
-│   │   │   └── FieldTextInput
-│   │   │       ├── FieldTextInput.module.css
-│   │   │       └── FieldTextInput.tsx
+│   │   │   ├── DataLoader
+│   │   │   │   ├── DataLoader.module.css
+│   │   │   │   └── DataLoader.tsx
+│   │   │   ├── ErrorText
+│   │   │   │   └── ErrorText.tsx
+│   │   │   ├── FieldTextInput
+│   │   │   │   ├── FieldTextInput.module.css
+│   │   │   │   └── FieldTextInput.tsx
+│   │   │   └── SuccessContainer
+│   │   │       └── SuccessContainer.tsx
 │   │   └── UserAvatar
 │   │       ├── index.module.css
 │   │       └── UserAvatar.tsx
 │   ├── context
 │   │   ├── index.ts
-│   │   └── useConfigurationContext.ts
+│   │   ├── useConfigurationContext.ts
+│   │   └── useRouteContext.ts
 │   ├── custom-config.ts
 │   ├── Form
 │   │   ├── ForgotPasswordForm
@@ -125,6 +139,7 @@ This project is built after ejecting the default  react app (generated using Cre
 │   │   ├── useFetchStatusHandler.ts
 │   │   ├── useNamedRedirect.ts
 │   │   ├── useReduxHooks.ts
+│   │   ├── useSelector.ts
 │   │   └── useUnauthenticatedRedirect.tsx
 │   ├── index.css
 │   ├── index.js
@@ -158,7 +173,7 @@ This project is built after ejecting the default  react app (generated using Cre
 │   │       └── SignupPage.tsx
 │   ├── react-app-env.d.ts
 │   ├── reducers.ts
-│   ├── routeNames.ts
+│   ├── routeConfig.ts
 │   ├── store.ts
 │   ├── storeHelperFunction.ts
 │   ├── translations
@@ -171,14 +186,18 @@ This project is built after ejecting the default  react app (generated using Cre
 │       ├── api.ts
 │       ├── APITypes.ts
 │       ├── browserHelperFunction.ts
+│       ├── fetchStatusHelper.ts
 │       ├── functionHelper.ts
 │       ├── localeHelper.ts
 │       ├── objectHelper.ts
 │       ├── polyfills.js
 │       ├── routes.js
 │       ├── routesHelperFunction.ts
+│       ├── serialization.ts
 │       └── themeHelper.ts
-└── tsconfig.json
+├── tsconfig.json
+└── yarn.lock
+
 ```
 
 ## Enviroment Value

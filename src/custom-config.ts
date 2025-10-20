@@ -5,7 +5,8 @@ const logo180 = "/static/icons/logo180.png";
 const logo192 = "/static/icons/logo192.png";
 const logo512 = "/static/icons/logo512.png";
 const favicon = "/static/icons/favicon.ico";
-const brandIcon = "/static/svg/icon.svg";
+const homeIcon = "/static/icons/homeIcon.png";
+const brandIcon = "/static/icons/logo.png";
 
 export const appTheme = {
   dark: "dark",
@@ -49,6 +50,7 @@ export type ConfigurationType = {
     logo192: string;
     logo512: string;
     favicon: string;
+    homeIcon: string;
   };
   branding: { icon: string };
   theme: {
@@ -88,6 +90,7 @@ export const defaultConfig: ConfigurationType = {
     logo512,
     logo32,
     favicon,
+    homeIcon,
   },
   branding: { icon: brandIcon },
   apiRootPath: "/",

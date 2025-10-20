@@ -6,7 +6,12 @@ import {
   useNamedRedirect,
   AppSelect,
 } from "@src/hooks";
-import { FormattedMsg, InlineTextButton, NamedRedirect } from "@src/components";
+import {
+  BrandIcon,
+  FormattedMsg,
+  InlineTextButton,
+  NamedRedirect,
+} from "@src/components";
 import { IntlShape } from "react-intl";
 import { useConfiguration } from "@src/context";
 import Page from "@src/components/Page/Page";
@@ -80,7 +85,7 @@ function ForgotPassword(props: ForgotPasswordPasswordProps) {
       <RightChild>
         <div className={css.loginBody}>
           <div className={css.bodyContainer}>
-            <img src={config.branding.icon} alt='' />
+            <BrandIcon />
             <p className={css.helperTextDiv}>
               <span className={css.divider} />
               <FormattedMsg

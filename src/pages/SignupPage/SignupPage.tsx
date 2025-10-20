@@ -13,7 +13,12 @@ import { resetLogInStatus, userSignup } from "@src/globalReducers/auth.slice";
 import { customConnect } from "@src/components/helperComponents/customConnect";
 import css from "./SignupPage.module.css";
 import { GeneralError } from "@src/util/APITypes";
-import { FormattedMsg, InlineTextButton, NamedRedirect } from "@src/components";
+import {
+  BrandIcon,
+  FormattedMsg,
+  InlineTextButton,
+  NamedRedirect,
+} from "@src/components";
 import RightChild from "@src/components/RIghtChild/RightChild";
 import SignupForm from "@src/Form/SignupForm/SignupForm";
 import { FetchStatusVal } from "@src/util/fetchStatusHelper";
@@ -99,7 +104,7 @@ function SignupPage(props: SignupPageProps) {
       <RightChild>
         <div className={css.loginBody}>
           <div className={css.bodyContainer}>
-            <img src={config.branding.icon} alt='' />
+            <BrandIcon />
             <p className={css.helperTextDiv}>
               <span className={css.divider} />
               <FormattedMsg

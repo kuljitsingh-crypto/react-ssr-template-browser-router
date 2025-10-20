@@ -12,6 +12,8 @@ import ProfileMenu from "./ProfileMenu";
 import { InlineTextButton } from "../UI/Button/Button";
 import { useScreenDimension } from "../Page/pageHooks";
 import { isMobileScreen, isTabletScreen } from "@src/util/functionHelper";
+import HomeIcon from "../HomeIcon/HomeIcon";
+import NamedLink from "../NamedLink/NamedLink";
 
 const mapStateToProps = (select: AppSelect) => {
   const state = select({
@@ -72,7 +74,12 @@ function TopbarComponent(props: TopbarProps) {
           buttonClassName={css.sideBarBtn}>
           {showIcon()}
         </InlineTextButton>
-      ) : null}
+      ) : (
+        <NamedLink name='Homepage'>
+          <HomeIcon />
+        </NamedLink>
+      )}
+
       <div className='marginLeftAuto' />
       <ThemeMenu theme={theme} onChangeTheme={onChangeTheme} />
       <ProfileMenu
