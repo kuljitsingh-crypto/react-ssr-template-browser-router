@@ -16,7 +16,7 @@
   margin-bottom: 8px;
 }
 .invalidLabel {
-  color: var(--colorFail);
+  color: var(--colorFail) !important;
 }
 
 .textInput {

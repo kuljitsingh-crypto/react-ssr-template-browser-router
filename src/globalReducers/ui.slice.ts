@@ -1,11 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { rippleAnimationDuration, Theme } from "@src/custom-config";
+import { Config, rippleAnimationDuration, Theme } from "@src/custom-config";
 import { isBrowser } from "@src/util/browserHelperFunction";
+import { saveInSessionStorage } from "@src/util/sessionStorage";
 import { isAppHasDarkTheme } from "@src/util/themeHelper";
 
 const setRootElementVariable = (theme: Theme) => {
   if (typeof document !== "undefined" && isBrowser()) {
     const isDarkTheme = isAppHasDarkTheme(theme);
+    const config = Config.getConfig();
+
     const themeBgColor = isDarkTheme
       ? "--colorBgDarkThemeComp"
       : "--colorBgLightThemeComp";
@@ -31,6 +34,7 @@ const setRootElementVariable = (theme: Theme) => {
       document.body.style.setProperty("--themeTextColor", `${themeTextClr}`);
       document.body.style.setProperty("--themeHoverColor", `${themeHoverClr}`);
     }
+    saveInSessionStorage(config.sessionStorageKeys.userTheme, theme);
   }
 };
 

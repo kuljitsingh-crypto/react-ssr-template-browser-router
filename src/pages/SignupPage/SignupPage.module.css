@@ -69,3 +69,6 @@
     box-shadow: var(--boxShadowPopup);
   }
 }
+.loginHelpText {
+  color: var(--colorDark) !important;
+}

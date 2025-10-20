@@ -1,3 +1,5 @@
+import { SESSION_STORAGE_KEYS } from "./constants";
+
 const logo16 = "/static/icons/logo16.png";
 const logo32 = "/static/icons/logo32.png";
 const logo150 = "/static/icons/logo150.png";
@@ -57,6 +59,7 @@ export type ConfigurationType = {
     name: Theme;
     color: string;
   };
+  sessionStorageKeys: typeof SESSION_STORAGE_KEYS;
 };
 
 const rootUrl =
@@ -95,6 +98,7 @@ export const defaultConfig: ConfigurationType = {
   branding: { icon: brandIcon },
   apiRootPath: "/",
   theme: { name: "light", color: "#fff" },
+  sessionStorageKeys: SESSION_STORAGE_KEYS,
 };
 
 export const rippleAnimationDuration = 500; // 500ms

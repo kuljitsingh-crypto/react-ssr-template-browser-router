@@ -1,6 +1,6 @@
 import { pathByRouteName } from "@src/util/routesHelperFunction";
 import { useHistory } from "react-router-dom";
-import { RouteNames } from "@src/routeConfig";
+import { RouteNames } from "@src/routeConfiguration";
 import { useRouteConfiguration } from "@src/context";
 
 type NamedRedirectOptions = {

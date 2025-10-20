@@ -5,7 +5,7 @@ import { array, bool, func, object, shape, string } from "prop-types";
 import { RouterTypes, withRouter } from "../helperComponents/withRouter";
 import classNames from "classnames";
 import css from "./NamedLink.module.css";
-import { RouteNames } from "@src/routeConfig";
+import { RouteNames } from "@src/routeConfiguration";
 import { useRouteConfiguration } from "@src/context";
 
 const defaultProps = {

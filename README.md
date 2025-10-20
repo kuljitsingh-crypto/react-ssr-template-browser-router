@@ -218,13 +218,16 @@ This is the basic .env file value to run this project.
 To add a new route to the application, follow these steps:
 
 1. ✅ Create the Component File
+
 Create a folder and file inside the pages directory with the same name as the route.
 
     Example: To create a ContactPage: `pages/ContactPage/ContactPage.tsx`
 
 2. 🛣️ Update routeConfiguration
-Add the route entry in the `routeConfiguration` array (found in routeNames.ts or similar file):
-        `{ path: "/contact", name: "ContactPage", isAuth: true }`
+
+Add the route entry in the `routeConfiguration` array (found in `routeConfiguration.ts` file):
+
+  `{ path: "/contact", name: "ContactPage", isAuth: true }`
         
     Note: The name must exactly match the folder/file name you created in the pages directory.
 3. 🔐 (Optional) Add Auth or Not Found Flags

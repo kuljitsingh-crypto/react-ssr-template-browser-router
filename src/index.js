@@ -12,6 +12,7 @@ import { Config, defaultConfig, mergeConfig } from "./custom-config";
 import { fetchCurrentUser, setCurrentUser } from "./globalReducers/user.slice";
 import { setAuthenticationState } from "./globalReducers/auth.slice";
 import { deserialize } from "./util/serialization";
+import { getFrmSessionStorage } from "./util/sessionStorage";
 
 const onRecoverableError = (...args) => {
   // Error when hydration occur
@@ -25,8 +26,12 @@ if (typeof window !== "undefined") {
 }
 
 function render(shouldHydrate, preloadedState, config) {
+  const savedTheme = getFrmSessionStorage(
+    defaultConfig.sessionStorageKeys.userTheme
+  );
   const finalConfig = mergeConfig(defaultConfig, config);
-  Config.updateConfig(config);
+  finalConfig.theme.name = savedTheme || finalConfig.theme.name;
+  Config.updateConfig(finalConfig);
   const store = createStore(preloadedState, finalConfig);
   const isHydrated = shouldHydrate;
   const promises = [loadableReady(), store.dispatch(fetchCurrentUser())];

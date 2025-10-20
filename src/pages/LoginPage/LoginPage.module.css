@@ -68,3 +68,6 @@
     box-shadow: var(--boxShadowPopup);
   }
 }
+.signupHelpText {
+  color: var(--colorDark) !important;
+}

@@ -2,7 +2,7 @@ import React from "react";
 import loadable from "@loadable/component";
 import AuthenticatedPage from "@src/components/helperComponents/AuthenticatedPage";
 import { parseQueryString } from "./functionHelper";
-import { routeConfiguration } from "@src/routeConfig";
+import { routeConfiguration } from "@src/routeConfiguration";
 
 const pageDataLoadingAPI = {};
 

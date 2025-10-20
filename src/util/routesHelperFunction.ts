@@ -1,7 +1,7 @@
 import { find } from "lodash";
 import { compile } from "path-to-regexp";
 import { matchPath } from "react-router-dom";
-import { RouteNames } from "@src/routeConfig";
+import { RouteNames } from "@src/routeConfiguration";
 
 type PathParamsType = {
   slug?: string;

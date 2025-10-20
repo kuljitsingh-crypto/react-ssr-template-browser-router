@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 import { pathByRouteName } from "@src/util/routesHelperFunction";
 import { bool, object, string } from "prop-types";
 import { isBrowser } from "@src/util/browserHelperFunction";
-import { RouteNames } from "@src/routeConfig";
+import { RouteNames } from "@src/routeConfiguration";
 import { useRouteConfiguration } from "@src/context";
 
 type NamedRedirectProps = {

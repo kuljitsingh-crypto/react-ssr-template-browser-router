@@ -120,7 +120,10 @@ function SignupPage(props: SignupPageProps) {
               signupStatus={signupStatus}
             />
             <div className={"linkTextContainer"}>
-              <FormattedMsg id='SignupPage.alreadyAccount' />
+              <FormattedMsg
+                id='SignupPage.alreadyAccount'
+                className={css.loginHelpText}
+              />
               <InlineTextButton
                 type='button'
                 onClick={navigateToLogin}
