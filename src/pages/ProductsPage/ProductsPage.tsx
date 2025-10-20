@@ -1,5 +1,5 @@
 import React from "react";
-import { UseDispatchType, UseSelectorType } from "@src/hooks";
+import { AppDispatch, AppSelect } from "@src/hooks";
 import { fetchProducts } from "./ProductsPageSlice";
 import { customConnect } from "@src/components/helperComponents/customConnect";
 import css from "./ProductsPage.module.css";
@@ -8,7 +8,6 @@ import { Error, Loader, NamedLink, Success } from "@src/components";
 import { IntlShape } from "react-intl";
 import Page from "@src/components/Page/Page";
 import RightChild from "@src/components/RIghtChild/RightChild";
-import { selectStateValue } from "@src/storeHelperFunction";
 import { FetchStatusVal } from "@src/util/fetchStatusHelper";
 import { GeneralError } from "@src/util/APITypes";
 
@@ -61,14 +60,16 @@ function ProductsPage(props: ProductsPagePropsType) {
   );
 }
 
-const mapToStateProps = (selector: UseSelectorType) => {
-  const status = selector(selectStateValue("products", "status"));
-  const products = selector(selectStateValue("products", "products"));
-  const error = selector(selectStateValue("products", "error"));
-  return { status, products, error };
+const mapToStateProps = (select: AppSelect) => {
+  const state = select({
+    status: "products.status",
+    error: "products.error",
+    products: "products.products",
+  });
+  return state;
 };
 
-const mapToDispatchProps = (dispatch: UseDispatchType) => ({
+const mapToDispatchProps = (dispatch: AppDispatch) => ({
   onFetchProducts: () => dispatch(fetchProducts()),
 });
 

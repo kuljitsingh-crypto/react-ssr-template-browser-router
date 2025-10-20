@@ -88,7 +88,7 @@ export const prepareRoutes = (config) => {
 };
 
 /**
- * @param {UseDispatchType|undefined} dispatch
+ * @param {AppDispatch|undefined} dispatch
  * @param {Array} routes
  * @returns {Array}
  * */

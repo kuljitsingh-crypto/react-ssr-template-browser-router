@@ -41,18 +41,23 @@ export const pathByRouteName = (
   return toPathByRouteName(name, routes)(pathParams);
 };
 
-type matchType = {
+type UrlMatch = {
   route: RouteType;
   params: Record<string, any>;
   path: string;
   pathname: string;
+  exact?: boolean;
+  search: string;
+  hash: string;
+  state?: Record<string, any>;
 };
 export const matchPathName = (
-  pathname: string,
+  location: any,
   routeConfiguration: RoutesType
 ) => {
-  const matchedPaths = routeConfiguration.reduce(
-    (matches: matchType[], route: RouteType) => {
+  const { pathname, search, hash, state } = location;
+  const matchedRoutes = routeConfiguration.reduce(
+    (matches: UrlMatch[], route: RouteType) => {
       const refPath = { path: route.path, exact: route.exact ?? true };
       const match = matchPath(pathname, refPath);
       if (match) {
@@ -61,13 +66,21 @@ export const matchPathName = (
           params: match.params,
           pathname: route.name,
           path: match.path,
+          exact: route.exact,
+          search,
+          hash,
+          state,
         });
       }
       return matches;
     },
     []
   );
-  return matchedPaths;
+  const matchedExactRoute = matchedRoutes.find((r) => {
+    return r.exact === true || r.exact == null;
+  });
+
+  return matchedExactRoute ? [matchedExactRoute] : matchedRoutes;
 };
 
 export const canonicalRoutePath = (location: any, pathOnly = false) => {

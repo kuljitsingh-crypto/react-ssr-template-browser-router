@@ -20,6 +20,6 @@ export const createStore = (preloadedState = {}, config = defaultConfig) =>
     preloadedState,
   });
 
-export type StoreType = ReturnType<typeof createStore>;
-export type RootStateType = ReturnType<StoreType["getState"]>;
-export type AppDispatch = StoreType["dispatch"];
+export type Store = ReturnType<typeof createStore>;
+export type RootState = ReturnType<Store["getState"]>;
+export type Dispatch = Store["dispatch"];

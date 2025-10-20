@@ -2,7 +2,7 @@ import React from "react";
 import ReactHelmet, {
   ReactHelmetPropsTypes,
 } from "@src/components/helperComponents/ReactHelmet";
-import { useCustomRouter } from "@src/hooks";
+import { useCustomRouter, useAppSelect } from "@src/hooks";
 import { canonicalRoutePath } from "@src/util/routesHelperFunction";
 import { useConfiguration, useRouteConfiguration } from "@src/context";
 import classNames from "classnames";
@@ -14,7 +14,6 @@ import {
   windowDimensionProvider,
 } from "../helperComponents/windowDimension";
 import { ScreenDimensionProvider } from "./pageHooks";
-import { useSelector } from "@src/hooks/useSelector";
 
 export type ModifiedHelmetProps = Omit<
   ReactHelmetPropsTypes,
@@ -101,9 +100,10 @@ function Page(props: PageProps): React.JSX.Element {
     schema: config.seo.schema,
   };
 
-  const { theme } = useSelector({
+  const { theme } = useAppSelect({
     theme: "ui.theme",
   });
+
   const [showLeftChild, setShowLeftChild] = React.useState(true);
   const themeClassName = isAppHasDarkTheme(theme) ? "darkTheme" : "lightTheme";
   const rootClasses = classNames(

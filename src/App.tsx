@@ -4,7 +4,7 @@ import ReactDOMServer from "react-dom/server";
 import { HelmetProvider, HelmetServerState } from "react-helmet-async";
 import { Provider } from "react-redux";
 import { createRoutesForRouter, prepareRoutes } from "./util/routes";
-import { StoreType, createStore } from "./store";
+import { Store, createStore } from "./store";
 import { isEmpty } from "lodash";
 import englishMessages from "./translations/en.json";
 import frenchMessages from "./translations/fr.json";
@@ -26,7 +26,7 @@ type ServerAppPropTypes = {
   routes: any;
   config: ConfigurationType;
   helmetContext: object;
-  store: StoreType;
+  store: Store;
   isHydrated: boolean;
   context: Record<string, any>;
   location: string;
@@ -65,7 +65,7 @@ const setLocaleForMoment = (
 };
 
 type ClientAppPropsType = {
-  store: StoreType;
+  store: Store;
   isHydrated: boolean;
   config: ConfigurationType;
 };

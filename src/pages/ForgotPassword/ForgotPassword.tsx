@@ -1,12 +1,11 @@
 import React from "react";
 import { customConnect } from "@src/components/helperComponents/customConnect";
 import {
-  UseDispatchType,
+  AppDispatch,
   useFetchStatusHandler,
   useNamedRedirect,
-  UseSelectorType,
+  AppSelect,
 } from "@src/hooks";
-import { selectStateValue } from "@src/storeHelperFunction";
 import { FormattedMsg, InlineTextButton, NamedRedirect } from "@src/components";
 import { IntlShape } from "react-intl";
 import { useConfiguration } from "@src/context";
@@ -19,17 +18,15 @@ import {
 } from "@src/globalReducers/auth.slice";
 import css from "./ForgotPassword.module.css";
 
-const mapStateToProps = (selector: UseSelectorType) => {
-  const isAuthenticated = selector(selectStateValue("auth", "isAuthenticated"));
-  const forgotPasswordStatus = selector(
-    selectStateValue("auth", "forgotPasswordStatus")
-  );
-  const forgotPasswordError = selector(
-    selectStateValue("auth", "forgotPasswordError")
-  );
-  return { isAuthenticated, forgotPasswordStatus, forgotPasswordError };
+const mapStateToProps = (select: AppSelect) => {
+  const state = select({
+    isAuthenticated: "auth.isAuthenticated",
+    forgotPasswordStatus: "auth.forgotPasswordStatus",
+    forgotPasswordError: "auth.forgotPasswordError",
+  });
+  return state;
 };
-const mapDispatchToProps = (dispatch: UseDispatchType) => ({
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
   onSendInstruction: (email: string) =>
     dispatch(sendPasswordResetInstruction({ email })),
   onResetLoginStatus: () => dispatch(resetLogInStatus()),

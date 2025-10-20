@@ -8,9 +8,7 @@ export const useCustomRouter = (routes: RoutesType) => {
   const history = useHistory();
   const params = useParams();
   const matches =
-    location && location.pathname
-      ? matchPathName(location.pathname, routes)
-      : [];
+    location && location.pathname ? matchPathName(location, routes) : [];
   const navigate = useNamedRedirect();
   return { location, params, history, matches, navigate };
 };

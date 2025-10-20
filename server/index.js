@@ -177,10 +177,14 @@ app.get("*", async (req, res) => {
       data,
       finalConfig
     );
+
+    const fromMaybe = context.from
+      ? `?from=${encodeURIComponent(JSON.stringify(context.from))}`
+      : "";
     // For now context has three possible key url,notFound and unauthorized
     // If you wan to handle unauthorized different differently then as per your requriement
     if (context.url) {
-      return res.redirect(context.url);
+      return res.redirect(`${context.url}${fromMaybe}`);
     } else if (context.unauthorized) {
       res.setHeader("Content-Type", "text/html");
       return res.status(401).end(unauthPage);

@@ -2,22 +2,16 @@ import React from "react";
 import { useCustomRouter } from "@src/hooks";
 import { useRouteConfiguration } from "@src/context";
 
-export type RouterTypes = {
-  matches: any[];
-  location: Location;
-  params: Readonly<Record<string, any>>;
-  navigate: Function;
-  history: History | undefined;
-};
+export type RouterTypes = ReturnType<typeof useCustomRouter>;
 
-type WithRouterProps = { router: RouterTypes };
+export type WithRouter = { router: RouterTypes };
 
-export function withRouter<T extends WithRouterProps = WithRouterProps>(
+export function withRouter<T extends WithRouter = any>(
   WrappedComponent: React.ComponentType<T>
 ) {
   const displayName =
     WrappedComponent.displayName || WrappedComponent.name || "Component";
-  const WithRouterProps = (props: Omit<T, keyof WithRouterProps>) => {
+  const WithRouterProps = (props: Omit<T, keyof WithRouter>) => {
     const routes = useRouteConfiguration();
     const router = useCustomRouter(routes);
 

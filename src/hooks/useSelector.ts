@@ -1,32 +1,30 @@
-import { RootStateType } from "@src/store";
-import { useAppSelector } from "./useReduxHooks";
-import { shallowEqual } from "react-redux";
+import { RootState } from "@src/store";
+import { shallowEqual, useSelector as useReduxSelector } from "react-redux";
 
-const getNestedData = (state: any, names: string[], index = 0): any => {
-  let name = names[index];
-  const nextValue = state == null ? undefined : state[name];
-  if (index === names.length - 1) {
-    return nextValue;
-  }
-  return getNestedData(nextValue, names, index + 1);
+const getNestedData = (state: any, names: string[]): any => {
+  return names.reduce(
+    (acc, name) => (acc[name] == null ? undefined : acc[name]),
+    state
+  );
 };
 
-const getStateData =
-  (names: Record<string, string>) => (state: RootStateType) => {
-    const values: Record<string, any> = {};
-    Object.entries(names).forEach(([key, path]) => {
-      const keys = path.split(".");
-      const val = getNestedData(state, keys);
-      values[key] = val;
-    });
+const getStateData = (names: Record<string, string>) => (state: RootState) => {
+  const values: Record<string, any> = {};
+  Object.entries(names).forEach(([key, path]) => {
+    const keys = path.split(".");
+    const val = getNestedData(state, keys);
+    values[key] = val;
+  });
 
-    return values;
-  };
+  return values;
+};
 
 // Recursively get nested value type
 type NestedPaths<T> = T extends object
   ? {
-      [K in keyof T & string]: T[K] extends object
+      [K in keyof T & string]: T[K] extends (...args: any[]) => any
+        ? never
+        : T[K] extends object
         ? K | `${K}.${NestedPaths<T[K]>}`
         : K;
     }[keyof T & string]
@@ -41,18 +39,12 @@ type NestedValue<T, P extends string> = P extends `${infer K}.${infer Rest}`
   ? T[P]
   : never;
 
-type ValidPath = NestedPaths<RootStateType>;
+type ValidPath = NestedPaths<RootState>;
 
-export function useSelector<T extends Record<string, ValidPath>>(
-  nameRef: T
-): { [P in keyof T]: NestedValue<RootStateType, T[P]> } {
-  return useAppSelector(getStateData(nameRef), shallowEqual) as any;
+export function useAppSelect<T extends Record<string, ValidPath>>(
+  states: T
+): { [P in keyof T]: NestedValue<RootState, T[P]> } {
+  return useReduxSelector(getStateData(states), shallowEqual) as any;
 }
 
-type N<T> = T extends object
-  ? {
-      [K in keyof T & string]: K | `${K}.${N<T[K]>}`;
-    }[keyof T & string]
-  : never;
-
-type V = N<RootStateType>;
+export type AppSelect = typeof useAppSelect;

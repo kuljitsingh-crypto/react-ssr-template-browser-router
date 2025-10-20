@@ -5,22 +5,23 @@ import { FormattedMsg, InlineTextButton, UserAvatar } from "@src/components";
 import { GoSignOut } from "react-icons/go";
 import css from "./Topbar.module.css";
 import {
-  UseDispatchType,
+  AppDispatch,
   useFetchStatusHandler,
   useNamedRedirect,
-  UseSelectorType,
+  AppSelect,
 } from "@src/hooks";
 import { userLogout } from "@src/globalReducers/auth.slice";
 import { customConnect } from "../helperComponents/customConnect";
-import { selectStateValue } from "@src/storeHelperFunction";
 
-const mapStateToProps = (selector: UseSelectorType) => {
-  const logoutStatus = selector(selectStateValue("auth", "logoutStatus"));
-  const logoutError = selector(selectStateValue("auth", "logoutError"));
-  return { logoutStatus, logoutError };
+const mapStateToProps = (select: AppSelect) => {
+  const state = select({
+    logoutStatus: "auth.logoutStatus",
+    logoutError: "auth.logoutError",
+  });
+  return state;
 };
 
-const mapDispatchToProps = (dispatch: UseDispatchType) => ({
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
   onUserLogout: () => dispatch(userLogout()),
 });
 

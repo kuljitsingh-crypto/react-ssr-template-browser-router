@@ -1,5 +1,5 @@
 import React from "react";
-import { UseDispatchType, UseSelectorType } from "@src/hooks";
+import { AppDispatch, AppSelect } from "@src/hooks";
 import { customConnect } from "../helperComponents/customConnect";
 import classNames from "classnames";
 import { IoMdClose } from "react-icons/io";
@@ -9,17 +9,19 @@ import ThemeMenu from "./ThemeMenu";
 import { changeTheme } from "@src/globalReducers/ui.slice";
 import { Theme } from "@src/custom-config";
 import ProfileMenu from "./ProfileMenu";
-import { selectStateValue } from "@src/storeHelperFunction";
 import { InlineTextButton } from "../UI/Button/Button";
 import { useScreenDimension } from "../Page/pageHooks";
 import { isMobileScreen, isTabletScreen } from "@src/util/functionHelper";
-const mapStateToProps = (selector: UseSelectorType) => {
-  const currentUser = selector(selectStateValue("user", "currentUser"));
-  const isAuthenticated = selector(selectStateValue("auth", "isAuthenticated"));
-  const theme = selector(selectStateValue("ui", "theme"));
-  return { currentUser, isAuthenticated, theme };
+
+const mapStateToProps = (select: AppSelect) => {
+  const state = select({
+    currentUser: "user.currentUser",
+    isAuthenticated: "auth.isAuthenticated",
+    theme: "ui.theme",
+  });
+  return state;
 };
-const mapDispatchToProps = (dispatch: UseDispatchType) => ({
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
   onChangeTheme: (theme: Theme) => dispatch(changeTheme(theme)),
 });
 
