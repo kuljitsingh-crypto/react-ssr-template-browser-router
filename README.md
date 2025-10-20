@@ -30,7 +30,6 @@ This project is built after ejecting the default  react app (generated using Cre
 │       ├── manifest.json
 │       └── svg
 ├── README.md
-├── scripts
 ├── server
 │   ├── csp-util
 │   │   └── csp.js
@@ -116,6 +115,9 @@ This project is built after ejecting the default  react app (generated using Cre
 │   │   └── UserAvatar
 │   │       ├── index.module.css
 │   │       └── UserAvatar.tsx
+│   ├── constants
+│   │   ├── index.ts
+│   │   └── storageKeys.ts
 │   ├── context
 │   │   ├── index.ts
 │   │   ├── useConfigurationContext.ts
@@ -175,9 +177,8 @@ This project is built after ejecting the default  react app (generated using Cre
 │   │   └── SignupPage
 │   │       ├── SignupPage.module.css
 │   │       └── SignupPage.tsx
-│   ├── react-app-env.d.ts
 │   ├── reducers.ts
-│   ├── routeConfig.ts
+│   ├── routeConfiguration.ts
 │   ├── store.ts
 │   ├── storeHelperFunction.ts
 │   ├── translations
@@ -198,6 +199,7 @@ This project is built after ejecting the default  react app (generated using Cre
 │       ├── routes.js
 │       ├── routesHelperFunction.ts
 │       ├── serialization.ts
+│       ├── sessionStorage.ts
 │       └── themeHelper.ts
 ├── tsconfig.json
 └── yarn.lock
