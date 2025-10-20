@@ -385,29 +385,119 @@ if (!currentUser && route.requiresAuth) {
 | Public + Auth Views         | ✅ Best for SEO & UX balance      |
 
 
-## Available Scripts
-
-In the project directory, you can run:
+## 🧩 Available Scripts
 
 ### `yarn start`
+Runs the **production server**.
 
-Runs the app in the development mode.\
-Open [http://localhost:3500](http://localhost:3500) to view it in the browser.
-It also render preloaded data, if available.
+```bash
+node --icu-data-dir=node_modules/full-icu server/index.js
+```
 
+- Starts the backend from `server/index.js`.
+- Loads **full ICU data** for complete locale and internationalization support.
+- Typically used **after building** the project.
+
+---
+
+### `yarn run build`
+Builds both the **frontend** and **backend** for production.
+
+```bash
+yarn run build-web && yarn run build-server
+```
+
+- Builds client and server bundles sequentially.
+- Output files are optimized for production deployment.
+
+---
+
+### `yarn run build-web`
+Builds the **frontend (React)** application.
+
+```bash
+node scripts/build.js
+```
+
+- Runs the custom frontend build script.
+- Produces optimized static assets for production.
+
+---
+
+### `yarn run build-server`
+Builds the **backend (Node.js)** application.
+
+```bash
+node scripts/build-server.js
+```
+
+- Prepares or transpiles server files for production.
+
+---
 
 ### `yarn test`
+Runs all **tests** defined in your project.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+node scripts/test.js
+```
 
-### `yarn build`
+- Can include unit, integration, or end-to-end tests.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React and Node in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🧑‍💻 Development Commands
+
+### `yarn run dev-frontend`
+Runs only the **frontend** development server.
+
+```bash
+node scripts/start.js
+```
+
+- Starts the React app in development mode with hot reloading.
+- Useful when working exclusively on the frontend.
+
+---
+
+### `yarn run dev-backend`
+Runs only the **backend** in development mode.
+
+```bash
+nodemon server/index.js
+```
+
+- Uses `nodemon` to automatically restart on file changes.
+- Useful for backend-only development.
+
+---
+
+### `yarn run dev`
+Runs **both frontend and backend** concurrently in development mode.
+
+```bash
+cross-env NODE_ENV=development BABEL_ENV=development REACT_APP_API_SERVER_PORT=3500 concurrently --kill-others "yarn run dev-backend" "yarn run dev-frontend"
+```
+
+- Uses `cross-env` for cross-platform environment variables.
+- Runs frontend and backend together.
+- Kills both processes if one stops.
+- Backend API runs on **port 3500** by default.
+- Run `yarn run build` before running this command.
+
+---
+
+### `yarn run dev-server`
+Builds and runs the **server** locally with automatic reload.
+
+```bash
+cross-env-shell NODE_ENV=development PORT=4000 REACT_APP_CANONICAL_ROOT_URL=http://localhost:4000 "yarn run build && nodemon --watch server server/index.js"
+```
+
+- Builds both frontend and backend before starting.
+- Starts backend on **port 4000**.
+- Watches the `server/` folder and reloads automatically.
+- Useful for testing production builds locally.
 
 ## Learn More
 
