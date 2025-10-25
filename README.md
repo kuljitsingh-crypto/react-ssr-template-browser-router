@@ -5,7 +5,6 @@ This project is built after ejecting the default  react app (generated using Cre
 
 ## Folder Structure 
 ``` bash
-
 ├── package.json
 ├── public
 │   ├── 401.html
@@ -33,11 +32,15 @@ This project is built after ejecting the default  react app (generated using Cre
 ├── server
 │   ├── csp-util
 │   │   └── csp.js
+│   ├── dto
+│   │   ├── index.js
+│   │   └── test.dto.js
 │   ├── index.js
 │   ├── router
 │   │   ├── apiRouter.js
 │   │   └── wellKnownRouter.js
 │   └── util
+│       ├── dtoHelper.js
 │       ├── helperFunctions.js
 │       └── ssrUtills.js
 ├── src
@@ -177,6 +180,7 @@ This project is built after ejecting the default  react app (generated using Cre
 │   │   └── SignupPage
 │   │       ├── SignupPage.module.css
 │   │       └── SignupPage.tsx
+│   ├── react-app-env.d.ts
 │   ├── reducers.ts
 │   ├── routeConfiguration.ts
 │   ├── store.ts
@@ -203,7 +207,6 @@ This project is built after ejecting the default  react app (generated using Cre
 │       └── themeHelper.ts
 ├── tsconfig.json
 └── yarn.lock
-
 ```
 
 ## Enviroment Value
