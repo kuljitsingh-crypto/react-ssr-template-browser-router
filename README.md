@@ -390,6 +390,80 @@ if (!currentUser && route.requiresAuth) {
 | Public + Auth Views         | ✅ Best for SEO & UX balance      |
 
 
+## 📦 DTO (Data Transfer Object) Validation
+
+This project uses a **DTO-based validation system** with [Joi](https://joi.dev/api/?v=18.0.1) to enforce strong typing and validation for **request body, query parameters, and URL params**. It centralizes validation logic and ensures clean, predictable API request handling.
+
+### ✅ Key Features
+
+* **Centralized validation** for `body`, `query`, and `params`.
+* Automatically parses query strings (supports arrays and JSON).
+* Attaches validated data to `req` under the DTO name.
+* Returns structured error messages if validation fails.
+
+### ⚙️ How It Works
+
+1. Define a DTO:
+
+```js
+const { DTO, DtoValidator } = require("../util/dtoHelper");
+
+const testDto = new DTO("testDto");
+testDto.body.fields({
+  name: DtoValidator.string().min(5).required(),
+  age: DtoValidator.number().required(),
+});
+
+module.exports.testDto = testDto;
+```
+
+2. Use it in your routes:
+
+```js
+const apiRouter = require("express").Router();
+const { testDto } = require("../dto");
+
+apiRouter.post("/test-post", testDto.validate, (req, res) => {
+  console.log(req.testDto); // { body: { name: "...", age: ... } }
+  res.sendStatus(200);
+});
+
+exports.apiRouter = apiRouter;
+```
+
+3. **Query parsing** is automatic:
+
+```js
+// req.query ?foo=1&bar=[2,3]
+// => parsed as { foo: 1, bar: [2,3] }
+```
+
+4. **Error formatting** returns structured JSON:
+
+```json
+{
+  "errors": {
+    "name": ["\"name\" length must be at least 5 characters long"],
+    "age": ["\"age\" is required"]
+  }
+}
+```
+
+### ⚡ DTO Class Overview
+
+* **DTO**: main class to define `body`, `query`, and `params` schemas.
+* **DtoFields**: helper for defining Joi schema fields.
+* **validate**: middleware function to validate incoming requests.
+* **prepareValidationError**: formats Joi errors into a clean JSON structure.
+* **parseQuery**: safely parses query parameters, supporting arrays and JSON strings.
+
+### 🔑 Best Practices
+
+* Name DTOs clearly (`UserDTO`, `ProductDTO`) for easy access in `req`.
+* Always define `.body.fields()` at minimum; add `.query.fields()` or `.param.fields()` only if needed.
+* Handle errors gracefully: `validate` middleware sends structured JSON for API consumers.
+
+
 ## 🧩 Available Scripts
 
 ### `yarn start`
