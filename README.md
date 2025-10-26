@@ -30,6 +30,9 @@ This project is built after ejecting the default  react app (generated using Cre
 │       └── svg
 ├── README.md
 ├── server
+│   ├── controller
+│   │   ├── csrfToken.js
+│   │   └── index.js
 │   ├── csp-util
 │   │   └── csp.js
 │   ├── dto
@@ -40,6 +43,7 @@ This project is built after ejecting the default  react app (generated using Cre
 │   │   ├── apiRouter.js
 │   │   └── wellKnownRouter.js
 │   └── util
+│       ├── csrfTokenHelper.js
 │       ├── dtoHelper.js
 │       ├── helperFunctions.js
 │       └── ssrUtills.js
@@ -195,8 +199,10 @@ This project is built after ejecting the default  react app (generated using Cre
 │       ├── api.ts
 │       ├── APITypes.ts
 │       ├── browserHelperFunction.ts
+│       ├── csrfTokenHelper.ts
 │       ├── fetchStatusHelper.ts
 │       ├── functionHelper.ts
+│       ├── httpClient.ts
 │       ├── localeHelper.ts
 │       ├── objectHelper.ts
 │       ├── polyfills.js
