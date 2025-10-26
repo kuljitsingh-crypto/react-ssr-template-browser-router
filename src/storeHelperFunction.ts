@@ -4,22 +4,22 @@ import {
   createAsyncThunk,
 } from "@reduxjs/toolkit";
 
-import { Axios } from "axios";
 import { RootState } from "./store";
 import { ConfigurationType } from "./custom-config";
+import { HttpClient } from "./util/httpClient";
 
 type AsyncThunkConfig = Parameters<typeof createAsyncThunk>;
 type CustomAsyncThunkConfig = AsyncThunkConfig & {
   extra: {
-    axios: Axios;
+    coreApi: HttpClient;
+    extApi: HttpClient;
     config: ConfigurationType;
-    axiosWithCred: Axios;
   };
   state: RootState;
 };
 
-/** Created this function to correctly type cast the extra arguments to Axios and getState to App Root State.
- * If you want to use axios passed in the extra arguments. Use this function for async operations.
+/** Created this function to correctly type cast the extra arguments to coreApi and extApi  and getState to App Root State.
+ * If you want to use coreApi and extApi passed in the extra arguments. Use this function for async operations.
  */
 export const customCreateAsyncThunk = <
   Returned extends unknown = unknown,

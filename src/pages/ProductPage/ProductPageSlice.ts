@@ -24,14 +24,12 @@ export const fetchProduct = customCreateAsyncThunk<
   string | undefined
 >(
   PRODUCT_FETCH_NAME,
-  async (productId, { extra: { axios, config } }) => {
+  async (productId, { extra: { extApi, config } }) => {
     if (!productId) {
       return;
     }
-
-    const resp = await axios.get(
-      `https://fakestoreapi.com/products/${productId}`
-    );
+    const url = `https://fakestoreapi.com/products/${productId}`;
+    const resp = await extApi.get(url);
 
     return resp.data;
   },

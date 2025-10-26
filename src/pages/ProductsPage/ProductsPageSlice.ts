@@ -21,8 +21,8 @@ const initialState: ProductStateType = {
 
 export const fetchProducts = customCreateAsyncThunk<ProductType[]>(
   PRODUCTS_FETCH_NAME,
-  async (_, { extra: { axios } }) => {
-    const resp = await axios.get("https://fakestoreapi.com/products");
+  async (_, { extra: { extApi } }) => {
+    const resp = await extApi.get("https://fakestoreapi.com/products");
     return resp.data;
   },
   {

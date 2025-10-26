@@ -39,7 +39,7 @@ const FORGOT_PASSWORD = "app/auth-slice/forgotPassword";
 
 export const userLogin = customCreateAsyncThunk<string, UserLoginParams>(
   LOGIN,
-  async (params, { extra: { config, axiosWithCred }, dispatch }) => {
+  async (params, { extra: { config, coreApi, extApi }, dispatch }) => {
     // const { email, password } = params;
     // your Custom login logic
     const resp = await waitFor(2000);
@@ -50,7 +50,7 @@ export const userLogin = customCreateAsyncThunk<string, UserLoginParams>(
 
 export const userSignup = customCreateAsyncThunk<string, UserLoginParams>(
   SIGNUP,
-  async (params, { extra: { config, axiosWithCred }, dispatch }) => {
+  async (params, { extra: { config, coreApi, extApi }, dispatch }) => {
     const { email, password } = params;
     // your Custom login logic
     const resp = await waitFor(2000);
@@ -61,9 +61,9 @@ export const userSignup = customCreateAsyncThunk<string, UserLoginParams>(
 
 export const userLogout = customCreateAsyncThunk<string, void>(
   LOGOUT,
-  async (_, { extra: { config, axiosWithCred }, dispatch }) => {
-    // const url = `${getApiBaseUrl(config)}/logout`;
-    // const resp = await axiosWithCred.post(url, {});
+  async (_, { extra: { config, coreApi, extApi }, dispatch }) => {
+    // const url = `/logout`;
+    // const resp = await coreApi.post(url, {});
     // your Custom login logic
     const resp = await waitFor(2000);
     dispatch(setCurrentUser(null));
@@ -76,9 +76,9 @@ export const sendPasswordResetInstruction = customCreateAsyncThunk<
   { email: string }
 >(
   FORGOT_PASSWORD,
-  async ({ email }, { extra: { config, axios }, dispatch }) => {
-    // const url = `${getApiBaseUrl(config)}/logout`;
-    // const resp = await axiosWithCred.post(url, {});
+  async ({ email }, { extra: { config, coreApi, extApi }, dispatch }) => {
+    // const url = /logout';
+    // const resp = await coreApi.post((url, {});
     // your Custom login logic
     const resp = await waitFor(2000);
     return resp.data;
