@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactHelmet, {
   ReactHelmetPropsTypes,
 } from "@src/components/helperComponents/ReactHelmet";
@@ -14,6 +14,7 @@ import {
   windowDimensionProvider,
 } from "../helperComponents/windowDimension";
 import { ScreenDimensionProvider } from "./pageHooks";
+import { isMobileScreen, isTabletScreen } from "@src/util/functionHelper";
 
 export type ModifiedHelmetProps = Omit<
   ReactHelmetPropsTypes,
@@ -103,8 +104,10 @@ function Page(props: PageProps): React.JSX.Element {
   const { theme } = useAppSelect({
     theme: "ui.theme",
   });
-
-  const [showLeftChild, setShowLeftChild] = React.useState(true);
+  const isUptoTablet =
+    isMobileScreen(windowDimensions.width) ||
+    isTabletScreen(windowDimensions.width);
+  const [showLeftChild, setShowLeftChild] = React.useState(!isUptoTablet);
   const themeClassName = isAppHasDarkTheme(theme) ? "darkTheme" : "lightTheme";
   const rootClasses = classNames(
     appClassName,
@@ -119,6 +122,10 @@ function Page(props: PageProps): React.JSX.Element {
     showLeftChild,
     toggleLeftChild,
   });
+
+  useEffect(() => {
+    setShowLeftChild(!isUptoTablet);
+  }, [isUptoTablet]);
 
   return (
     <ScreenDimensionProvider value={windowDimensions}>
