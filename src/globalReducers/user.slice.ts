@@ -4,6 +4,7 @@ import { setAuthenticationState } from "./auth.slice";
 import { CurrentUser } from "@src/util/APITypes";
 import { waitFor } from "@src/util/functionHelper";
 import { FetchStatus, FetchStatusVal } from "@src/util/fetchStatusHelper";
+import { csrfToken } from "@src/util/csrfTokenHelper";
 
 type InitialState = {
   currentUser: CurrentUser | null;
@@ -27,6 +28,7 @@ export const fetchCurrentUser = customCreateAsyncThunk<CurrentUser, void>(
     if (resp.data === "success" && !isAlreadyAuthenticated) {
       dispatch(setAuthenticationState(true));
     }
+    await csrfToken.setAsync(config);
     // your custom return
     return {};
   }

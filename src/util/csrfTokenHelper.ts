@@ -1,6 +1,6 @@
 import axios from "axios";
 import { apiBaseUrl } from "./api";
-import { Config } from "@src/custom-config";
+import { ConfigurationType } from "@src/custom-config";
 
 class CSRFToken {
   #token: null | string = null;
@@ -17,10 +17,10 @@ class CSRFToken {
     return this.#token;
   }
 
-  setAsync(): Promise<string | null> {
+  setAsync(config: ConfigurationType): Promise<string | null> {
     //Assuming Path to fetch CSRF token is '/api/csrf-token'
     // You may change it as per your backend implementation
-    const url = `${apiBaseUrl(Config.getConfig())}/csrf-token`;
+    const url = `${apiBaseUrl(config)}/csrf-token`;
     return axios.get(url, { withCredentials: true }).then((resp) => {
       const { csrfToken } = resp.data;
       this.#token = csrfToken;
