@@ -212,7 +212,7 @@ This project is built after ejecting the default  react app (generated using Cre
 ## Enviroment Value
 Enviroment value used in,
 
-+ REACT_APP_API_SERVER_PORT=3500
++ REACT_APP_DEV_API_SERVER_PORT=3500
 + REACT_APP_CANONICAL_ROOT_URL=http://localhost:3000
 + REACT_APP_CSP=report
 
@@ -558,7 +558,7 @@ nodemon server/index.js
 Runs **both frontend and backend** concurrently in development mode.
 
 ```bash
-cross-env NODE_ENV=development BABEL_ENV=development REACT_APP_API_SERVER_PORT=3500 concurrently --kill-others "yarn run dev-backend" "yarn run dev-frontend"
+cross-env NODE_ENV=development BABEL_ENV=development REACT_APP_DEV_API_SERVER_PORT=3500 concurrently --kill-others "yarn run dev-backend" "yarn run dev-frontend"
 ```
 
 - Uses `cross-env` for cross-platform environment variables.

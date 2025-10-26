@@ -13,6 +13,7 @@ import { fetchCurrentUser, setCurrentUser } from "./globalReducers/user.slice";
 import { setAuthenticationState } from "./globalReducers/auth.slice";
 import { deserialize } from "./util/serialization";
 import { getFrmSessionStorage } from "./util/sessionStorage";
+import { csrfToken } from "./util/csrfTokenHelper";
 
 const onRecoverableError = (...args) => {
   // Error when hydration occur
@@ -34,7 +35,11 @@ function render(shouldHydrate, preloadedState, config) {
   Config.updateConfig(finalConfig);
   const store = createStore(preloadedState, finalConfig);
   const isHydrated = shouldHydrate;
-  const promises = [loadableReady(), store.dispatch(fetchCurrentUser())];
+  const promises = [
+    loadableReady(),
+    store.dispatch(fetchCurrentUser()),
+    csrfToken.setAsync(),
+  ];
   Promise.all(promises).then(() => {
     if (shouldHydrate) {
       const key = Date.now() - Math.random();
